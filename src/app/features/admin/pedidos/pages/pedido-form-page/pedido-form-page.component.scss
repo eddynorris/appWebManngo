@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.details-array {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.details-header,
+.details-row {
+  display: grid;
+  // Adjust grid for the missing subtotal column
+  grid-template-columns: 4fr 1fr 2fr 40px;
+  gap: 1rem;
+  align-items: center;
+}
+
+.details-header {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: $color-text-secondary;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid $color-border;
+
+  .header-item {
+    &.quantity, &.price {
+      text-align: right;
+    }
+  }
+}
+
+.details-row {
+  .input-group {
+    margin: 0;
+  }
+
+  input[type="number"] {
+    text-align: right;
+  }
+
+  .btn-icon.danger {
+    height: 38px; // Align with input height
+  }
+}
+
+.add-detail-btn {
+  margin-top: 1rem;
+  align-self: flex-start;
+}
+
+.input-group.full-width {
+  grid-column: 1 / -1;
+}

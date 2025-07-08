@@ -1,0 +1,54 @@
+<div class="form-page-container">
+  <div class="page-header">
+    <h1>{{ isEditMode() ? 'Editar Gasto' : 'Registrar Nuevo Gasto' }}</h1>
+    <p>Completa los datos para registrar un gasto.</p>
+  </div>
+
+  <form [formGroup]="gastoForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
+    <div class="form-section">
+      <h2 class="section-title">Detalles del Gasto</h2>
+      <div class="form-grid two-cols">
+        <div class="input-group full-width">
+          <label for="descripcion">Descripción</label>
+          <input id="descripcion" type="text" formControlName="descripcion" placeholder="Ej: Compra de material de oficina">
+        </div>
+        <div class="input-group">
+          <label for="monto">Monto (S/.)</label>
+          <input id="monto" type="number" formControlName="monto" placeholder="Ej: 150.50">
+        </div>
+        <div class="input-group">
+          <label for="fecha">Fecha del Gasto</label>
+          <input id="fecha" type="date" formControlName="fecha">
+        </div>
+        <div class="input-group">
+          <label for="categoria">Categoría</label>
+          <select id="categoria" formControlName="categoria">
+            <option value="" disabled>Selecciona una categoría</option>
+            @for (cat of categorias(); track cat) {
+              <option [value]="cat">{{ cat | titlecase }}</option>
+            }
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="almacen_id">Almacén</label>
+          <select id="almacen_id" formControlName="almacen_id">
+            <option [ngValue]="null" disabled>Selecciona un almacén</option>
+            @for (almacen of almacenes(); track almacen.id) {
+              <option [value]="almacen.id">{{ almacen.nombre }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-ghost">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="gastoForm.invalid || isLoading()">
+        @if (isLoading()) {
+          <div class="spinner-small"></div>
+        }
+        {{ isEditMode() ? 'Actualizar Gasto' : 'Crear Gasto' }}
+      </button>
+    </div>
+  </form>
+</div>

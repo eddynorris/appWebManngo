@@ -1,0 +1,24 @@
+<div class="pagination-container" *ngIf="pagination() as p">
+  <div class="pagination-summary">
+    Mostrando {{ p.per_page * (p.page - 1) + 1 }} - {{ p.per_page * p.page > p.total ? p.total : p.per_page * p.page }} de {{ p.total }}
+  </div>
+  <nav class="pagination-controls">
+    <button (click)="onPrevious()" [disabled]="p.page === 1" class="pagination-button">
+      Anterior
+    </button>
+    <ul class="pagination-list">
+      <li *ngFor="let pageNum of pages()">
+        <button
+          (click)="goToPage(pageNum)"
+          [class.active]="pageNum === p.page"
+          class="pagination-button page"
+        >
+          {{ pageNum }}
+        </button>
+      </li>
+    </ul>
+    <button (click)="onNext()" [disabled]="p.page === p.pages" class="pagination-button">
+      Siguiente
+    </button>
+  </nav>
+</div>

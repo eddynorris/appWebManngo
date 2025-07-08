@@ -1,0 +1,46 @@
+<div class="products-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Gestión de Productos</h1>
+      <p>Busca, crea, edita y gestiona todos tus productos</p>
+    </div>
+    <a routerLink="/admin/products/new" class="btn-primary">➕ Nuevo Producto</a>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Buscar por nombre o descripción..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearchChange($event)">
+    </div>
+    <div class="results-info">
+      Mostrando <strong>{{ filteredProducts().length }}</strong> de <strong>{{ totalProducts() }}</strong> resultados.
+    </div>
+  </div>
+
+  <!-- Reusable Data Table -->
+  <app-data-table
+    [data]="filteredProducts()"
+    [columns]="columns"
+    [actions]="actions"
+    [isLoading]="isLoading()"
+    (onAction)="handleTableAction($event)"
+  ></app-data-table>
+
+  <!-- TODO: Implementar paginación -->
+</div>
+
+<!-- Modal de Confirmación de Eliminación -->
+@if (isDeleteModalVisible()) {
+  <app-confirmation-modal
+    [title]="'Confirmar Eliminación'"
+    [message]="'¿Estás seguro de que quieres eliminar el producto ' + productToDelete()?.nombre + '?'"
+    confirmText="Sí, Eliminar"
+    (confirm)="handleDeleteConfirmation()"
+    (cancel)="closeDeleteModal()"
+  ></app-confirmation-modal>
+}

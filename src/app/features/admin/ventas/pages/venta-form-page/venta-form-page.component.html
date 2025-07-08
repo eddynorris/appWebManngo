@@ -1,0 +1,94 @@
+<div class="form-page-container">
+  <div class="page-header">
+    <h1>{{ isEditMode() ? 'Editar Venta' : 'Registrar Nueva Venta' }}</h1>
+    <p>Completa los datos para registrar una nueva venta en el sistema.</p>
+  </div>
+
+  <form [formGroup]="ventaForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
+    <!-- SECCIÓN DE DATOS PRINCIPALES -->
+    <div class="form-section">
+      <h2 class="section-title">Datos de la Venta</h2>
+      <div class="form-grid two-cols">
+        <div class="input-group">
+          <label for="cliente_id">Cliente</label>
+          <select id="cliente_id" formControlName="cliente_id">
+            <option value="" disabled>Selecciona un cliente</option>
+            @for (cliente of clientes(); track cliente.id) {
+              <option [value]="cliente.id">{{ cliente.nombre }}</option>
+            }
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="fecha">Fecha de Venta</label>
+          <input id="fecha" type="date" formControlName="fecha">
+        </div>
+        <div class="input-group">
+          <label for="tipo_pago">Tipo de Pago</label>
+          <select id="tipo_pago" formControlName="tipo_pago">
+            <option value="contado">Contado</option>
+            <option value="credito">Crédito</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="estado_pago">Estado del Pago</label>
+          <select id="estado_pago" formControlName="estado_pago">
+            <option value="pagado">Pagado</option>
+            <option value="pendiente">Pendiente</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN DE DETALLES DE VENTA (FORM ARRAY) -->
+    <div class="form-section">
+      <h2 class="section-title">Productos Vendidos</h2>
+      <div formArrayName="detalles" class="details-array">
+        <div class="details-header">
+          <div class="header-item product">Producto</div>
+          <div class="header-item quantity">Cantidad</div>
+          <div class="header-item price">Precio Unit. (S/.)</div>
+          <div class="header-item total">Subtotal</div>
+          <div class="header-item actions"></div>
+        </div>
+        @for (detalleGroup of detalles.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="details-row">
+            <div class="input-group">
+              <select formControlName="presentacion_id" class="product-select">
+                <option value="" disabled>Selecciona un producto</option>
+                @for (p of presentaciones(); track p.id) {
+                  <option [value]="p.id">{{ p.nombre }} ({{ p.capacidad_kg }} kg)</option>
+                }
+              </select>
+            </div>
+            <div class="input-group">
+              <input type="number" formControlName="cantidad" placeholder="Cant.">
+            </div>
+            <div class="input-group">
+              <input type="number" formControlName="precio_unitario" placeholder="Precio">
+            </div>
+            <div class="subtotal">
+              {{ (detalleGroup.get('cantidad')?.value || 0) * (detalleGroup.get('precio_unitario')?.value || 0) | currency:'S/.' }}
+            </div>
+            <button type="button" (click)="removeDetalle(i)" class="btn-icon danger" title="Eliminar producto">
+              🗑️
+            </button>
+          </div>
+        }
+      </div>
+      <button type="button" (click)="addDetalle()" class="btn-secondary add-detail-btn">
+        + Añadir Producto
+      </button>
+    </div>
+
+    <!-- SECCIÓN DE ACCIONES -->
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-ghost">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="ventaForm.invalid || isLoading()">
+        @if (isLoading()) {
+          <div class="spinner-small"></div>
+        }
+        {{ isEditMode() ? 'Actualizar Venta' : 'Crear Venta' }}
+      </button>
+    </div>
+  </form>
+</div>

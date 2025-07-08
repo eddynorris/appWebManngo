@@ -1,0 +1,38 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Gestión de Usuarios</h1>
+      <p>Crea, edita y gestiona los usuarios del sistema</p>
+    </div>
+    <a routerLink="/admin/users/new" class="btn-primary">➕ Nuevo Usuario</a>
+  </div>
+
+  <!-- Reusable Data Table -->
+  <app-data-table
+    [data]="users()"
+    [columns]="columns"
+    [actions]="actions"
+    [isLoading]="isLoading()"
+    (onAction)="handleTableAction($event)"
+  ></app-data-table>
+
+  <!-- Pagination -->
+  @if (pagination()) {
+    <app-pagination
+      [pagination]="pagination()!"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  }
+</div>
+
+<!-- Modal de Confirmación -->
+@if (isDeleteModalVisible()) {
+  <app-confirmation-modal
+    [title]="'Confirmar Eliminación'"
+    [message]="'¿Estás seguro de que quieres eliminar al usuario ' + userToDelete()?.username + '?'"
+    confirmText="Sí, Eliminar"
+    (confirm)="handleDeleteConfirmation()"
+    (cancel)="closeDeleteModal()"
+  ></app-confirmation-modal>
+}

@@ -1,0 +1,46 @@
+<div class="form-page-container">
+  <div class="page-header">
+    <h1>{{ isEditMode() ? 'Editar Cliente' : 'Crear Nuevo Cliente' }}</h1>
+    <p>Completa la información para gestionar el cliente</p>
+  </div>
+
+  @if (isLoading() && isEditMode()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Cargando datos del cliente...</span>
+    </div>
+  } @else {
+    <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
+      <div class="form-section">
+        <h2 class="section-title">Datos del Cliente</h2>
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="nombre">Nombre Completo</label>
+            <input id="nombre" type="text" formControlName="nombre" placeholder="Ej: Juan Pérez">
+          </div>
+          <div class="input-group">
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" type="tel" formControlName="telefono" placeholder="Ej: 987654321">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="direccion">Dirección</label>
+            <input id="direccion" type="text" formControlName="direccion" placeholder="Ej: Av. Siempreviva 742">
+          </div>
+          <div class="input-group">
+            <label for="ciudad">Ciudad</label>
+            <input id="ciudad" type="text" formControlName="ciudad" placeholder="Ej: Springfield">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <app-button type="button" variant="ghost" (click)="cancel()">Cancelar</app-button>
+        <app-button type="submit" variant="primary" [disabled]="clienteForm.invalid" [isLoading]="isLoading()">
+          {{ isEditMode() ? 'Actualizar Cliente' : 'Crear Cliente' }}
+        </app-button>
+      </div>
+    </form>
+  }
+</div>

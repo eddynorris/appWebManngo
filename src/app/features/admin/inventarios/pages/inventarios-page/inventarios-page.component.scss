@@ -1,0 +1,14 @@
+/* Styles for the inventarios page */
+:host {
+  display: block;
+}
+
+.header-actions {
+  .input-group {
+    label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+  }
+}

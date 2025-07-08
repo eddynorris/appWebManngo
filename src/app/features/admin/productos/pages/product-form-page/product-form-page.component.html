@@ -1,0 +1,98 @@
+<div class="product-form-page">
+  <div class="page-header">
+    <h1>{{ isEditMode() ? 'Editar Producto' : 'Crear Nuevo Producto' }}</h1>
+    <p>Completa la información para crear o actualizar un producto</p>
+  </div>
+
+  @if (isLoading() && isEditMode()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Cargando datos del producto...</span>
+    </div>
+  } @else {
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form" novalidate>
+      <!-- Datos Generales del Producto -->
+      <div class="form-section">
+        <h2 class="section-title">Datos Generales</h2>
+
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="nombre">Nombre del Producto</label>
+            <input id="nombre" type="text" formControlName="nombre" placeholder="Ej: Carbón de Encino">
+          </div>
+          <div class="input-group">
+            <label for="precio_compra">Precio de Compra (por kg)</label>
+            <input id="precio_compra" type="number" formControlName="precio_compra" placeholder="0.00">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" formControlName="descripcion" rows="3" placeholder="Describe el producto..."></textarea>
+        </div>
+        <div class="input-group-checkbox">
+          <input id="activo" type="checkbox" formControlName="activo">
+          <label for="activo">Producto Activo</label>
+        </div>
+      </div>
+
+      <!-- Presentaciones -->
+      <div class="form-section" formArrayName="presentaciones">
+        <div class="section-header">
+          <h2 class="section-title">Presentaciones</h2>
+          <app-button type="button" variant="secondary" (click)="addPresentacion()">➕ Añadir Presentación</app-button>
+        </div>
+
+        @if (presentaciones.controls.length === 0) {
+          <div class="empty-state-presentations">
+            <p>Este producto aún no tiene presentaciones. ¡Añade la primera!</p>
+          </div>
+        }
+
+        @for (presentacionGroup of presentaciones.controls; track $index) {
+          <div [formGroupName]="$index" class="presentacion-group">
+            <div class="presentacion-header">
+              <h3>Presentación #{{ $index + 1 }}</h3>
+              <app-button type="button" variant="danger" (click)="removePresentacion($index)">🗑️ Eliminar</app-button>
+            </div>
+            <div class="form-grid">
+              <div class="input-group">
+                <label for="presentacion_nombre_{{$index}}">Nombre</label>
+                <input id="presentacion_nombre_{{$index}}" type="text" formControlName="nombre" placeholder="Ej: Bolsa 3kg">
+              </div>
+              <div class="input-group">
+                <label for="presentacion_tipo_{{$index}}">Tipo</label>
+                <input id="presentacion_tipo_{{$index}}" type="text" formControlName="tipo" placeholder="Ej: Bolsa, Saco, Caja">
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="input-group">
+                <label for="presentacion_capacidad_{{$index}}">Capacidad (kg)</label>
+                <input id="presentacion_capacidad_{{$index}}" type="number" formControlName="capacidad_kg" placeholder="3">
+              </div>
+              <div class="input-group">
+                <label for="presentacion_precio_{{$index}}">Precio de Venta</label>
+                <input id="presentacion_precio_{{$index}}" type="number" formControlName="precio_venta" placeholder="50.00">
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="presentacion_url_foto_{{$index}}">URL de la Foto</label>
+              <input id="presentacion_url_foto_{{$index}}" type="text" formControlName="url_foto" placeholder="https://ejemplo.com/imagen.jpg">
+            </div>
+            <div class="input-group-checkbox">
+              <input id="presentacion_activo_{{$index}}" type="checkbox" formControlName="activo">
+              <label for="presentacion_activo_{{$index}}">Presentación Activa</label>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Acciones del Formulario -->
+      <div class="form-actions">
+        <app-button type="button" variant="ghost" (click)="cancel()">Cancelar</app-button>
+        <app-button type="submit" variant="primary" [disabled]="productForm.invalid" [isLoading]="isLoading()">
+          {{ isEditMode() ? 'Actualizar Producto' : 'Crear Producto' }}
+        </app-button>
+      </div>
+    </form>
+  }
+</div>

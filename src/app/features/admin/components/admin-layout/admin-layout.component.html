@@ -1,0 +1,50 @@
+<div class="admin-layout" [class.sidebar-collapsed]="!isSidebarOpen()">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="assets/images/logo.jpg" alt="Manngo Logo" class="logo">
+      <h2>Admin Panel</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (item of navigationItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-item">
+          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button (click)="toggleSidebar()" class="toggle-btn">
+          @if (isSidebarOpen()) {
+            ☰
+          } @else {
+            ☰
+          }
+        </button>
+        <h1>Panel de Administración</h1>
+      </div>
+
+      <div class="header-right">
+        <span class="user-info">Bienvenido, Admin</span>
+        <button (click)="logout()" class="logout-btn">
+          🚪 Salir
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+}
+
+.btn-primary {
+  background: #ff4444;
+  color: white;
+  &:hover:not(:disabled) {
+    background: #e03434;
+    transform: translateY(-2px);
+  }
+  &:disabled {
+    background: #ff9999;
+  }
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  &:hover:not(:disabled) {
+    background: #5a6268;
+  }
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+  &:hover:not(:disabled) {
+    background: #c82333;
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #495057;
+  border-color: #ced4da;
+  &:hover:not(:disabled) {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+  }
+}
+
+.spinner-small {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+// Para botones oscuros, el spinner claro funciona.
+// Para botones claros (ghost), necesitamos un spinner oscuro.
+.btn-ghost .spinner-small {
+  border-color: rgba(0, 0, 0, 0.2);
+  border-top-color: #495057;
+}
+
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,142 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.login-container {
+  max-width: 420px;
+  width: 100%;
+  padding: 2rem;
+}
+
+.login-box {
+  background: #fff;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.logo-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  height: 40px;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #212529;
+}
+
+p {
+  margin-bottom: 2rem;
+  color: #6c757d;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #495057;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    &:focus {
+      border-color: #ff4444;
+      box-shadow: 0 0 0 0.2rem rgba(255, 68, 68, 0.25);
+      outline: none;
+    }
+
+    &.is-invalid {
+      border-color: #dc3545;
+    }
+  }
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+button {
+  width: 100%;
+  padding: 0.85rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #ff4444;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover {
+    background-color: #e03434;
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    background-color: #ff9999;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.back-to-home {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+
+  a {
+    color: #ff4444;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Gestión de Ventas</h1>
+      <p>Busca, crea y gestiona todas las ventas</p>
+    </div>
+    <a routerLink="/admin/ventas/new" class="btn-primary">➕ Nueva Venta</a>
+  </div>
+
+  <!-- TODO: Add filters for date range, client, etc. -->
+
+  <!-- Reusable Data Table -->
+  <app-data-table
+    [data]="ventas()"
+    [columns]="columns"
+    [actions]="actions"
+    [isLoading]="isLoading()"
+    (onAction)="handleTableAction($event)"
+  ></app-data-table>
+
+  <!-- Pagination -->
+  @if (pagination()) {
+    <app-pagination
+      [pagination]="pagination()!"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  }
+</div>

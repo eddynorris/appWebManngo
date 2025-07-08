@@ -1,0 +1,35 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Consulta de Inventario</h1>
+      <p>Visualiza el stock actual de productos en cada almacén.</p>
+    </div>
+    <div class="header-actions">
+       <div class="input-group">
+          <label for="almacen_filter">Filtrar por Almacén</label>
+          <select id="almacen_filter" (change)="onAlmacenChange($event)">
+            <option [value]="undefined">Todos los Almacenes</option>
+            @for (almacen of almacenes(); track almacen.id) {
+              <option [value]="almacen.id">{{ almacen.nombre }}</option>
+            }
+          </select>
+        </div>
+    </div>
+  </div>
+
+  <!-- Reusable Data Table -->
+  <app-data-table
+    [data]="inventario()"
+    [columns]="columns"
+    [isLoading]="isLoading()"
+  ></app-data-table>
+
+  <!-- Pagination -->
+  @if (pagination()) {
+    <app-pagination
+      [pagination]="pagination()!"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  }
+</div>

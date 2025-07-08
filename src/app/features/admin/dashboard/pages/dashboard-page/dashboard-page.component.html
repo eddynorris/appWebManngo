@@ -1,0 +1,179 @@
+<div class="dashboard-page">
+  <div class="page-header">
+    <h1>Dashboard - Sistema Manngo</h1>
+    <p>Monitoreo de alertas y estado general del sistema</p>
+    <button (click)="refresh()" class="refresh-btn" [disabled]="isLoading()">
+      🔄 Actualizar
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Cargando datos del dashboard...</span>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <div class="error-icon">⚠️</div>
+      <h3>Error al cargar los datos</h3>
+      <p>{{ error() }}</p>
+      <button (click)="refresh()" class="btn-primary">Reintentar</button>
+    </div>
+  } @else {
+    <!-- Métricas Resumen -->
+    <section class="metrics-summary">
+      <div class="metric-card stock-alerts">
+        <div class="metric-header">
+          <span class="metric-icon">📦</span>
+          <span class="metric-value">{{ totalAlertasStock() }}</span>
+        </div>
+        <div class="metric-title">Productos con Stock Bajo</div>
+      </div>
+
+      <div class="metric-card batch-alerts">
+        <div class="metric-header">
+          <span class="metric-icon">🏷️</span>
+          <span class="metric-value">{{ totalLotesBajos() }}</span>
+        </div>
+        <div class="metric-title">Lotes con Cantidad Baja</div>
+      </div>
+
+      <div class="metric-card pending-clients">
+        <div class="metric-header">
+          <span class="metric-icon">💰</span>
+          <span class="metric-value">{{ totalClientesPendientes() }}</span>
+        </div>
+        <div class="metric-title">Clientes con Saldo Pendiente</div>
+      </div>
+    </section>
+
+    <!-- Alertas de Stock Bajo por Almacén -->
+    <section class="stock-alerts-section">
+      <div class="section-header">
+        <h2>🏪 Alertas de Stock Bajo por Almacén</h2>
+      </div>
+
+      @if (stockPorAlmacenes().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">✅</div>
+          <h3>¡Excelente!</h3>
+          <p>No hay productos con stock bajo en ningún almacén.</p>
+        </div>
+      } @else {
+        <div class="almacenes-grid">
+          @for (almacen of stockPorAlmacenes(); track almacen.almacen_id) {
+            <div class="almacen-card">
+              <div class="almacen-header">
+                <h3>{{ almacen.almacen_nombre }}</h3>
+                <span class="products-count">{{ almacen.productos_bajo_stock.length }} productos</span>
+              </div>
+
+              <div class="productos-list">
+                @for (producto of almacen.productos_bajo_stock; track producto.presentacion_id) {
+                  <div class="producto-item">
+                    <div class="producto-info">
+                      <div class="producto-nombre">{{ producto.nombre }}</div>
+                      <div class="stock-info">
+                        <span class="cantidad-actual">{{ producto.cantidad }} unidades</span>
+                        <span class="stock-minimo">Mínimo: {{ producto.stock_minimo }}</span>
+                      </div>
+                    </div>
+                    <div class="urgencia-badge"
+                         [class.critica]="producto.cantidad <= (producto.stock_minimo * 0.5)"
+                         [class.media]="producto.cantidad > (producto.stock_minimo * 0.5) && producto.cantidad < producto.stock_minimo">
+                      @if (producto.cantidad <= (producto.stock_minimo * 0.5)) {
+                        🔴 Crítico
+                      } @else {
+                        🟡 Bajo
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Alertas de Lotes Bajos -->
+    <section class="lotes-alerts-section">
+      <div class="section-header">
+        <h2>🏷️ Lotes con Cantidad Baja</h2>
+      </div>
+
+      @if (alertasLotes().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">✅</div>
+          <h3>¡Perfecto!</h3>
+          <p>Todos los lotes tienen cantidades adecuadas.</p>
+        </div>
+      } @else {
+        <div class="lotes-grid">
+          @for (lote of alertasLotes(); track lote.lote_id) {
+            <div class="lote-card">
+              <div class="lote-header">
+                <h4>{{ lote.descripcion }}</h4>
+                <span class="lote-id">ID: {{ lote.lote_id }}</span>
+              </div>
+
+              <div class="lote-info">
+                <div class="cantidad-disponible">
+                  <span class="label">Cantidad disponible:</span>
+                  <span class="value">{{ lote.cantidad_disponible_kg }} kg</span>
+                </div>
+                <div class="producto-ref">
+                  <span class="label">Producto ID:</span>
+                  <span class="value">#{{ lote.producto_id }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Clientes con Saldo Pendiente -->
+    <section class="clientes-pendientes-section">
+      <div class="section-header">
+        <h2>👥 Clientes con Saldo Pendiente</h2>
+      </div>
+
+      @if (clientesSaldoPendiente().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">✅</div>
+          <h3>¡Al día!</h3>
+          <p>No hay clientes con saldos pendientes.</p>
+        </div>
+      } @else {
+        <div class="clientes-table-container">
+          <table class="clientes-table">
+            <thead>
+              <tr>
+                <th>ID Cliente</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (cliente of clientesSaldoPendiente(); track cliente.cliente_id) {
+                <tr>
+                  <td class="cliente-id">#{{ cliente.cliente_id }}</td>
+                  <td class="cliente-nombre">{{ cliente.nombre }}</td>
+                  <td class="acciones">
+                    <button class="btn-action" type="button" title="Ver detalle del cliente">
+                      👁️ Ver
+                    </button>
+                    <button class="btn-action" type="button" title="Gestionar pagos">
+                      💰 Pagos
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+</div>

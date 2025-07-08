@@ -1,0 +1,1247 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Manngo",
+    "version": "1.0.0",
+    "description": "Documentación OpenAPI generada a partir de los recursos y modelos de la API Flask Manngo. Incluye todos los endpoints, modelos y relaciones principales."
+  },
+  "servers": [
+    { "url": "https://manngojk.lat", "description": "Servidor AWS" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Producto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "nombre": { "type": "string" },
+          "descripcion": { "type": "string" },
+          "precio_compra": { "type": "string" },
+          "activo": { "type": "boolean" },
+          "presentaciones": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PresentacionProducto" }
+          }
+        }
+      },
+      "PresentacionProducto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "producto_id": { "type": "integer" },
+          "nombre": { "type": "string" },
+          "capacidad_kg": { "type": "string" },
+          "tipo": { "type": "string" },
+          "precio_venta": { "type": "string" },
+          "activo": { "type": "boolean" },
+          "url_foto": { "type": "string" },
+          "producto": { "$ref": "#/components/schemas/Producto" }
+        }
+      },
+      "Almacen": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "nombre": { "type": "string" },
+          "direccion": { "type": "string" },
+          "ciudad": { "type": "string" }
+        }
+      },
+      "Cliente": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "nombre": { "type": "string" },
+          "telefono": { "type": "string" },
+          "direccion": { "type": "string" },
+          "ciudad": { "type": "string" },
+          "saldo_pendiente": { "type": "string" },
+          "ultima_fecha_compra": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Proveedor": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "nombre": { "type": "string" },
+          "telefono": { "type": "string" },
+          "direccion": { "type": "string" }
+        }
+      },
+      "Inventario": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "presentacion_id": { "type": "integer" },
+          "almacen_id": { "type": "integer" },
+          "lote_id": { "type": "integer" },
+          "cantidad": { "type": "integer" },
+          "stock_minimo": { "type": "integer" },
+          "presentacion": { "$ref": "#/components/schemas/PresentacionProducto" },
+          "almacen": { "$ref": "#/components/schemas/Almacen" },
+          "lote": { "$ref": "#/components/schemas/Lote" }
+        }
+      },
+      "Lote": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "producto_id": { "type": "integer" },
+          "proveedor_id": { "type": "integer" },
+          "descripcion": { "type": "string" },
+          "peso_humedo_kg": { "type": "string" },
+          "peso_seco_kg": { "type": "string" },
+          "cantidad_disponible_kg": { "type": "string" },
+          "producto": { "$ref": "#/components/schemas/Producto" },
+          "proveedor": { "$ref": "#/components/schemas/Proveedor" }
+        }
+      },
+      "Venta": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "cliente_id": { "type": "integer" },
+          "almacen_id": { "type": "integer" },
+          "vendedor_id": { "type": "integer" },
+          "fecha": { "type": "string", "format": "date-time" },
+          "total": { "type": "string" },
+          "tipo_pago": { "type": "string" },
+          "estado_pago": { "type": "string" },
+          "detalles": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VentaDetalle" }
+          },
+          "cliente": { "$ref": "#/components/schemas/Cliente" },
+          "almacen": { "$ref": "#/components/schemas/Almacen" },
+          "vendedor": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "VentaDetalle": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "venta_id": { "type": "integer" },
+          "presentacion_id": { "type": "integer" },
+          "cantidad": { "type": "integer" },
+          "precio_unitario": { "type": "string" },
+          "presentacion": { "$ref": "#/components/schemas/PresentacionProducto" }
+        }
+      },
+      "Pago": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "venta_id": { "type": "integer" },
+          "usuario_id": { "type": "integer" },
+          "monto": { "type": "string" },
+          "fecha": { "type": "string", "format": "date-time" },
+          "metodo_pago": { "type": "string" },
+          "referencia": { "type": "string" },
+          "url_comprobante": { "type": "string" },
+          "usuario": { "$ref": "#/components/schemas/User" },
+          "venta": { "$ref": "#/components/schemas/Venta" }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "username": { "type": "string" },
+          "rol": { "type": "string" },
+          "almacen_id": { "type": "integer" },
+          "almacen": { "$ref": "#/components/schemas/Almacen" }
+        }
+      },
+      "Gasto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "descripcion": { "type": "string" },
+          "monto": { "type": "string" },
+          "fecha": { "type": "string", "format": "date" },
+          "categoria": { "type": "string" },
+          "almacen_id": { "type": "integer" },
+          "usuario_id": { "type": "integer" },
+          "almacen": { "$ref": "#/components/schemas/Almacen" },
+          "usuario": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "Movimiento": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "tipo": { "type": "string" },
+          "presentacion_id": { "type": "integer" },
+          "lote_id": { "type": "integer" },
+          "usuario_id": { "type": "integer" },
+          "cantidad": { "type": "string" },
+          "fecha": { "type": "string", "format": "date-time" },
+          "motivo": { "type": "string" },
+          "presentacion": { "$ref": "#/components/schemas/PresentacionProducto" },
+          "lote": { "$ref": "#/components/schemas/Lote" },
+          "usuario": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "Pedido": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "cliente_id": { "type": "integer" },
+          "almacen_id": { "type": "integer" },
+          "vendedor_id": { "type": "integer" },
+          "fecha_creacion": { "type": "string", "format": "date-time" },
+          "fecha_entrega": { "type": "string", "format": "date-time" },
+          "estado": { "type": "string" },
+          "notas": { "type": "string" },
+          "detalles": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PedidoDetalle" }
+          },
+          "cliente": { "$ref": "#/components/schemas/Cliente" },
+          "almacen": { "$ref": "#/components/schemas/Almacen" },
+          "vendedor": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "PedidoDetalle": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "pedido_id": { "type": "integer" },
+          "presentacion_id": { "type": "integer" },
+          "cantidad": { "type": "integer" },
+          "precio_estimado": { "type": "string" },
+          "presentacion": { "$ref": "#/components/schemas/PresentacionProducto" }
+        }
+      },
+      "Merma": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "lote_id": { "type": "integer" },
+          "cantidad_kg": { "type": "string" },
+          "convertido_a_briquetas": { "type": "boolean" },
+          "fecha_registro": { "type": "string", "format": "date-time" },
+          "usuario_id": { "type": "integer" },
+          "lote": { "$ref": "#/components/schemas/Lote" },
+          "usuario": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "DepositoBancario": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "fecha_deposito": { "type": "string", "format": "date-time" },
+          "monto_depositado": { "type": "string" },
+          "almacen_id": { "type": "integer" },
+          "usuario_id": { "type": "integer" },
+          "referencia_bancaria": { "type": "string" },
+          "url_comprobante_deposito": { "type": "string" },
+          "notas": { "type": "string" },
+          "almacen": { "$ref": "#/components/schemas/Almacen" },
+          "usuario": { "$ref": "#/components/schemas/User" }
+        }
+      }
+    }
+  },
+  "security": [
+    { "BearerAuth": [] }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "summary": "Autenticación de usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Token JWT y datos de usuario" },
+          "401": { "description": "Credenciales inválidas" }
+        }
+      }
+    },
+    "/usuarios": {
+      "get": {
+        "summary": "Lista usuarios",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de usuarios" }
+        }
+      },
+      "post": {
+        "summary": "Crea usuario",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/User" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Usuario creado" }
+        }
+      }
+    },
+    "/usuarios/{user_id}": {
+      "get": {
+        "summary": "Obtiene usuario por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Usuario encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza usuario",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/User" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Usuario actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina usuario",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Usuario eliminado" }
+        }
+      }
+    },
+    "/productos": {
+      "get": {
+        "summary": "Lista productos",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de productos" }
+        }
+      },
+      "post": {
+        "summary": "Crea producto",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Producto" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Producto creado" }
+        }
+      }
+    },
+    "/productos/{producto_id}": {
+      "get": {
+        "summary": "Obtiene producto por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "producto_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Producto encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza producto",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "producto_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Producto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Producto actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina producto",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "producto_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Producto eliminado" }
+        }
+      }
+    },
+    "/proveedores": {
+      "get": {
+        "summary": "Lista proveedores",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de proveedores" }
+        }
+      },
+      "post": {
+        "summary": "Crea proveedor",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Proveedor" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Proveedor creado" }
+        }
+      }
+    },
+    "/proveedores/{proveedor_id}": {
+      "get": {
+        "summary": "Obtiene proveedor por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "proveedor_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Proveedor encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza proveedor",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "proveedor_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Proveedor" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Proveedor actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina proveedor",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "proveedor_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Proveedor eliminado" }
+        }
+      }
+    },
+    "/almacenes": {
+      "get": {
+        "summary": "Lista almacenes",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de almacenes" }
+        }
+      },
+      "post": {
+        "summary": "Crea almacén",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Almacen" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Almacén creado" }
+        }
+      }
+    },
+    "/almacenes/{almacen_id}": {
+      "get": {
+        "summary": "Obtiene almacén por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "almacen_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Almacén encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza almacén",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "almacen_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Almacen" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Almacén actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina almacén",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "almacen_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Almacén eliminado" }
+        }
+      }
+    },
+    "/clientes": {
+      "get": {
+        "summary": "Lista clientes",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de clientes" }
+        }
+      },
+      "post": {
+        "summary": "Crea cliente",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Cliente" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Cliente creado" }
+        }
+      }
+    },
+    "/clientes/{cliente_id}": {
+      "get": {
+        "summary": "Obtiene cliente por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "cliente_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Cliente encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza cliente",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "cliente_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Cliente" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Cliente actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina cliente",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "cliente_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Cliente eliminado" }
+        }
+      }
+    },
+    "/inventarios": {
+      "get": {
+        "summary": "Lista inventarios",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de inventarios" }
+        }
+      },
+      "post": {
+        "summary": "Crea inventario",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Inventario" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Inventario creado" }
+        }
+      }
+    },
+    "/inventarios/{inventario_id}": {
+      "get": {
+        "summary": "Obtiene inventario por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "inventario_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Inventario encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza inventario",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "inventario_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Inventario" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Inventario actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina inventario",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "inventario_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Inventario eliminado" }
+        }
+      }
+    },
+    "/lotes": {
+      "get": {
+        "summary": "Lista lotes",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de lotes" }
+        }
+      },
+      "post": {
+        "summary": "Crea lote",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Lote" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Lote creado" }
+        }
+      }
+    },
+    "/lotes/{lote_id}": {
+      "get": {
+        "summary": "Obtiene lote por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "lote_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Lote encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza lote",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "lote_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Lote" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Lote actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina lote",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "lote_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Lote eliminado" }
+        }
+      }
+    },
+    "/ventas": {
+      "get": {
+        "summary": "Lista ventas",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de ventas" }
+        }
+      },
+      "post": {
+        "summary": "Crea venta",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Venta" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Venta creada" }
+        }
+      }
+    },
+    "/ventas/{venta_id}": {
+      "get": {
+        "summary": "Obtiene venta por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "venta_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Venta encontrada" },
+          "404": { "description": "No encontrada" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza venta",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "venta_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Venta" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Venta actualizada" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina venta",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "venta_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Venta eliminada" }
+        }
+      }
+    },
+    "/pagos": {
+      "get": {
+        "summary": "Lista pagos",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de pagos" }
+        }
+      },
+      "post": {
+        "summary": "Crea pago",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Pago" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Pago creado" }
+        }
+      }
+    },
+    "/pagos/{pago_id}": {
+      "get": {
+        "summary": "Obtiene pago por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "pago_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Pago encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza pago",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "pago_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Pago" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Pago actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina pago",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "pago_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Pago eliminado" }
+        }
+      }
+    },
+    "/presentaciones": {
+      "get": {
+        "summary": "Lista presentaciones",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de presentaciones" }
+        }
+      },
+      "post": {
+        "summary": "Crea presentación",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PresentacionProducto" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Presentación creada" }
+        }
+      }
+    },
+    "/presentaciones/{presentacion_id}": {
+      "get": {
+        "summary": "Obtiene presentación por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "presentacion_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Presentación encontrada" },
+          "404": { "description": "No encontrada" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza presentación",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "presentacion_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PresentacionProducto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Presentación actualizada" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina presentación",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "presentacion_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Presentación eliminada" }
+        }
+      }
+    },
+    "/gastos": {
+      "get": {
+        "summary": "Lista gastos",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de gastos" }
+        }
+      },
+      "post": {
+        "summary": "Crea gasto",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Gasto" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Gasto creado" }
+        }
+      }
+    },
+    "/gastos/{gasto_id}": {
+      "get": {
+        "summary": "Obtiene gasto por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "gasto_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Gasto encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza gasto",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "gasto_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Gasto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Gasto actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina gasto",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "gasto_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Gasto eliminado" }
+        }
+      }
+    },
+    "/movimientos": {
+      "get": {
+        "summary": "Lista movimientos",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de movimientos" }
+        }
+      },
+      "post": {
+        "summary": "Crea movimiento",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Movimiento" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Movimiento creado" }
+        }
+      }
+    },
+    "/movimientos/{movimiento_id}": {
+      "get": {
+        "summary": "Obtiene movimiento por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "movimiento_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Movimiento encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina movimiento",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "movimiento_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Movimiento eliminado" }
+        }
+      }
+    },
+    "/pedidos": {
+      "get": {
+        "summary": "Lista pedidos",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de pedidos" }
+        }
+      },
+      "post": {
+        "summary": "Crea pedido",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Pedido" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Pedido creado" }
+        }
+      }
+    },
+    "/pedidos/{pedido_id}": {
+      "get": {
+        "summary": "Obtiene pedido por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "pedido_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Pedido encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza pedido",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "pedido_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Pedido" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Pedido actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina pedido",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "pedido_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Pedido eliminado" }
+        }
+      }
+    },
+    "/mermas": {
+      "get": {
+        "summary": "Lista mermas",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de mermas" }
+        }
+      },
+      "post": {
+        "summary": "Crea merma",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Merma" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Merma creada" }
+        }
+      }
+    },
+    "/mermas/{merma_id}": {
+      "get": {
+        "summary": "Obtiene merma por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "merma_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Merma encontrada" },
+          "404": { "description": "No encontrada" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza merma",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "merma_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Merma" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Merma actualizada" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina merma",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "merma_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Merma eliminada" }
+        }
+      }
+    },
+    "/depositos": {
+      "get": {
+        "summary": "Lista depósitos bancarios",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de depósitos" }
+        }
+      },
+      "post": {
+        "summary": "Crea depósito bancario",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DepositoBancario" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Depósito creado" }
+        }
+      }
+    },
+    "/depositos/{deposito_id}": {
+      "get": {
+        "summary": "Obtiene depósito por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "deposito_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Depósito encontrado" },
+          "404": { "description": "No encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Actualiza depósito",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "deposito_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DepositoBancario" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Depósito actualizado" }
+        }
+      },
+      "delete": {
+        "summary": "Elimina depósito",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "deposito_id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Depósito eliminado" }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "Dashboard de alertas y métricas",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Datos del dashboard" }
+        }
+      }
+    }
+  }
+}

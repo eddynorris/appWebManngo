@@ -1,0 +1,8 @@
+/* Styles for the pago form page */
+:host {
+  display: block;
+}
+
+.input-group.full-width {
+  grid-column: 1 / -1;
+}

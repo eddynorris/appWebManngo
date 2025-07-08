@@ -1,0 +1,69 @@
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        @for (column of columns(); track column.key) {
+          <th>{{ column.label }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @if (isLoading()) {
+        <tr>
+          <td [attr.colspan]="columns().length">
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <span>Cargando datos...</span>
+            </div>
+          </td>
+        </tr>
+      } @else if (data().length === 0) {
+        <tr>
+          <td [attr.colspan]="columns().length">
+            <div class="empty-state">
+              <p>No se encontraron registros</p>
+            </div>
+          </td>
+        </tr>
+      } @else {
+        @for (item of data(); track item.id) {
+          <tr [class.inactive]="item.activo === false">
+            @for (column of columns(); track column.key) {
+              <td>
+                @switch (column.type) {
+                  @case ('text') {
+                    {{ getCellValue(item, column) }}
+                  }
+                  @case ('date') {
+                    {{ getCellValue(item, column) | date:'dd/MM/yyyy' }}
+                  }
+                  @case ('currency') {
+                    {{ getCellValue(item, column) | currency:'S./':'symbol':'1.0-0' }}
+                  }
+                  @case ('status') {
+                    <span class="status-badge" [class.active]="item.activo" [class.inactive]="!item.activo">
+                      {{ item.activo ? 'Activo' : 'Inactivo' }}
+                    </span>
+                  }
+                  @case ('image') {
+                    <!-- TODO: Añadir NgOptimizedImage aquí -->
+                    <img [src]="getCellValue(item, column) || 'assets/images/placeholder.png'" alt="Imagen" class="table-image">
+                  }
+                  @case ('actions') {
+                    <div class="actions">
+                      @for (action of actions(); track action.action) {
+                        <button (click)="handleAction(action.action, item)" class="btn-icon" [class.danger]="action.danger" [title]="action.label">
+                          {{ action.icon }}
+                        </button>
+                      }
+                    </div>
+                  }
+                }
+              </td>
+            }
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

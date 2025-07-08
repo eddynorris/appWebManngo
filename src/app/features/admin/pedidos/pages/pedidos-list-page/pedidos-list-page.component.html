@@ -1,0 +1,38 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Gestión de Pedidos</h1>
+      <p>Registra y gestiona todos los pedidos de clientes.</p>
+    </div>
+    <a routerLink="/admin/pedidos/new" class="btn-primary">➕ Nuevo Pedido</a>
+  </div>
+
+  <!-- Reusable Data Table -->
+  <app-data-table
+    [data]="pedidos()"
+    [columns]="columns"
+    [actions]="actions"
+    [isLoading]="isLoading()"
+    (onAction)="handleTableAction($event)"
+  ></app-data-table>
+
+  <!-- Pagination -->
+  @if (pagination()) {
+    <app-pagination
+      [pagination]="pagination()!"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  }
+</div>
+
+<!-- Modal de Confirmación -->
+@if (isDeleteModalVisible()) {
+  <app-confirmation-modal
+    [title]="'Confirmar Eliminación'"
+    [message]="'¿Estás seguro de que quieres eliminar el pedido #' + pedidoToDelete()?.id + '?'"
+    confirmText="Sí, Eliminar"
+    (confirm)="handleDeleteConfirmation()"
+    (cancel)="closeDeleteModal()"
+  ></app-confirmation-modal>
+}

@@ -1,0 +1,50 @@
+<div class="form-page-container">
+  <div class="page-header">
+    <h1>{{ isEditMode() ? 'Editar Pago' : 'Registrar Nuevo Pago' }}</h1>
+    <p>Completa los datos para registrar un pago.</p>
+  </div>
+
+  <form [formGroup]="pagoForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
+    <div class="form-section">
+      <h2 class="section-title">Detalles del Pago</h2>
+      <div class="form-grid two-cols">
+        <div class="input-group">
+          <label for="venta_id">ID de Venta</label>
+          <input id="venta_id" type="number" formControlName="venta_id" placeholder="Ej: 123">
+          <!-- TODO: Convertir en un buscador de ventas pendientes -->
+        </div>
+        <div class="input-group">
+          <label for="monto">Monto (S/.)</label>
+          <input id="monto" type="number" formControlName="monto" placeholder="Ej: 100.00">
+        </div>
+        <div class="input-group">
+          <label for="fecha">Fecha del Pago</label>
+          <input id="fecha" type="date" formControlName="fecha">
+        </div>
+        <div class="input-group">
+          <label for="metodo_pago">Método de Pago</label>
+          <select id="metodo_pago" formControlName="metodo_pago">
+            <option value="" disabled>Selecciona un método</option>
+            @for (metodo of metodos_pago(); track metodo) {
+              <option [value]="metodo">{{ metodo | titlecase }}</option>
+            }
+          </select>
+        </div>
+        <div class="input-group full-width">
+          <label for="referencia">Referencia (Opcional)</label>
+          <input id="referencia" type="text" formControlName="referencia" placeholder="Ej: Código de operación, Yape de...">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-ghost">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="pagoForm.invalid || isLoading()">
+        @if (isLoading()) {
+          <div class="spinner-small"></div>
+        }
+        {{ isEditMode() ? 'Actualizar Pago' : 'Crear Pago' }}
+      </button>
+    </div>
+  </form>
+</div>
