@@ -32,7 +32,7 @@ export default class UserFormPageComponent implements OnInit {
   userId = signal<number | null>(null);
 
   almacenes = signal<Almacen[]>([]);
-  roles = signal(['admin', 'vendedor']); // Hardcoded for now
+  roles = signal(['admin', 'usuario']); // Hardcoded for now
 
   constructor() {
     this.userForm = this.fb.group({
@@ -49,15 +49,20 @@ export default class UserFormPageComponent implements OnInit {
     if (id) {
       this.isEditMode.set(true);
       this.userId.set(+id);
-      this.userForm.get('password')?.setValidators(null); // Password not required for edit
+      this.userForm.get('password')?.setValidators(null);
+      this.userForm.get('password')?.updateValueAndValidity(); // Update validity after changing validators
       this.loadUserData(+id);
     } else {
       this.userForm.get('password')?.setValidators(Validators.required);
+      this.userForm.get('password')?.updateValueAndValidity();
     }
   }
 
   loadAlmacenes(): void {
-    this.almacenService.getAlmacenes().subscribe(data => this.almacenes.set(data));
+    this.almacenService.getAlmacenes().subscribe(data => {
+      const almacenesValidos = data.filter(almacen => almacen.id != null);
+      this.almacenes.set(almacenesValidos);
+    });
   }
 
   loadUserData(id: number): void {

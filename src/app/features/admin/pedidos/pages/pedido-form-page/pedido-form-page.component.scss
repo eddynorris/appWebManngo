@@ -1,3 +1,5 @@
+@use 'src/styles/variables' as vars;
+
 :host {
   display: block;
 }
@@ -12,7 +14,7 @@
 .details-header,
 .details-row {
   display: grid;
-  // Adjust grid for the missing subtotal column
+  /* Adjust grid for the missing subtotal column */
   grid-template-columns: 4fr 1fr 2fr 40px;
   gap: 1rem;
   align-items: center;
@@ -21,9 +23,9 @@
 .details-header {
   font-weight: 600;
   font-size: 0.875rem;
-  color: $color-text-secondary;
+  color: vars.$color-text-secondary;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid $color-border;
+  border-bottom: 1px solid vars.$color-border;
 
   .header-item {
     &.quantity, &.price {
@@ -42,7 +44,7 @@
   }
 
   .btn-icon.danger {
-    height: 38px; // Align with input height
+    height: 38px; /* Align with input height */
   }
 }
 

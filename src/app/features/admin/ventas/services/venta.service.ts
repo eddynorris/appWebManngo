@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { Venta, VentasResponse } from '../../../../types/contract.types';
+import { Venta, VentasResponse, VentaFormDataResponse } from '../../../../types/contract.types';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +30,14 @@ export class VentaService {
       });
     }
     return this.http.get<VentasResponse>(this.apiUrl, { params });
+  }
+
+  getVentaFormData(almacenId?: number): Observable<VentaFormDataResponse> {
+    let params = new HttpParams();
+    if (almacenId) {
+      params = params.set('almacen_id', almacenId.toString());
+    }
+    return this.http.get<VentaFormDataResponse>(`${this.apiUrl}/form-data`, { params });
   }
 
   // Obtener una venta por ID

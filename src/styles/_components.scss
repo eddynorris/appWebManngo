@@ -1,0 +1,361 @@
+// =============================================================================
+// COMPONENTES GLOBALES - App Manngo Web
+// =============================================================================
+
+@use './variables' as vars;
+
+// -----------------------------------------------------------------------------
+// BOTONES
+// -----------------------------------------------------------------------------
+
+.btn-primary {
+  @include vars.button-base;
+  background: vars.$color-primary;
+  color: vars.$color-text-white;
+  box-shadow: vars.$box-shadow-sm;
+
+  &:hover:not(:disabled) {
+    background: vars.$color-primary-dark;
+    transform: translateY(-1px);
+    box-shadow: vars.$box-shadow;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: vars.$box-shadow-sm;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.3);
+  }
+}
+
+.btn-secondary {
+  @include vars.button-base;
+  background: vars.$color-secondary;
+  color: vars.$color-text-white;
+  box-shadow: vars.$box-shadow-sm;
+
+  &:hover:not(:disabled) {
+    background: vars.$color-secondary-dark;
+    transform: translateY(-1px);
+    box-shadow: vars.$box-shadow;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: vars.$box-shadow-sm;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.3);
+  }
+}
+
+.btn-ghost {
+  @include vars.button-base;
+  background: transparent;
+  color: vars.$color-text-secondary;
+  border: 1px solid vars.$color-border;
+
+  &:hover:not(:disabled) {
+    background: vars.$color-bg-secondary;
+    color: vars.$color-text-primary;
+    border-color: vars.$color-border-dark;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.3);
+  }
+}
+
+.btn-danger {
+  @include vars.button-base;
+  background: vars.$color-danger;
+  color: vars.$color-text-white;
+  box-shadow: vars.$box-shadow-sm;
+
+  &:hover:not(:disabled) {
+    background: vars.$color-danger-dark;
+    transform: translateY(-1px);
+    box-shadow: vars.$box-shadow;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: vars.$box-shadow-sm;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.3);
+  }
+}
+
+.btn-success {
+  @include vars.button-base;
+  background: vars.$color-success;
+  color: vars.$color-text-white;
+  box-shadow: vars.$box-shadow-sm;
+
+  &:hover:not(:disabled) {
+    background: vars.$color-success-dark;
+    transform: translateY(-1px);
+    box-shadow: vars.$box-shadow;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: vars.$box-shadow-sm;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.3);
+  }
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: vars.$font-size-sm;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: vars.$font-size-lg;
+}
+
+.btn-icon {
+  @include vars.button-base;
+  padding: 0.5rem;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: vars.$border-radius-sm;
+
+  &.danger {
+    background: vars.$color-danger;
+    color: vars.$color-text-white;
+
+    &:hover:not(:disabled) {
+      background: vars.$color-danger-dark;
+    }
+  }
+
+  &.secondary {
+    background: vars.$color-bg-secondary;
+    color: vars.$color-text-secondary;
+    border: 1px solid vars.$color-border;
+
+    &:hover:not(:disabled) {
+      background: vars.$color-border;
+      color: vars.$color-text-primary;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// SPINNERS
+// -----------------------------------------------------------------------------
+
+.spinner-small {
+  @include vars.spinner-small;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid vars.$color-border;
+  border-top-color: vars.$color-primary;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+// -----------------------------------------------------------------------------
+// FORMULARIOS
+// -----------------------------------------------------------------------------
+
+.form-page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: vars.$font-weight-bold;
+    color: vars.$color-text-primary;
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    color: vars.$color-text-secondary;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.data-form {
+  background: vars.$color-bg-primary;
+  border-radius: vars.$border-radius-lg;
+  padding: 2rem;
+  box-shadow: vars.$box-shadow;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: vars.$font-weight-semibold;
+  color: vars.$color-text-primary;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid vars.$color-border;
+}
+
+.form-grid {
+  display: grid;
+  gap: 1.5rem;
+
+  &.two-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &.four-cols {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: vars.$font-size-sm;
+    font-weight: vars.$font-weight-medium;
+    color: vars.$color-text-primary;
+    margin: 0;
+  }
+
+  input,
+  textarea,
+  select {
+    padding: 0.75rem 1rem;
+    border: 1px solid vars.$color-border;
+    border-radius: vars.$border-radius;
+    background: vars.$color-bg-primary;
+    color: vars.$color-text-primary;
+    font-size: vars.$font-size-base;
+    font-family: vars.$font-family-base;
+    transition: vars.$transition-base;
+
+    &:focus {
+      outline: none;
+      border-color: vars.$color-primary;
+      box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+    }
+
+    &:disabled {
+      background: vars.$color-bg-secondary;
+      color: vars.$color-text-muted;
+      cursor: not-allowed;
+    }
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  select {
+    cursor: pointer;
+
+    option {
+      padding: 0.5rem;
+      background: vars.$color-bg-primary;
+      color: vars.$color-text-primary;
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid vars.$color-border;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// LAYOUT DE PÁGINAS
+// -----------------------------------------------------------------------------
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid vars.$color-border;
+
+  .header-content {
+    h1 {
+      font-size: 2rem;
+      font-weight: vars.$font-weight-bold;
+      color: vars.$color-text-primary;
+      margin: 0 0 0.5rem 0;
+    }
+
+    p {
+      color: vars.$color-text-secondary;
+      font-size: 1rem;
+      margin: 0;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+
+    .header-actions {
+      justify-content: flex-start;
+    }
+  }
+}

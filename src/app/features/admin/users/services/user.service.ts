@@ -9,7 +9,7 @@ import { User, UsuariosResponse } from '../../../../types/contract.types';
 })
 export class UserService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/users`;
+  private readonly apiUrl = `${environment.apiUrl}/usuarios`;
 
   getUsers(page: number = 1, limit: number = 10): Observable<UsuariosResponse> {
     const params = new HttpParams()

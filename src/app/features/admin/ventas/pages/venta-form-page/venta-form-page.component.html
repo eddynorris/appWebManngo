@@ -18,6 +18,20 @@
             }
           </select>
         </div>
+
+        <!-- Selector de Almacén (solo para admin) -->
+        @if (canSelectAlmacen()) {
+          <div class="input-group">
+            <label for="almacen_id">Vender desde Almacén</label>
+            <select id="almacen_id" formControlName="almacen_id">
+              <option value="" disabled>Selecciona un almacén</option>
+              @for (almacen of almacenes(); track almacen.id) {
+                <option [value]="almacen.id">{{ almacen.nombre }}</option>
+              }
+            </select>
+          </div>
+        }
+
         <div class="input-group">
           <label for="fecha">Fecha de Venta</label>
           <input id="fecha" type="date" formControlName="fecha">
@@ -36,6 +50,10 @@
             <option value="pendiente">Pendiente</option>
           </select>
         </div>
+        <div class="input-group">
+          <label for="consumo_diario_kg">Consumo Diario (kg)</label>
+          <input id="consumo_diario_kg" type="number" formControlName="consumo_diario_kg" placeholder="Ej: 5.0">
+        </div>
       </div>
     </div>
 
@@ -53,17 +71,27 @@
         @for (detalleGroup of detalles.controls; track $index; let i = $index) {
           <div [formGroupName]="i" class="details-row">
             <div class="input-group">
+              <label>Producto</label>
               <select formControlName="presentacion_id" class="product-select">
                 <option value="" disabled>Selecciona un producto</option>
                 @for (p of presentaciones(); track p.id) {
-                  <option [value]="p.id">{{ p.nombre }} ({{ p.capacidad_kg }} kg)</option>
+                  <option [value]="p.id" [disabled]="p.stock_disponible === 0">
+                    {{ p.nombre }} ({{ p.capacidad_kg }} kg)
+                    @if (p.stock_disponible !== undefined) {
+                      <span class="stock-info stock-{{ p.stock_disponible > 10 ? 'ok' : (p.stock_disponible === 0 ? 'out' : 'low') }}">
+                        (Stock: {{ p.stock_disponible }})
+                      </span>
+                    }
+                  </option>
                 }
               </select>
             </div>
             <div class="input-group">
+              <label>Cantidad</label>
               <input type="number" formControlName="cantidad" placeholder="Cant.">
             </div>
             <div class="input-group">
+              <label>Precio Unit. (S/.)</label>
               <input type="number" formControlName="precio_unitario" placeholder="Precio">
             </div>
             <div class="subtotal">

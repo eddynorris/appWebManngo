@@ -6,15 +6,15 @@
       <p>Visualiza el stock actual de productos en cada almacén.</p>
     </div>
     <div class="header-actions">
-       <div class="input-group">
-          <label for="almacen_filter">Filtrar por Almacén</label>
-          <select id="almacen_filter" (change)="onAlmacenChange($event)">
-            <option [value]="undefined">Todos los Almacenes</option>
-            @for (almacen of almacenes(); track almacen.id) {
-              <option [value]="almacen.id">{{ almacen.nombre }}</option>
-            }
-          </select>
-        </div>
+      <div class="input-group">
+        <label for="almacen_filter">Filtrar por Almacén</label>
+        <select id="almacen_filter" (change)="onAlmacenChange($event)">
+          <option [value]="undefined">Todos los Almacenes</option>
+          @for (almacen of almacenes(); track almacen.id) {
+            <option [value]="almacen.id">{{ almacen.nombre }}</option>
+          }
+        </select>
+      </div>
     </div>
   </div>
 
@@ -22,7 +22,7 @@
   <app-data-table
     [data]="inventario()"
     [columns]="columns"
-    [isLoading]="isLoading()"
+    [isLoading]="loadingService.isLoading()"
   ></app-data-table>
 
   <!-- Pagination -->

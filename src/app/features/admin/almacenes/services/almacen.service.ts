@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { Almacen } from '../../../../types/contract.types';
+import { Almacen, PaginatedResponse } from '../../../../types/contract.types';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +13,8 @@ export class AlmacenService {
 
   // Obtener todos los almacenes para listas desplegables
   getAlmacenes(): Observable<Almacen[]> {
-    return this.http.get<Almacen[]>(this.apiUrl);
+    return this.http.get<PaginatedResponse<Almacen>>(this.apiUrl).pipe(
+      map(response => response.data)
+    );
   }
 }

@@ -38,6 +38,11 @@ export const ADMIN_ROUTES: Routes = [
         data: { title: 'Ventas' }
       },
       {
+        path: 'pagos',
+        loadChildren: () => import('./pagos/pagos.routes').then(m => m.PAGOS_ROUTES),
+        data: { title: 'Pagos' }
+      },
+      {
         path: 'gastos',
         loadChildren: () => import('./gastos/gastos.routes').then(m => m.GASTOS_ROUTES),
         data: { title: 'Gastos' }

@@ -1,5 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* Importar variables globales */
+@use './styles/variables' as vars;
+
+/* Importar componentes globales */
+@use './styles/components';
+
 /* Reset básico */
 * {
   margin: 0;
@@ -9,10 +15,10 @@
 
 /* Tipografías y estilos globales */
 body {
-  font-family: 'Arial', 'Helvetica', sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background: #000;
+  font-family: vars.$font-family-base;
+  line-height: vars.$line-height-base;
+  color: vars.$color-text-primary;
+  background: vars.$color-bg-black;
   overflow-x: hidden;
 }
 
@@ -75,10 +81,10 @@ img {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ff4444;
-  border-radius: 4px;
+  background: vars.$color-primary;
+  border-radius: vars.$border-radius-sm;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ff6666;
+  background: vars.$color-primary-light;
 }

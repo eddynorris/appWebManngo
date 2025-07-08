@@ -21,8 +21,11 @@ export default class AdminLayoutComponent {
     { label: 'Productos', route: '/admin/products', icon: '📦' },
     { label: 'Clientes', route: '/admin/clientes', icon: '👥' },
     { label: 'Ventas', route: '/admin/ventas', icon: '💰' },
+    { label: 'Pagos', route: '/admin/pagos', icon: '💳' },
+    { label: 'Pedidos', route: '/admin/pedidos', icon: '🚚' },
+    { label: 'Gastos', route: '/admin/gastos', icon: '💸' },
     { label: 'Inventarios', route: '/admin/inventarios', icon: '📋' },
-    { label: 'Usuarios', route: '/admin/usuarios', icon: '👤' },
+    { label: 'Usuarios', route: '/admin/users', icon: '👤' },
   ];
 
   toggleSidebar(): void {

@@ -1,21 +1,21 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit, computed } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 
 import { VentaService } from '../../services/venta.service';
-import { ClienteService } from '../../../clientes/services/cliente.service';
-import { ProductService } from '../../../productos/services/product.service';
-
-import { Venta, Cliente, PresentacionProducto } from '../../../../../types/contract.types';
+import { Venta, Cliente, Almacen, PresentacionConStockLocal, PresentacionConStockGlobal } from '../../../../../types/contract.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
+import { AuthService } from '../../../../../core/services/auth.service';
+
+// Tipo unificado para las presentaciones en el formulario
+type PresentacionParaVenta = (PresentacionConStockLocal & { stock_por_almacen?: never }) | (PresentacionConStockGlobal & { stock_disponible?: never });
 
 @Component({
   selector: 'app-venta-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './venta-form-page.component.html',
   styleUrl: './venta-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,9 +25,8 @@ export default class VentaFormPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly ventaService = inject(VentaService);
-  private readonly clienteService = inject(ClienteService);
-  private readonly productService = inject(ProductService);
   private readonly notificationService = inject(NotificationService);
+  private readonly authService = inject(AuthService);
 
   ventaForm: FormGroup;
   isLoading = signal(false);
@@ -35,50 +34,92 @@ export default class VentaFormPageComponent implements OnInit {
   ventaId = signal<number | null>(null);
 
   clientes = signal<Cliente[]>([]);
-  presentaciones = signal<PresentacionProducto[]>([]);
+  almacenes = signal<Almacen[]>([]);
+  presentaciones = signal<PresentacionParaVenta[]>([]);
+
+  // Para saber si el admin puede elegir almacén
+  canSelectAlmacen = computed(() => this.authService.isAdmin() && this.almacenes().length > 0);
 
   constructor() {
     this.ventaForm = this.fb.group({
       cliente_id: ['', Validators.required],
-      almacen_id: [1, Validators.required], // TODO: Make this dynamic
+      almacen_id: [{ value: '', disabled: !this.authService.isAdmin() }, Validators.required],
       fecha: [new Date().toISOString().substring(0, 10), Validators.required],
       tipo_pago: ['contado', Validators.required],
       estado_pago: ['pagado', Validators.required],
-      detalles: this.fb.array([], Validators.required),
+      consumo_diario_kg: [null],
+      detalles: this.fb.array([], [Validators.required, Validators.minLength(1)]),
     });
   }
 
   ngOnInit(): void {
-    this.loadInitialData();
+    this.setupAlmacenListener();
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode.set(true);
       this.ventaId.set(+id);
       this.loadVentaData(+id);
     } else {
-      // Add one empty detail row by default for new sales
+      this.loadFormData();
       this.addDetalle();
     }
   }
 
-  loadInitialData(): void {
-    // TODO: These should be paginated if the lists are long
-    this.clienteService.getClientes().subscribe(response => this.clientes.set(response.data));
-    this.productService.getAllPresentaciones().subscribe(response => this.presentaciones.set(response));
+  setupAlmacenListener(): void {
+    this.ventaForm.get('almacen_id')?.valueChanges.subscribe(almacenId => {
+      if (this.canSelectAlmacen()) {
+        this.loadFormData(almacenId);
+      }
+    });
+  }
+
+  loadFormData(almacenId?: number): void {
+    this.isLoading.set(true);
+    // Para usuarios no-admin, siempre pasamos su ID de almacén
+    const effectiveAlmacenId = this.authService.isAdmin() ? almacenId : this.authService.currentUser()?.almacen_id;
+
+    this.ventaService.getVentaFormData(effectiveAlmacenId)
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe(response => {
+        this.clientes.set(response.clientes);
+
+        if(response.almacenes) {
+          this.almacenes.set(response.almacenes);
+        }
+
+        const userAlmacenId = this.authService.currentUser()?.almacen_id;
+        if (!this.canSelectAlmacen() && userAlmacenId) {
+           this.ventaForm.get('almacen_id')?.setValue(userAlmacenId);
+        }
+
+        const presentacionesData = response.presentaciones_con_stock_global || response.presentaciones_con_stock_local || [];
+        this.presentaciones.set(presentacionesData);
+      });
   }
 
   loadVentaData(id: number): void {
     this.isLoading.set(true);
-    this.ventaService.getVentaById(id)
+    // En modo edición, cargamos primero los datos del formulario (clientes, etc.)
+    // y luego los datos de la venta específica.
+    this.ventaService.getVentaFormData()
       .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe(venta => {
-        this.ventaForm.patchValue({
-          ...venta,
-          fecha: new Date(venta.fecha!).toISOString().substring(0, 10)
-        });
+      .subscribe(formData => {
+        this.clientes.set(formData.clientes);
+        if(formData.almacenes) this.almacenes.set(formData.almacenes);
+        const presentacionesData = formData.presentaciones_con_stock_global || formData.presentaciones_con_stock_local || [];
+        this.presentaciones.set(presentacionesData);
 
-        const detallesFormGroups = venta.detalles?.map(detalle => this.createDetalleGroup(detalle)) || [];
-        this.ventaForm.setControl('detalles', this.fb.array(detallesFormGroups));
+        // Ahora cargamos la venta y parchamos el formulario
+        this.ventaService.getVentaById(id).subscribe(venta => {
+          this.ventaForm.patchValue({
+            ...venta,
+            fecha: new Date(venta.fecha!).toISOString().substring(0, 10)
+          });
+
+          const detallesFormGroups = venta.detalles?.map(detalle => this.createDetalleGroup(detalle)) || [];
+          this.ventaForm.setControl('detalles', this.fb.array(detallesFormGroups));
+        });
       });
   }
 
@@ -90,7 +131,7 @@ export default class VentaFormPageComponent implements OnInit {
     return this.fb.group({
       presentacion_id: [detalle?.presentacion_id || '', Validators.required],
       cantidad: [detalle?.cantidad || 1, [Validators.required, Validators.min(1)]],
-      precio_unitario: [detalle?.precio_unitario || 0, Validators.required],
+      precio_unitario: [detalle?.precio_unitario || 0, [Validators.required, Validators.min(0.01)]],
     });
   }
 
@@ -105,7 +146,6 @@ export default class VentaFormPageComponent implements OnInit {
   onSubmit(): void {
     if (this.ventaForm.invalid) {
       this.notificationService.showError('Formulario inválido. Por favor, revisa todos los campos.');
-      // Mark all fields as touched to display errors
       this.ventaForm.markAllAsTouched();
       return;
     }
@@ -114,16 +154,16 @@ export default class VentaFormPageComponent implements OnInit {
     const formValue = this.ventaForm.getRawValue();
     const id = this.ventaId();
 
-    // El backend espera números, nos aseguramos de que lo sean
     const payload: Partial<Venta> = {
       ...formValue,
       cliente_id: Number(formValue.cliente_id),
       almacen_id: Number(formValue.almacen_id),
+      consumo_diario_kg: formValue.consumo_diario_kg ? String(formValue.consumo_diario_kg) : null,
       detalles: formValue.detalles.map((d: any) => ({
         ...d,
         presentacion_id: Number(d.presentacion_id),
         cantidad: Number(d.cantidad),
-        precio_unitario: String(d.precio_unitario) // El contrato lo define como string
+        precio_unitario: String(d.precio_unitario)
       }))
     };
 

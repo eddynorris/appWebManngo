@@ -1,14 +1,106 @@
+@use 'src/styles/variables' as vars;
+
 /* Styles for the inventarios page */
 :host {
   display: block;
 }
 
-.header-actions {
-  .input-group {
-    label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      margin-right: 0.5rem;
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid vars.$color-border;
+
+  .header-content {
+    h1 {
+      font-size: 2rem;
+      font-weight: vars.$font-weight-bold;
+      color: vars.$color-text-primary;
+      margin: 0 0 0.5rem 0;
+    }
+
+    p {
+      color: vars.$color-text-secondary;
+      font-size: 1rem;
+      margin: 0;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-width: 200px;
+
+      label {
+        font-size: vars.$font-size-sm;
+        font-weight: vars.$font-weight-medium;
+        color: vars.$color-text-primary;
+        margin: 0;
+      }
+
+      select {
+        padding: 0.75rem 1rem;
+        border: 1px solid vars.$color-border;
+        border-radius: vars.$border-radius;
+        background: vars.$color-bg-primary;
+        color: vars.$color-text-primary;
+        font-size: vars.$font-size-base;
+        font-family: vars.$font-family-base;
+        transition: vars.$transition-base;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+          border-color: vars.$color-primary;
+          box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+        }
+
+        &:hover {
+          border-color: vars.$color-primary-light;
+        }
+
+        option {
+          padding: 0.5rem;
+          background: vars.$color-bg-primary;
+          color: vars.$color-text-primary;
+        }
+      }
+    }
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+
+    .header-actions {
+      justify-content: flex-start;
+
+      .input-group {
+        min-width: auto;
+        flex: 1;
+      }
     }
   }
 }

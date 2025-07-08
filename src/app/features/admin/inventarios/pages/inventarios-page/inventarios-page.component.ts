@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { map } from 'rxjs/operators'; // Importar map
 
 import { InventarioService } from '../../services/inventario.service';
 import { AlmacenService } from '../../../almacenes/services/almacen.service';
@@ -10,6 +11,7 @@ import { DataTableComponent } from '../../../../../shared/components/data-table/
 import { ColumnConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { NotificationService } from '../../../../../shared/services/notification.service';
+import { LoadingService } from '../../../../../shared/services/loading.service';
 
 @Component({
   selector: 'app-inventarios-page',
@@ -27,10 +29,10 @@ export default class InventariosPageComponent implements OnInit {
   private readonly inventarioService = inject(InventarioService);
   private readonly almacenService = inject(AlmacenService);
   private readonly notificationService = inject(NotificationService);
+  public readonly loadingService = inject(LoadingService);
 
   inventario = signal<Inventario[]>([]);
   pagination = signal<Pagination | null>(null);
-  isLoading = signal(false);
 
   almacenes = signal<Almacen[]>([]);
   selectedAlmacen = signal<number | undefined>(undefined);
@@ -49,22 +51,41 @@ export default class InventariosPageComponent implements OnInit {
   }
 
   loadAlmacenes(): void {
-    this.almacenService.getAlmacenes().subscribe((data: Almacen[]) => this.almacenes.set(data));
+    this.almacenService.getAlmacenes().pipe(
+      map((response: any) => {
+        // Comprobar si la respuesta es un objeto con una propiedad 'data' (paginada)
+        if (response && Array.isArray(response.data)) {
+          return response.data;
+        }
+        // Si no, asumir que es un array plano
+        return response;
+      })
+    ).subscribe({
+      next: (data: Almacen[]) => {
+        if (Array.isArray(data)) {
+          this.almacenes.set(data);
+        } else {
+          console.error('La respuesta de almacenes no es un array:', data);
+          this.notificationService.showError('Error: formato de datos de almacenes incorrecto.');
+        }
+      },
+      error: (err: any) => {
+        this.notificationService.showError('Error al cargar los almacenes.');
+        console.error('Error al cargar almacenes:', err);
+      }
+    });
   }
 
   loadInventario(page: number = 1): void {
-    this.isLoading.set(true);
     const almacenId = this.selectedAlmacen();
     this.inventarioService.getInventarios(page, 10, almacenId).subscribe({
       next: (response: InventariosResponse) => {
         this.inventario.set(response.data);
         this.pagination.set(response.pagination);
-        this.isLoading.set(false);
       },
       error: (err: any) => {
         this.notificationService.showError('Error al cargar el inventario.');
-        console.error(err);
-        this.isLoading.set(false);
+        console.error('Error al cargar inventario:', err);
       },
     });
   }
@@ -73,7 +94,7 @@ export default class InventariosPageComponent implements OnInit {
     const target = event.target as HTMLSelectElement;
     const almacenId = target.value ? Number(target.value) : undefined;
     this.selectedAlmacen.set(almacenId);
-    this.loadInventario(); // Recargar con el nuevo filtro
+    this.loadInventario();
   }
 
   onPageChange(page: number): void {

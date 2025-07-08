@@ -190,6 +190,27 @@ export type DepositoBancario = {
   usuario?: User;
 };
 
+// --- Tipos para el formulario de ventas ---
+
+export type PresentacionConStockGlobal = PresentacionProducto & {
+  stock_por_almacen: {
+    almacen_id: number;
+    nombre: string;
+    cantidad: number;
+  }[];
+};
+
+export type PresentacionConStockLocal = PresentacionProducto & {
+  stock_disponible: number;
+};
+
+export type VentaFormDataResponse = {
+  clientes: Cliente[];
+  almacenes?: Almacen[]; // Opcional, solo para admin sin almacen_id
+  presentaciones_con_stock_global?: PresentacionConStockGlobal[];
+  presentaciones_con_stock_local?: PresentacionConStockLocal[];
+};
+
 // --- Tipos de Paginación y Respuestas de API ---
 
 export interface Pagination {
