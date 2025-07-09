@@ -151,6 +151,7 @@ export type Pedido = {
   fecha_entrega?: string;
   estado?: string;
   notas?: string;
+  tiene_conflicto_stock?: boolean; // Nueva propiedad para alerta de stock
   detalles?: PedidoDetalle[];
   cliente?: Cliente;
   almacen?: Almacen;

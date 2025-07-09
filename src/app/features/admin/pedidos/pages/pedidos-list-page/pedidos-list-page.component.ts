@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { PedidoService } from '../../services/pedido.service';
 import { Pedido, Pagination } from '../../../../../types/contract.types';
@@ -17,6 +19,7 @@ import { ConfirmationModalComponent } from '../../../../../shared/components/con
   imports: [
     CommonModule,
     RouterLink,
+    ReactiveFormsModule,
     DataTableComponent,
     PaginationComponent,
     ConfirmationModalComponent,
@@ -29,12 +32,14 @@ export default class PedidosListPageComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
+  private readonly fb = inject(FormBuilder);
 
   pedidos = signal<Pedido[]>([]);
   pagination = signal<Pagination | null>(null);
   isLoading = signal(false);
   isDeleteModalVisible = signal(false);
   pedidoToDelete = signal<Pedido | null>(null);
+  filterForm: FormGroup;
 
   columns: ColumnConfig<Pedido>[] = [
     { key: 'id', label: 'ID Pedido', type: 'text' },
@@ -42,6 +47,7 @@ export default class PedidosListPageComponent implements OnInit {
     { key: 'fecha_entrega', label: 'F. Entrega', type: 'date' },
     { key: 'cliente.nombre', label: 'Cliente', type: 'text' },
     { key: 'estado', label: 'Estado', type: 'text' },
+    { key: 'alerta_stock', label: 'Stock', type: 'custom' },
     { key: 'actions', label: 'Acciones', type: 'actions' },
   ];
 
@@ -50,13 +56,26 @@ export default class PedidosListPageComponent implements OnInit {
     { icon: '🗑️', label: 'Eliminar', action: 'delete', danger: true },
   ];
 
+  constructor() {
+    this.filterForm = this.fb.group({
+      fecha_inicio: [''],
+      fecha_fin: [''],
+    });
+  }
+
   ngOnInit(): void {
     this.loadPedidos();
+    this.filterForm.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(() => {
+        this.loadPedidos();
+      });
   }
 
   loadPedidos(page: number = 1, limit: number = 10): void {
     this.isLoading.set(true);
-    this.pedidoService.getPedidos(page, limit).subscribe({
+    const filters = this.filterForm.value;
+    this.pedidoService.getPedidos(page, limit, filters).subscribe({
       next: (response) => {
         this.pedidos.set(response.data);
         this.pagination.set(response.pagination);

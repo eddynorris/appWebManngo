@@ -58,6 +58,11 @@
                       }
                     </div>
                   }
+                  @case ('custom') {
+                    <ng-container
+                      *ngTemplateOutlet="customCellTemplate; context: { $implicit: item, column: column }"
+                    ></ng-container>
+                  }
                 }
               </td>
             }

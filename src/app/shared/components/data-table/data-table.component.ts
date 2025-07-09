@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { Component, ChangeDetectionStrategy, input, output, ContentChild, TemplateRef } from '@angular/core';
+import { CurrencyPipe, DatePipe, NgTemplateOutlet } from '@angular/common';
 import { ColumnConfig, ActionConfig } from './data-table.types';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CurrencyPipe, DatePipe],
+  imports: [CurrencyPipe, DatePipe, NgTemplateOutlet],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +20,8 @@ export class DataTableComponent<T extends { id?: number; activo?: boolean }> {
 
   // --- Outputs ---
   onAction = output<{ action: string; item: T }>();
+
+  @ContentChild('customCell') customCellTemplate?: TemplateRef<any>;
 
   // --- Methods ---
   handleAction(action: string, item: T): void {

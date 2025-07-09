@@ -1,7 +1,7 @@
 export interface ColumnConfig<T> {
   key: string;
   label: string;
-  type: 'text' | 'status' | 'image' | 'currency' | 'actions' | 'date';
+  type: 'text' | 'status' | 'image' | 'currency' | 'actions' | 'date' | 'custom';
   // Opcional para un renderizado personalizado si es necesario
   customRender?: (item: T) => string;
 }

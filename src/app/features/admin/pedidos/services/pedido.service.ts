@@ -11,10 +11,19 @@ export class PedidoService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/pedidos`;
 
-  getPedidos(page: number = 1, limit: number = 10): Observable<PedidosResponse> {
-    const params = new HttpParams()
+  getPedidos(page: number = 1, limit: number = 10, filters: any = {}): Observable<PedidosResponse> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
+
+    // Add filters to params if they exist
+    if (filters.fecha_inicio) {
+      params = params.set('fecha_inicio', filters.fecha_inicio);
+    }
+    if (filters.fecha_fin) {
+      params = params.set('fecha_fin', filters.fecha_fin);
+    }
+
     return this.http.get<PedidosResponse>(this.apiUrl, { params });
   }
 

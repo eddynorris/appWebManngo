@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { DashboardService } from '../../services/dashboard.service';
 import {
   DashboardResponse,
@@ -6,22 +8,26 @@ import {
   AlertaLoteBajo,
   ClienteSaldoPendiente
 } from '../../../../../types/dashboard.types';
+import { ClienteDeudaModalComponent } from '../../components/cliente-deuda-modal/cliente-deuda-modal.component';
 
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, ClienteDeudaModalComponent],
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class DashboardPageComponent {
   private readonly dashboardService = inject(DashboardService);
+  private readonly router = inject(Router);
 
   // State management
   dashboardData = signal<DashboardResponse | null>(null);
   isLoading = signal(true);
   error = signal<string | null>(null);
+  isDeudaModalVisible = signal(false);
+  selectedCliente = signal<ClienteSaldoPendiente | null>(null);
 
   // Computed values para organizar los datos
   stockPorAlmacenes = computed(() => {
@@ -89,5 +95,23 @@ export default class DashboardPageComponent {
 
   refresh(): void {
     this.loadDashboardData();
+  }
+
+  onViewDeuda(clienteId: number): void {
+    const cliente = this.clientesSaldoPendiente().find(c => c.cliente_id === clienteId);
+    if (cliente) {
+      this.selectedCliente.set(cliente);
+      this.isDeudaModalVisible.set(true);
+    }
+  }
+
+  onGoToPagos(clienteId: number): void {
+    // Navigate to pagos list, maybe with a query param to filter
+    this.router.navigate(['/admin/pagos'], { queryParams: { cliente: clienteId } });
+  }
+
+  handleCloseModal(): void {
+    this.isDeudaModalVisible.set(false);
+    this.selectedCliente.set(null);
   }
 }

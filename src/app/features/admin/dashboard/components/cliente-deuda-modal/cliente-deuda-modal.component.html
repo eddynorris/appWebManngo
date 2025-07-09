@@ -1,0 +1,45 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <h2>Detalle de Deuda (Cliente #{{ clienteId }})</h2>
+      <button (click)="closeModal()" class="close-btn">×</button>
+    </header>
+
+    <main class="modal-body">
+      @if (deudas.length === 0) {
+        <div class="empty-state">Este cliente no tiene deudas pendientes.</div>
+      } @else {
+        <div class="deudas-list">
+          @for (venta of deudas; track venta.venta_id) {
+            <div class="venta-card">
+              <div class="venta-header">
+                <div class="venta-info">
+                  <h3>Venta #{{ venta.venta_id }}</h3>
+                  <span class="status" [class]="venta.estado_pago">{{ venta.estado_pago | titlecase }}</span>
+                </div>
+                <div class="venta-saldos">
+                  <span>Total: {{ venta.total_venta | currency:'S/ ' }}</span>
+                  <span class="saldo-pendiente">Pendiente: {{ venta.saldo_pendiente_venta | currency:'S/ ' }}</span>
+                </div>
+              </div>
+              @if (venta.pagos.length > 0) {
+                <div class="pagos-section">
+                  <h4>Pagos Realizados</h4>
+                  <ul class="pagos-list">
+                    @for (pago of venta.pagos; track pago.pago_id) {
+                      <li>
+                        <span>{{ pago.fecha | date:'dd/MM/yyyy' }}</span>
+                        <span class="metodo-pago">{{ pago.metodo_pago | titlecase }}</span>
+                        <span class="monto-pago">{{ pago.monto | currency:'S/ ' }}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </main>
+  </div>
+</div>

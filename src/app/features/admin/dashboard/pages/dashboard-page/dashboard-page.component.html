@@ -47,6 +47,50 @@
       </div>
     </section>
 
+    <!-- Clientes con Saldo Pendiente -->
+    <section class="clientes-pendientes-section">
+      <div class="section-header">
+        <h2>👥 Clientes con Saldo Pendiente</h2>
+      </div>
+
+      @if (clientesSaldoPendiente().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">✅</div>
+          <h3>¡Al día!</h3>
+          <p>No hay clientes con saldos pendientes.</p>
+        </div>
+      } @else {
+        <div class="clientes-table-container">
+          <table class="clientes-table">
+            <thead>
+              <tr>
+                <th>ID Cliente</th>
+                <th>Nombre</th>
+                <th>Saldo Pendiente</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (cliente of clientesSaldoPendiente(); track cliente.cliente_id) {
+                <tr>
+                  <td class="cliente-id">#{{ cliente.cliente_id }}</td>
+                  <td class="cliente-nombre">{{ cliente.nombre }}</td>
+                  <td class="cliente-saldo">{{ cliente.saldo_pendiente_total | currency:'S/ ' }}</td>
+                  <td class="acciones">
+                    <button class="btn-action" type="button" (click)="onViewDeuda(cliente.cliente_id)" title="Ver detalle del cliente">
+                      👁️ Ver
+                    </button>
+                    <button class="btn-action" type="button" (click)="onGoToPagos(cliente.cliente_id)" title="Gestionar pagos">
+                      💰 Pagos
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
     <!-- Alertas de Stock Bajo por Almacén -->
     <section class="stock-alerts-section">
       <div class="section-header">
@@ -133,47 +177,14 @@
       }
     </section>
 
-    <!-- Clientes con Saldo Pendiente -->
-    <section class="clientes-pendientes-section">
-      <div class="section-header">
-        <h2>👥 Clientes con Saldo Pendiente</h2>
-      </div>
 
-      @if (clientesSaldoPendiente().length === 0) {
-        <div class="empty-state">
-          <div class="empty-icon">✅</div>
-          <h3>¡Al día!</h3>
-          <p>No hay clientes con saldos pendientes.</p>
-        </div>
-      } @else {
-        <div class="clientes-table-container">
-          <table class="clientes-table">
-            <thead>
-              <tr>
-                <th>ID Cliente</th>
-                <th>Nombre</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (cliente of clientesSaldoPendiente(); track cliente.cliente_id) {
-                <tr>
-                  <td class="cliente-id">#{{ cliente.cliente_id }}</td>
-                  <td class="cliente-nombre">{{ cliente.nombre }}</td>
-                  <td class="acciones">
-                    <button class="btn-action" type="button" title="Ver detalle del cliente">
-                      👁️ Ver
-                    </button>
-                    <button class="btn-action" type="button" title="Gestionar pagos">
-                      💰 Pagos
-                    </button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
-    </section>
   }
 </div>
+
+@if (isDeudaModalVisible() && selectedCliente()) {
+  <app-cliente-deuda-modal
+    [clienteId]="selectedCliente()!.cliente_id"
+    [deudas]="selectedCliente()!.ventas_pendientes"
+    (close)="handleCloseModal()"
+  ></app-cliente-deuda-modal>
+}

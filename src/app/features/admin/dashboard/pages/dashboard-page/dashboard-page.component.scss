@@ -392,6 +392,11 @@
     color: #2c3e50;
   }
 
+  .cliente-saldo {
+    font-weight: 600;
+    color: #dc3545; // Red color for debt
+  }
+
   .acciones {
     display: flex;
     gap: 0.5rem;

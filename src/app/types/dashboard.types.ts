@@ -17,6 +17,25 @@ export interface AlertaLoteBajo {
 export interface ClienteSaldoPendiente {
   cliente_id: number;
   nombre: string;
+  saldo_pendiente_total: number;
+  ventas_pendientes: VentaPendiente[];
+}
+
+export interface VentaPendiente {
+  venta_id: number;
+  fecha: string | null;
+  total_venta: number;
+  estado_pago: string;
+  saldo_pendiente_venta: number;
+  pagos: PagoRealizado[];
+}
+
+export interface PagoRealizado {
+  pago_id: number;
+  fecha: string | null;
+  monto: number;
+  metodo_pago: string;
+  referencia: string | null;
 }
 
 export interface DashboardResponse {

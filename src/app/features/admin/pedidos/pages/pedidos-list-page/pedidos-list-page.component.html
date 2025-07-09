@@ -8,6 +8,18 @@
     <a routerLink="/admin/pedidos/new" class="btn-primary">➕ Nuevo Pedido</a>
   </div>
 
+  <!-- Filters -->
+  <div class="filters-container" [formGroup]="filterForm">
+    <div class="filter-group">
+      <label for="fecha_inicio">Desde:</label>
+      <input id="fecha_inicio" type="date" formControlName="fecha_inicio">
+    </div>
+    <div class="filter-group">
+      <label for="fecha_fin">Hasta:</label>
+      <input id="fecha_fin" type="date" formControlName="fecha_fin">
+    </div>
+  </div>
+
   <!-- Reusable Data Table -->
   <app-data-table
     [data]="pedidos()"
@@ -15,7 +27,15 @@
     [actions]="actions"
     [isLoading]="isLoading()"
     (onAction)="handleTableAction($event)"
-  ></app-data-table>
+  >
+    <ng-template #customCell let-item let-column="column">
+      @if (column.key === 'alerta_stock') {
+        @if (item.tiene_conflicto_stock) {
+          <span class="stock-alert" title="No hay stock suficiente para este pedido">⚠️</span>
+        }
+      }
+    </ng-template>
+  </app-data-table>
 
   <!-- Pagination -->
   @if (pagination()) {
