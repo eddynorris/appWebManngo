@@ -47,7 +47,6 @@ export default class PedidosListPageComponent implements OnInit {
     { key: 'fecha_entrega', label: 'F. Entrega', type: 'date' },
     { key: 'cliente.nombre', label: 'Cliente', type: 'text' },
     { key: 'estado', label: 'Estado', type: 'text' },
-    { key: 'alerta_stock', label: 'Stock', type: 'custom' },
     { key: 'actions', label: 'Acciones', type: 'actions' },
   ];
 

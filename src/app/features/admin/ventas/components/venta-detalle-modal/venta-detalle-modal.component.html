@@ -1,0 +1,85 @@
+<app-modal
+  [open]="isOpen"
+  [title]="'Detalle de Venta #' + venta.id"
+  size="lg"
+  (close)="closeModal()"
+>
+  <div slot="body">
+    <!-- Resumen de la Venta -->
+    <div class="summary-grid">
+      <div class="summary-item"><strong>Cliente:</strong> {{ venta.cliente?.nombre }}</div>
+      <div class="summary-item"><strong>Vendedor:</strong> {{ venta.vendedor?.username }}</div>
+      <div class="summary-item"><strong>Fecha:</strong> {{ venta.fecha | date:'dd/MM/yyyy' }}</div>
+      <div class="summary-item"><strong>Total:</strong> {{ venta.total | currency:'S/ ' }}</div>
+      <div class="summary-item"><strong>Almacén:</strong> {{ venta.almacen?.nombre }}</div>
+      <div class="summary-item"><strong>Estado Pago:</strong> <span class="status-badge" [class]="venta.estado_pago">{{ venta.estado_pago | titlecase }}</span></div>
+    </div>
+
+    <!-- Detalle de Productos -->
+    <h3 class="section-title">Productos Vendidos</h3>
+    <div class="table-wrapper">
+      <div class="table-container">
+        <table class="details-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio Unit.</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (detalle of venta.detalles; track detalle.id) {
+              <tr>
+                <td>{{ detalle.presentacion?.nombre }}</td>
+                <td>{{ detalle.cantidad }}</td>
+                <td>{{ detalle.precio_unitario | currency:'S/ ' }}</td>
+                <td>{{ detalle.total_linea | currency:'S/ ' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pagos Asociados -->
+    <h3 class="section-title">Pagos Realizados</h3>
+    @if (isLoadingPagos()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Cargando pagos...</span>
+      </div>
+    } @else if (pagos().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">💳</div>
+        <h3>Sin pagos registrados</h3>
+        <p>No se han registrado pagos para esta venta.</p>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <div class="table-container">
+          <table class="details-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Método</th>
+                <th>Registrado por</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pago of pagos(); track pago.id) {
+                <tr>
+                  <td>{{ pago.fecha | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ pago.monto | currency:'S/ ' }}</td>
+                  <td>{{ pago.metodo_pago | titlecase }}</td>
+                  <td>{{ pago.usuario?.username || '-' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+</app-modal>

@@ -10,7 +10,7 @@ import { DataTableComponent } from '../../../../../shared/components/data-table/
 import { ColumnConfig, ActionConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { NotificationService } from '../../../../../shared/services/notification.service';
-import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
+import { VentaDetalleModalComponent } from '../../components/venta-detalle-modal/venta-detalle-modal.component';
 
 @Component({
   selector: 'app-ventas-list-page',
@@ -21,7 +21,7 @@ import { ConfirmationModalComponent } from '../../../../../shared/components/con
     FormsModule,
     DataTableComponent,
     PaginationComponent,
-    ConfirmationModalComponent,
+    VentaDetalleModalComponent,
   ],
   templateUrl: './ventas-list-page.component.html',
   styleUrl: './ventas-list-page.component.scss',
@@ -35,6 +35,8 @@ export default class VentasListPageComponent implements OnInit {
   ventas = signal<Venta[]>([]);
   pagination = signal<Pagination | null>(null);
   isLoading = signal(false);
+  isModalVisible = signal(false);
+  selectedVenta = signal<Venta | null>(null);
 
   columns: ColumnConfig<Venta>[] = [
     { key: 'id', label: 'ID Venta', type: 'text' },
@@ -42,7 +44,7 @@ export default class VentasListPageComponent implements OnInit {
     { key: 'cliente.nombre', label: 'Cliente', type: 'text' },
     { key: 'vendedor.username', label: 'Vendedor', type: 'text' },
     { key: 'total', label: 'Total', type: 'currency' },
-    { key: 'estado_pago', label: 'Estado Pago', type: 'status' },
+    { key: 'estado_pago', label: 'Estado Pago', type: 'text' },
     { key: 'actions', label: 'Acciones', type: 'actions' }
   ];
 
@@ -77,8 +79,16 @@ export default class VentasListPageComponent implements OnInit {
 
   handleTableAction(event: { action: string; item: Venta }): void {
     const { action, item } = event;
-    if (action === 'view' || action === 'edit') {
+    if (action === 'edit') {
       this.router.navigate(['/admin/ventas/edit', item.id]);
+    } else if (action === 'view') {
+      this.selectedVenta.set(item);
+      this.isModalVisible.set(true);
     }
+  }
+
+  handleCloseModal(): void {
+    this.isModalVisible.set(false);
+    this.selectedVenta.set(null);
   }
 }

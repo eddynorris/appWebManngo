@@ -1,25 +1,6 @@
-@use 'src/styles/variables' as vars;
-
 /* Estilos para la página de lista de ventas */
 :host {
   display: block;
-}
-
-/* El layout de página y botones ya están en los estilos globales,
-   pero podemos agregar estilos específicos si es necesario */
-
-.page-header {
-  .header-actions {
-    .btn-primary {
-      /* Estilos adicionales específicos para el botón Nueva venta si es necesario */
-      font-weight: vars.$font-weight-semibold;
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: vars.$box-shadow-lg;
-      }
-    }
-  }
 }
 
 /* Responsive específico para ventas */

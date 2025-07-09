@@ -10,6 +10,7 @@
 
   <!-- Filters -->
   <div class="filters-container" [formGroup]="filterForm">
+    <h3 class="filters-title">Filtrar Pedidos</h3>
     <div class="filter-group">
       <label for="fecha_inicio">Desde:</label>
       <input id="fecha_inicio" type="date" formControlName="fecha_inicio">
@@ -27,15 +28,7 @@
     [actions]="actions"
     [isLoading]="isLoading()"
     (onAction)="handleTableAction($event)"
-  >
-    <ng-template #customCell let-item let-column="column">
-      @if (column.key === 'alerta_stock') {
-        @if (item.tiene_conflicto_stock) {
-          <span class="stock-alert" title="No hay stock suficiente para este pedido">⚠️</span>
-        }
-      }
-    </ng-template>
-  </app-data-table>
+  ></app-data-table>
 
   <!-- Pagination -->
   @if (pagination()) {

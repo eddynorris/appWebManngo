@@ -5,11 +5,451 @@
 @use './variables' as vars;
 
 // -----------------------------------------------------------------------------
+// CLASES GLOBALES PARA PATRONES REPETIDOS
+// -----------------------------------------------------------------------------
+
+// Page headers globales
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid vars.$color-border;
+
+  .header-content {
+    h1 {
+      font-size: 2rem;
+      font-weight: vars.$font-weight-bold;
+      color: vars.$color-text-primary;
+      margin: 0 0 0.5rem 0;
+    }
+
+    p {
+      color: vars.$color-text-secondary;
+      font-size: 1rem;
+      margin: 0;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+
+    .header-actions {
+      justify-content: flex-start;
+    }
+  }
+}
+
+// Loading states globales
+.loading-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: vars.$color-text-secondary;
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255, 68, 68, 0.3);
+    border-top-color: vars.$color-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
+  }
+}
+
+// Empty states globales
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: vars.$color-text-secondary;
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    color: vars.$color-text-primary;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: vars.$color-text-secondary;
+    margin-bottom: 2rem;
+  }
+}
+
+// Error states globales
+.error-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: vars.$color-danger;
+
+  .error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    color: vars.$color-danger;
+    margin-bottom: 0.5rem;
+  }
+}
+
+// Table containers globales
+.table-container {
+  background: vars.$color-bg-primary;
+  border-radius: vars.$border-radius;
+  box-shadow: vars.$box-shadow-sm;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid vars.$color-border;
+    }
+
+    th {
+      background: vars.$color-bg-secondary;
+      font-weight: vars.$font-weight-semibold;
+      color: vars.$color-text-secondary;
+      font-size: vars.$font-size-sm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tbody tr {
+      transition: background-color 0.2s;
+
+      &:hover {
+        background: vars.$color-bg-secondary;
+      }
+
+      &.inactive {
+        opacity: 0.6;
+      }
+    }
+  }
+}
+
+// Modal overlays globales
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: vars.$z-index-modal;
+  animation: fadeIn 0.3s ease-out;
+
+  .modal-content {
+    background: vars.$color-bg-primary;
+    border-radius: vars.$border-radius;
+    box-shadow: vars.$box-shadow-lg;
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid vars.$color-border;
+
+    h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: vars.$color-text-primary;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: vars.$color-text-secondary;
+      transition: vars.$transition-base;
+
+      &:hover {
+        color: vars.$color-text-primary;
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+}
+
+// Filter containers globales
+.filters-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: vars.$color-bg-secondary;
+  border-radius: vars.$border-radius;
+  margin-bottom: 1.5rem;
+  border: 1px solid vars.$color-border;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      font-size: vars.$font-size-sm;
+      font-weight: vars.$font-weight-medium;
+      color: vars.$color-text-secondary;
+    }
+
+    input, select {
+      padding: 0.75rem 1rem;
+      border: 1px solid vars.$color-border;
+      border-radius: vars.$border-radius;
+      background: vars.$color-bg-primary;
+      color: vars.$color-text-primary;
+      font-size: vars.$font-size-base;
+      transition: vars.$transition-base;
+
+      &:focus {
+        outline: none;
+        border-color: vars.$color-primary;
+        box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+      }
+    }
+  }
+
+  .filters-title {
+    margin-right: auto;
+    font-size: 1.1rem;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-primary;
+    padding-bottom: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+
+    .filter-group {
+      width: 100%;
+    }
+  }
+}
+
+// Status badges globales
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: vars.$font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &.active {
+    background: rgba(40, 167, 69, 0.1);
+    color: vars.$color-success;
+  }
+
+  &.inactive {
+    background: rgba(220, 53, 69, 0.1);
+    color: vars.$color-danger;
+  }
+
+  &.pending, &.pendiente {
+    background: rgba(255, 193, 7, 0.1);
+    color: vars.$color-warning-dark;
+  }
+
+  &.completed, &.pagado {
+    background: rgba(40, 167, 69, 0.1);
+    color: vars.$color-success;
+  }
+
+  &.cancelled, &.cancelado {
+    background: rgba(220, 53, 69, 0.1);
+    color: vars.$color-danger;
+  }
+
+  &.partial, &.parcial {
+    background: rgba(23, 162, 184, 0.1);
+    color: vars.$color-info;
+  }
+}
+
+// Action buttons globales
+.actions {
+  display: flex;
+  gap: 0.5rem;
+
+  .btn-action {
+    background: vars.$color-bg-secondary;
+    border: 1px solid vars.$color-border;
+    padding: 0.5rem 1rem;
+    border-radius: vars.$border-radius-sm;
+    cursor: pointer;
+    font-size: vars.$font-size-sm;
+    transition: vars.$transition-base;
+    color: vars.$color-text-primary;
+
+    &:hover {
+      background: vars.$color-primary;
+      color: vars.$color-text-white;
+      border-color: vars.$color-primary;
+    }
+  }
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+// Metric cards globales
+.metric-card {
+  background: vars.$color-bg-primary;
+  border-radius: vars.$border-radius;
+  padding: 1.5rem;
+  box-shadow: vars.$box-shadow-sm;
+  border-left: 4px solid vars.$color-primary;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: vars.$box-shadow;
+  }
+
+  .metric-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+
+    .metric-icon {
+      font-size: 2rem;
+    }
+
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: vars.$font-weight-bold;
+      color: vars.$color-text-primary;
+    }
+  }
+
+  .metric-title {
+    color: vars.$color-text-secondary;
+    font-size: vars.$font-size-sm;
+    font-weight: vars.$font-weight-medium;
+  }
+}
+
+// Form sections globales
+.form-section-card {
+  background: vars.$color-bg-primary;
+  border-radius: vars.$border-radius-lg;
+  padding: 2rem;
+  box-shadow: vars.$box-shadow;
+  margin-bottom: 2rem;
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-primary;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid vars.$color-border;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ANIMACIONES GLOBALES
+// -----------------------------------------------------------------------------
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// MIXINS PARA CASOS ESPECÍFICOS
+// -----------------------------------------------------------------------------
+
+// Mixin para button base
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: vars.$border-radius;
+  font-family: vars.$font-family-base;
+  font-size: vars.$font-size-base;
+  font-weight: vars.$font-weight-medium;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: vars.$transition-base;
+  outline: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}
+
+// -----------------------------------------------------------------------------
 // BOTONES
 // -----------------------------------------------------------------------------
 
 .btn-primary {
-  @include vars.button-base;
+  @include button-base;
   background: vars.$color-primary;
   color: vars.$color-text-white;
   box-shadow: vars.$box-shadow-sm;
@@ -31,7 +471,7 @@
 }
 
 .btn-secondary {
-  @include vars.button-base;
+  @include button-base;
   background: vars.$color-secondary;
   color: vars.$color-text-white;
   box-shadow: vars.$box-shadow-sm;
@@ -53,7 +493,7 @@
 }
 
 .btn-ghost {
-  @include vars.button-base;
+  @include button-base;
   background: transparent;
   color: vars.$color-text-secondary;
   border: 1px solid vars.$color-border;
@@ -70,7 +510,7 @@
 }
 
 .btn-danger {
-  @include vars.button-base;
+  @include button-base;
   background: vars.$color-danger;
   color: vars.$color-text-white;
   box-shadow: vars.$box-shadow-sm;
@@ -92,7 +532,7 @@
 }
 
 .btn-success {
-  @include vars.button-base;
+  @include button-base;
   background: vars.$color-success;
   color: vars.$color-text-white;
   box-shadow: vars.$box-shadow-sm;
@@ -124,7 +564,7 @@
 }
 
 .btn-icon {
-  @include vars.button-base;
+  @include button-base;
   padding: 0.5rem;
   min-width: 40px;
   min-height: 40px;
@@ -136,6 +576,7 @@
 
     &:hover:not(:disabled) {
       background: vars.$color-danger-dark;
+      transform: scale(1.1);
     }
   }
 
@@ -156,7 +597,12 @@
 // -----------------------------------------------------------------------------
 
 .spinner-small {
-  @include vars.spinner-small;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 .spinner {
@@ -176,23 +622,6 @@
   max-width: 1000px;
   margin: 0 auto;
   padding: 1.5rem;
-}
-
-.page-header {
-  margin-bottom: 2rem;
-
-  h1 {
-    font-size: 2rem;
-    font-weight: vars.$font-weight-bold;
-    color: vars.$color-text-primary;
-    margin: 0 0 0.5rem 0;
-  }
-
-  p {
-    color: vars.$color-text-secondary;
-    font-size: 1rem;
-    margin: 0;
-  }
 }
 
 .data-form {
@@ -317,45 +746,5 @@
 
   @media (max-width: 768px) {
     padding: 1rem;
-  }
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid vars.$color-border;
-
-  .header-content {
-    h1 {
-      font-size: 2rem;
-      font-weight: vars.$font-weight-bold;
-      color: vars.$color-text-primary;
-      margin: 0 0 0.5rem 0;
-    }
-
-    p {
-      color: vars.$color-text-secondary;
-      font-size: 1rem;
-      margin: 0;
-    }
-  }
-
-  .header-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-
-    .header-actions {
-      justify-content: flex-start;
-    }
   }
 }

@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, signal, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, Input, Output, EventEmitter, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VentaPendiente } from '../../../../../types/dashboard.types';
+import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 
 @Component({
   selector: 'app-cliente-deuda-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ModalComponent],
   templateUrl: './cliente-deuda-modal.component.html',
   styleUrl: './cliente-deuda-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,10 +14,11 @@ import { VentaPendiente } from '../../../../../types/dashboard.types';
 export class ClienteDeudaModalComponent {
   @Input({ required: true }) clienteId!: number;
   @Input({ required: true }) deudas: VentaPendiente[] = [];
+  @Input() visible = signal(false);
   @Output() close = new EventEmitter<void>();
 
-  // No longer needs its own loading/error state for data fetching
-  // The parent component (dashboard) will handle it.
+  // Computed para compatibilidad con el modal
+  isOpen = computed(() => this.visible());
 
   closeModal(): void {
     this.close.emit();

@@ -33,4 +33,9 @@ export class PagoService {
   deletePago(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  // Obtener todos los pagos asociados a una venta específica
+  getPagosByVentaId(ventaId: number): Observable<Pago[]> {
+    return this.http.get<Pago[]>(`${this.apiUrl}/venta/${ventaId}`);
+  }
 }

@@ -27,3 +27,11 @@
     ></app-pagination>
   }
 </div>
+
+@if (isModalVisible() && selectedVenta()) {
+  <app-venta-detalle-modal
+    [venta]="selectedVenta()!"
+    [visible]="isModalVisible"
+    (close)="handleCloseModal()"
+  ></app-venta-detalle-modal>
+}

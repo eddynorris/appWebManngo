@@ -1,0 +1,53 @@
+@if (open()) {
+  <div
+    class="modal-overlay"
+    (click)="onOverlayClick()"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="title ? 'modal-title' : null"
+  >
+    <div
+      #modalContent
+      class="modal-content"
+      [class]="getSizeClass()"
+      (click)="onContentClick($event)"
+    >
+      <!-- Header -->
+      @if (showHeader) {
+        <header class="modal-header">
+          <ng-content select="[slot=header]">
+            @if (title) {
+              <h2 id="modal-title" class="modal-title">{{ title }}</h2>
+            }
+          </ng-content>
+          @if (showCloseButton) {
+            <button
+              #closeButton
+              type="button"
+              class="close-btn"
+              (click)="closeModal()"
+              aria-label="Cerrar modal"
+              title="Cerrar"
+            >
+              ×
+            </button>
+          }
+        </header>
+      }
+
+      <!-- Body -->
+      <main class="modal-body">
+        <ng-content select="[slot=body]">
+          <ng-content></ng-content>
+        </ng-content>
+      </main>
+
+      <!-- Footer -->
+      @if (showFooter) {
+        <footer class="modal-footer">
+          <ng-content select="[slot=footer]"></ng-content>
+        </footer>
+      }
+    </div>
+  </div>
+}

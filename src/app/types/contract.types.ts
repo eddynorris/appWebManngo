@@ -80,6 +80,7 @@ export type Venta = {
   tipo_pago?: string;
   estado_pago?: string;
   detalles?: VentaDetalle[];
+  pagos?: Pago[];
   cliente?: Cliente;
   almacen?: Almacen;
   vendedor?: User;
@@ -91,6 +92,9 @@ export type VentaDetalle = {
   presentacion_id?: number;
   cantidad?: number;
   precio_unitario?: string;
+  total_linea?: string;
+  created_at?: string;
+  updated_at?: string;
   presentacion?: PresentacionProducto;
 };
 

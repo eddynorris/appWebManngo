@@ -2,29 +2,3 @@
 :host {
   display: block;
 }
-
-.filters-container {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  label {
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-}
-
-.stock-alert {
-  font-size: 1.25rem;
-  color: orange;
-  cursor: help;
-}

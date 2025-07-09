@@ -1,0 +1,32 @@
+// Estilos específicos del contenido del modal de detalle de venta
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.summary-item {
+  font-size: 0.95rem;
+  strong { color: #6c757d; }
+}
+
+.section-title {
+  font-size: 1.1rem;
+  margin: 1.5rem 0 1rem 0;
+  color: #ff4444;
+  border-bottom: 2px solid #ff6666;
+  padding-bottom: 0.5rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.details-table {
+  td:nth-child(2), td:nth-child(3), td:nth-child(4) {
+    text-align: center;
+  }
+}
