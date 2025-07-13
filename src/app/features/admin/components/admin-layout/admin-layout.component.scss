@@ -47,6 +47,10 @@
     flex: 1;
     padding: 1rem 0;
 
+    .nav-item-group {
+      margin-bottom: 0;
+    }
+
     .nav-item {
       display: flex;
       align-items: center;
@@ -78,7 +82,45 @@
       .nav-label {
         font-weight: 500;
         font-size: 0.9rem;
+        flex: 1;
       }
+
+      .nav-arrow {
+        font-size: 0.8rem;
+        margin-left: auto;
+        transition: transform 0.2s ease;
+      }
+
+      &.nav-item-parent {
+        background: none;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border-left-color: #ff4444;
+        }
+
+        &.expanded .nav-arrow {
+          transform: rotate(0deg);
+        }
+      }
+
+      &.nav-subitem {
+        padding-left: 3rem;
+        font-size: 0.85rem;
+        
+        .nav-icon {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .submenu {
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
   }
 }

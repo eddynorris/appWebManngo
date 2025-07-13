@@ -57,6 +57,11 @@ export const ADMIN_ROUTES: Routes = [
         loadChildren: () => import('./pedidos/pedidos.routes').then(m => m.PEDIDOS_ROUTES),
         data: { title: 'Pedidos' }
       },
+      {
+        path: 'reportes',
+        loadChildren: () => import('./reportes/reportes.routes').then(m => m.REPORTES_ROUTES),
+        data: { title: 'Reportes' }
+      },
 
       {
         path: '',

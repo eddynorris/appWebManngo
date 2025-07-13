@@ -44,10 +44,10 @@ export default class VentaFormPageComponent implements OnInit {
     this.ventaForm = this.fb.group({
       cliente_id: ['', Validators.required],
       almacen_id: [{ value: '', disabled: !this.authService.isAdmin() }, Validators.required],
-      fecha: [new Date().toISOString().substring(0, 10), Validators.required],
+      fecha: [new Date().toISOString().substring(0, 16), Validators.required],
       tipo_pago: ['contado', Validators.required],
-      estado_pago: ['pagado', Validators.required],
-      consumo_diario_kg: [null],
+      estado_pago: ['pendiente', Validators.required],
+      consumo_diario_kg: ['0.00', Validators.required],
       detalles: this.fb.array([], [Validators.required, Validators.minLength(1)]),
     });
   }
@@ -158,7 +158,8 @@ export default class VentaFormPageComponent implements OnInit {
       ...formValue,
       cliente_id: Number(formValue.cliente_id),
       almacen_id: Number(formValue.almacen_id),
-      consumo_diario_kg: formValue.consumo_diario_kg ? String(formValue.consumo_diario_kg) : null,
+      fecha: new Date(formValue.fecha).toISOString(),
+      consumo_diario_kg: String(formValue.consumo_diario_kg || '0.00'),
       detalles: formValue.detalles.map((d: any) => ({
         ...d,
         presentacion_id: Number(d.presentacion_id),

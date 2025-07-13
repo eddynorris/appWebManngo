@@ -13,7 +13,7 @@ import { ButtonComponent } from '../../../../../shared/components/button/button.
 @Component({
   selector: 'app-gasto-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './gasto-form-page.component.html',
   styleUrl: './gasto-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,7 +33,7 @@ export default class GastoFormPageComponent implements OnInit {
 
   almacenes = signal<Almacen[]>([]);
   // TODO: Fetch categories from an endpoint
-  categorias = signal(['transporte', 'servicios', 'materiales', 'sueldos', 'otros']);
+  categorias = signal(['logistica', 'personal', 'otros']);
 
   constructor() {
     this.gastoForm = this.fb.group({

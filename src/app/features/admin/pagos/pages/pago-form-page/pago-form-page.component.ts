@@ -14,7 +14,7 @@ import { ButtonComponent } from '../../../../../shared/components/button/button.
 @Component({
   selector: 'app-pago-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './pago-form-page.component.html',
   styleUrl: './pago-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

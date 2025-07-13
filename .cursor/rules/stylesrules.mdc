@@ -1,0 +1,68 @@
+---
+description: For styles
+alwaysApply: false
+---
+# SCSS Styling Guide
+
+This guide outlines the SCSS architecture for this project, focusing on consistency, reusability, and maintainability.
+
+The core strategy is **Global-First**: leverage a robust set of global utility classes before writing component-specific styles.
+
+## 1. Core Principles
+
+1.  **Use Global Utilities First**: Before writing any CSS, check `_components.scss` for a pre-built class. Most layouts (`.page-header`, `.data-form`, `.table-container`) and elements (`.btn-primary`, `.status-badge`) are already defined.
+2.  **Variables for Everything**: **NEVER** use hardcoded values (e.g., `#ff4444`, `12px`). Always use a design token from `_variables.scss` (e.g., `vars.$color-primary`, `vars.$spacer-md`).
+3.  **Component Styles are for Exceptions**: Keep component `.scss` files minimal. Only write styles for layouts or tweaks that are truly unique to that component.
+
+## 2. Global Style Architecture (`src/styles/`)
+
+-   **`_variables.scss`**: **Source of Truth.** Contains all design tokens: colors, fonts, spacing, shadows, breakpoints, etc. It should not output any CSS itself.
+-   **`_components.scss`**: **Your Primary Toolkit.** A library of global, reusable CSS classes that define the look and feel of common UI patterns.
+-   **`styles.scss`**: **Global Setup.** The main entry point that imports variables and components, and applies base styles (CSS reset, `body` styles, scrollbar, etc.).
+
+## 3. The Styling Workflow
+
+Follow this process when building UI:
+
+### **Step 1: Build with Global Classes in HTML**
+
+Your first step should always be to structure your component's template using the classes provided in `_components.scss`.
+
+**DO:**
+```html
+<!-- Build standard layouts by composing global classes -->
+<div class="page-header">
+  <div class="header-content">...</div>
+  <div class="header-actions">
+    <button class="btn-primary">Create New</button>
+  </div>
+</div>
+
+<div class="table-container">
+  <!-- The data-table component uses these global styles -->
+  <app-data-table />
+</div>
+```
+
+### **Step 2: Write Component-Specific CSS (Only if Necessary)**
+
+If a global class doesn't cover your needs, write minimal styles in the component's `.scss` file.
+
+**Use cases for component-specific CSS:**
+- A truly unique layout structure (e.g., the details grid in `venta-form-page.component.scss`).
+- Minor positional tweaks or adjustments.
+- `:host` styles to define the component's own layout behavior (e.g., `:host { display: block; }`).
+
+**DON'T:**
+Never redefine styles for a generic element that a global class already handles.
+
+```scss
+/* INCORRECT: This duplicates code and creates inconsistency. */
+.my-custom-button {
+  background-color: #ff4444; // No variable
+  color: white;
+  padding: 12px 24px;      // Magic numbers
+  border-radius: 8px;
+}
+```
+The correct approach is to simply use `<button class="btn-primary">`.

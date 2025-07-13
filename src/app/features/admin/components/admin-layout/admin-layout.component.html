@@ -7,14 +7,46 @@
     </div>
 
     <nav class="sidebar-nav">
-      @for (item of navigationItems; track item.route) {
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="active"
-          class="nav-item">
-          <span class="nav-icon">{{ item.icon }}</span>
-          <span class="nav-label">{{ item.label }}</span>
-        </a>
+      @for (item of navigationItems; track item.label) {
+        @if (item.hasSubmenu) {
+          <div class="nav-item-group">
+            <button
+              (click)="toggleSubmenu(item.label)"
+              class="nav-item nav-item-parent"
+              [class.expanded]="isSubmenuExpanded(item.label)">
+              <span class="nav-icon">{{ item.icon }}</span>
+              <span class="nav-label">{{ item.label }}</span>
+              <span class="nav-arrow">
+                @if (isSubmenuExpanded(item.label)) {
+                  ▼
+                } @else {
+                  ▶
+                }
+              </span>
+            </button>
+            @if (isSubmenuExpanded(item.label)) {
+              <div class="submenu">
+                @for (subitem of item.submenu; track subitem.route) {
+                  <a
+                    [routerLink]="subitem.route"
+                    routerLinkActive="active"
+                    class="nav-item nav-subitem">
+                    <span class="nav-icon">{{ subitem.icon }}</span>
+                    <span class="nav-label">{{ subitem.label }}</span>
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        } @else {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            class="nav-item">
+            <span class="nav-icon">{{ item.icon }}</span>
+            <span class="nav-label">{{ item.label }}</span>
+          </a>
+        }
       }
     </nav>
   </aside>

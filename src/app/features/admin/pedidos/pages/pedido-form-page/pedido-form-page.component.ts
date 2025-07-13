@@ -15,7 +15,7 @@ import { ButtonComponent } from '../../../../../shared/components/button/button.
 @Component({
   selector: 'app-pedido-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './pedido-form-page.component.html',
   styleUrl: './pedido-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

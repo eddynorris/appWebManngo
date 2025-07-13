@@ -34,7 +34,7 @@
 
         <div class="input-group">
           <label for="fecha">Fecha de Venta</label>
-          <input id="fecha" type="date" formControlName="fecha">
+          <input id="fecha" type="datetime-local" formControlName="fecha">
         </div>
         <div class="input-group">
           <label for="tipo_pago">Tipo de Pago</label>
@@ -47,6 +47,7 @@
           <label for="estado_pago">Estado del Pago</label>
           <select id="estado_pago" formControlName="estado_pago">
             <option value="pagado">Pagado</option>
+            <option value="parcial">Parcial</option>
             <option value="pendiente">Pendiente</option>
           </select>
         </div>

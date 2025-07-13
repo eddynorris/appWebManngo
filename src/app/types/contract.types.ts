@@ -239,3 +239,5 @@ export type PedidosResponse = PaginatedResponse<Pedido>;
 export type InventariosResponse = PaginatedResponse<Inventario>;
 export type GastosResponse = PaginatedResponse<Gasto>;
 export type ProductsResponse = PaginatedResponse<Producto>;
+export type MovimientosResponse = PaginatedResponse<Movimiento>;
+export type LotesResponse = PaginatedResponse<Lote>;

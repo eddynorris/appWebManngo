@@ -1,0 +1,57 @@
+<div class="page-header">
+  <div class="header-content">
+    <h1>Reporte de Inventario por Lote</h1>
+    <p>Visualiza la producción agrupada por lotes y presentaciones</p>
+  </div>
+</div>
+
+
+<div class="filters-container" [formGroup]="filtrosForm">
+  <h3 class="filters-title">Filtrar Reporte</h3>
+  <div class="filter-group">
+    <label for="lote_id">Lote:</label>
+    <select id="lote_id" formControlName="lote_id">
+      <option value="">Todos los lotes</option>
+      @for (lote of lotes(); track lote.id) {
+        <option [value]="lote.id">
+          {{ lote.descripcion || 'Lote #' + lote.id }}
+        </option>
+      }
+    </select>
+  </div>
+  <div class="filter-group">
+    <label for="fecha_inicio">Desde:</label>
+    <input id="fecha_inicio" type="date" formControlName="fecha_inicio">
+  </div>
+  <div class="filter-group">
+    <label for="fecha_fin">Hasta:</label>
+    <input id="fecha_fin" type="date" formControlName="fecha_fin">
+  </div>
+  <div class="filter-group">
+    <button type="button" class="btn-primary" (click)="aplicarFiltros()" [disabled]="cargando()">
+      @if (cargando()) {
+        Generando...
+      } @else {
+        🔍 Generar Reporte
+      }
+    </button>
+    <button type="button" class="btn-secondary" (click)="limpiarFiltros()">
+      Limpiar
+    </button>
+  </div>
+</div>
+
+@if (datosReporte().length > 0) {
+  <div class="table-container">
+    <app-data-table
+      [data]="datosReporte()"
+      [columns]="columnasReporte"
+    />
+  </div>
+}
+
+@if (!cargando() && datosReporte().length === 0 && reporteGenerado()) {
+  <div class="empty-state">
+    <p>No se encontraron movimientos con los filtros aplicados.</p>
+  </div>
+}
