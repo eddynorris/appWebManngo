@@ -1,3 +1,4 @@
+// Sidebar y layout moderno - optimizado para budget
 :host {
   display: block;
   height: 100vh;
@@ -14,32 +15,33 @@
   }
 }
 
-// Sidebar Styles
 .sidebar {
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
   color: white;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #34495e;
-  position: relative;
-  z-index: 1000;
+  border-right: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
 
   .sidebar-header {
-    padding: 1.5rem 1rem;
+    padding: 2rem 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
+    background: rgba(0, 0, 0, 0.1);
 
     .logo {
-      height: 32px;
-      margin-bottom: 0.5rem;
-      border-radius: 4px;
+      height: 40px;
+      margin-bottom: 0.75rem;
+      border-radius: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     }
 
     h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
+      font-size: 1.25rem;
+      font-weight: 700;
       margin: 0;
-      opacity: 0.9;
+      color: white;
+      letter-spacing: 0.5px;
     }
   }
 
@@ -47,29 +49,25 @@
     flex: 1;
     padding: 1rem 0;
 
-    .nav-item-group {
-      margin-bottom: 0;
-    }
-
     .nav-item {
       display: flex;
       align-items: center;
-      padding: 0.875rem 1.25rem;
+      padding: 1rem 1.5rem;
       color: rgba(255, 255, 255, 0.8);
       text-decoration: none;
-      transition: all 0.2s ease;
-      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
+      margin: 0.25rem 0.75rem;
+      border-radius: 0.75rem;
+      position: relative;
 
-      &:hover {
+      &:hover, &.active {
         background: rgba(255, 255, 255, 0.1);
         color: white;
-        border-left-color: #ff4444;
+        transform: translateX(4px);
       }
 
       &.active {
-        background: rgba(255, 68, 68, 0.2);
-        color: white;
-        border-left-color: #ff4444;
+        background: rgba(239, 68, 68, 0.2);
       }
 
       .nav-icon {
@@ -86,9 +84,8 @@
       }
 
       .nav-arrow {
-        font-size: 0.8rem;
-        margin-left: auto;
-        transition: transform 0.2s ease;
+        transition: transform 0.5s ease;
+        opacity: 0.7;
       }
 
       &.nav-item-parent {
@@ -97,35 +94,34 @@
         width: 100%;
         cursor: pointer;
 
-        &:hover {
-          background: rgba(255, 255, 255, 0.1);
-          color: white;
-          border-left-color: #ff4444;
-        }
-
         &.expanded .nav-arrow {
-          transform: rotate(0deg);
+          transform: rotate(90deg);
+          opacity: 1;
         }
       }
 
       &.nav-subitem {
-        padding-left: 3rem;
-        font-size: 0.85rem;
-        
+        padding: 0.75rem 1.5rem 0.75rem 3.5rem;
+        font-size: 0.875rem;
+        margin: 0.125rem 0.75rem;
+        border-radius: 0.5rem;
+
         .nav-icon {
           font-size: 1rem;
+          opacity: 0.8;
         }
       }
     }
 
     .submenu {
-      background: rgba(0, 0, 0, 0.2);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 0 0 0.75rem 0.75rem;
+      margin: 0 0.75rem 0.5rem 0.75rem;
+      padding: 0.5rem 0;
     }
   }
 }
 
-// Main Content Styles
 .main-content {
   display: flex;
   flex-direction: column;
@@ -141,7 +137,7 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #e9ecef;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   .header-left {
     display: flex;
@@ -151,12 +147,10 @@
     .toggle-btn {
       background: none;
       border: none;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       cursor: pointer;
       padding: 0.5rem;
-      border-radius: 4px;
-      transition: background-color 0.2s;
-      color: #495057;
+      border-radius: 0.5rem;
 
       &:hover {
         background: #f8f9fa;
@@ -166,8 +160,8 @@
     h1 {
       font-size: 1.5rem;
       font-weight: 600;
+      color: #2d3748;
       margin: 0;
-      color: #2c3e50;
     }
   }
 
@@ -177,24 +171,21 @@
     gap: 1rem;
 
     .user-info {
-      color: #6c757d;
+      color: #6b7280;
       font-size: 0.9rem;
     }
 
     .logout-btn {
-      background: #ff4444;
+      background: #ef4444;
       color: white;
       border: none;
       padding: 0.5rem 1rem;
-      border-radius: 6px;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
       cursor: pointer;
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: background-color 0.2s, transform 0.1s;
 
       &:hover {
-        background: #e03434;
-        transform: translateY(-1px);
+        background: #dc2626;
       }
     }
   }
@@ -204,38 +195,4 @@
   flex: 1;
   padding: 1.5rem;
   overflow-y: auto;
-  background: #f8f9fa;
-}
-
-// Responsive Design
-@media (max-width: 768px) {
-  .admin-layout {
-    grid-template-columns: 1fr;
-
-    &.sidebar-collapsed {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -260px;
-    width: 260px;
-    height: 100vh;
-    transition: left 0.3s ease;
-    z-index: 1001;
-  }
-
-  .admin-layout:not(.sidebar-collapsed) .sidebar {
-    left: 0;
-  }
-
-  .header h1 {
-    font-size: 1.25rem;
-  }
-
-  .content {
-    padding: 1rem;
-  }
 }

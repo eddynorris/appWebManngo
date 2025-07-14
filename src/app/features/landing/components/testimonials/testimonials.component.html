@@ -1,0 +1,26 @@
+<section id="testimonios" class="testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Habla el Diablo</h2>
+      <p class="section-subtitle">
+        Maestros parrilleros, chefs, competidores y entusiastas de todo el país están viendo la luz
+        (...y el calor. Y la falta de chispas y ceniza. Y... bueno, ya entiendes la idea).
+        Mira las reseñas:
+      </p>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+        <div class="testimonial-content">
+          <blockquote class="testimonial-quote">
+            {{ testimonial.quote }}
+          </blockquote>
+          <div class="testimonial-author">
+            <h4 class="author-name">{{ testimonial.author }}</h4>
+            <p class="author-title">{{ testimonial.title }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

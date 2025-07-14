@@ -1,0 +1,50 @@
+<app-modal
+  [open]="visible"
+  [title]="'Preguntas Frecuentes'"
+  [size]="'lg'"
+  [showFooter]="false"
+  (close)="handleClose()"
+>
+  <div class="faq-content">
+    <div class="faq-intro">
+      <p>
+        Encuentra respuestas a las preguntas más comunes sobre nuestros productos y servicios. 
+        Si no encuentras lo que buscas, no dudes en contactarnos.
+      </p>
+    </div>
+
+    <div class="faq-list">
+      @for (item of faqData; track item.id) {
+        <div class="faq-item" [class.expanded]="isExpanded(item.id)">
+          <div class="faq-question" (click)="toggleExpanded(item.id)">
+            <div class="question-content">
+              <span class="category-tag">{{ item.category }}</span>
+              <h4>{{ item.question }}</h4>
+            </div>
+            <div class="expand-icon" [class.rotated]="isExpanded(item.id)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          
+          @if (isExpanded(item.id)) {
+            <div class="faq-answer">
+              <p>{{ item.answer }}</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="faq-footer">
+      <div class="contact-info">
+        <h4>¿No encontraste lo que buscabas?</h4>
+        <p>
+          Nuestro equipo de atención al cliente está disponible para ayudarte. 
+          Contáctanos a través de nuestros canales oficiales y te responderemos a la brevedad.
+        </p>
+      </div>
+    </div>
+  </div>
+</app-modal>

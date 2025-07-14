@@ -200,19 +200,47 @@
 
 // Filter containers globales
 .filters-container {
-  display: flex;
-  align-items: flex-end;
-  gap: 1.5rem;
   padding: 1.5rem;
   background-color: vars.$color-bg-secondary;
   border-radius: vars.$border-radius;
   margin-bottom: 1.5rem;
   border: 1px solid vars.$color-border;
 
+  .filters-title {
+    font-size: 1.1rem;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-primary;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .filter-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+
+    &.col-1 { grid-column: span 1; }
+    &.col-2 { grid-column: span 2; }
+    &.col-3 { grid-column: span 3; }
+    &.col-4 { grid-column: span 4; }
+    &.col-full { grid-column: 1 / -1; }
+
+    @media (max-width: 768px) {
+      &.col-1, &.col-2, &.col-3, &.col-4, &.col-full {
+        grid-column: span 1;
+      }
+    }
 
     label {
       font-size: vars.$font-size-sm;
@@ -228,6 +256,7 @@
       color: vars.$color-text-primary;
       font-size: vars.$font-size-base;
       transition: vars.$transition-base;
+      width: 100%;
 
       &:focus {
         outline: none;
@@ -235,23 +264,38 @@
         box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
       }
     }
+
+    .filter-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+
+      @media (max-width: 480px) {
+        flex-direction: column;
+      }
+    }
   }
 
-  .filters-title {
-    margin-right: auto;
-    font-size: 1.1rem;
-    font-weight: vars.$font-weight-semibold;
-    color: vars.$color-text-primary;
-    padding-bottom: 0.5rem;
-  }
+  // Legacy support para el layout anterior
+  &:not(:has(.filters-grid)) {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+    .filters-title {
+      margin-right: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0;
+    }
 
-    .filter-group {
-      width: 100%;
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+
+      .filter-group {
+        width: 100%;
+      }
     }
   }
 }

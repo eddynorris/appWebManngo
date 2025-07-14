@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, computed, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ProductService } from '../../services/product.service';
 import { finalize, Observable } from 'rxjs';
 import { Producto, PresentacionProducto } from '../../../../../types/contract.types';
@@ -10,7 +12,7 @@ import { ButtonComponent } from '../../../../../shared/components/button/button.
 @Component({
   selector: 'app-product-form-page',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonComponent],
+  imports: [ReactiveFormsModule, ButtonComponent, FontAwesomeModule],
   templateUrl: './product-form-page.component.html',
   styleUrl: './product-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +23,10 @@ export default class ProductFormPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductService);
   private readonly notificationService = inject(NotificationService);
+
+  // FontAwesome icons
+  faPlus = faPlus;
+  faTrash = faTrash;
 
   isLoading = signal(false);
   private productId = signal<number | null>(null);

@@ -52,8 +52,11 @@
                   @case ('actions') {
                     <div class="actions">
                       @for (action of actions(); track action.action) {
-                        <button (click)="handleAction(action.action, item)" class="btn-icon" [class.danger]="action.danger" [title]="action.label">
-                          {{ action.icon }}
+                        <button (click)="handleAction(action.action, item)" class="btn-action">
+                          <fa-icon [icon]="action.icon"></fa-icon>
+                          @if (action.label) {
+                            <span>{{ action.label }}</span>
+                          }
                         </button>
                       }
                     </div>

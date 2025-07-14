@@ -1,0 +1,46 @@
+<section id="recetas" class="recipes-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">¡EL GRAN BBQ VALE LA PENA LUCHAR POR ÉL!</h2>
+      <p class="section-subtitle">
+        Conoce a los "Guerreros de la Llama", las fuerzas más poderosas del BBQ jamás reunidas.
+        Aprende técnicas, recetas y secretos de los maestros.
+      </p>
+    </div>
+
+    <div class="recipes-grid">
+      <div class="recipe-card" *ngFor="let recipe of recipes">
+        <div class="recipe-image">
+          <div class="recipe-placeholder" [style.background]="recipe.gradient">
+            <span class="recipe-icon">{{ recipe.icon }}</span>
+          </div>
+        </div>
+        <div class="recipe-content">
+          <h3 class="recipe-title">{{ recipe.title }}</h3>
+          <p class="recipe-description">{{ recipe.description }}</p>
+          <div class="recipe-meta">
+            <span class="recipe-time">{{ recipe.time }}</span>
+            <span class="recipe-difficulty">{{ recipe.difficulty }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h3 class="video-title">Episodios de los Guerreros de la Llama</h3>
+      <div class="video-grid">
+        <div class="video-card" *ngFor="let video of videos">
+          <div class="video-thumbnail">
+            <div class="video-placeholder">
+              <span class="play-button">▶</span>
+            </div>
+          </div>
+          <div class="video-info">
+            <h4 class="video-name">{{ video.title }}</h4>
+            <p class="video-desc">{{ video.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

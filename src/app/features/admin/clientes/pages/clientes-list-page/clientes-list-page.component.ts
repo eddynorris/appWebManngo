@@ -8,6 +8,7 @@ import { ColumnConfig, ActionConfig } from '../../../../../shared/components/dat
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-clientes-list-page',
@@ -37,8 +38,8 @@ export default class ClientesListPageComponent {
   ];
 
   actions: ActionConfig[] = [
-    { icon: '✏️', label: 'Editar', action: 'edit' },
-    { icon: '🗑️', label: 'Eliminar', action: 'delete', danger: true },
+    { icon: faEdit, label: '', action: 'edit' },
+    { icon: faTrash, label: '', action: 'delete', danger: true },
   ];
 
   ngOnInit(): void {

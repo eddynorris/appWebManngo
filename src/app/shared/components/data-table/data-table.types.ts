@@ -1,3 +1,5 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+
 export interface ColumnConfig<T> {
   key: string;
   label: string;
@@ -7,8 +9,8 @@ export interface ColumnConfig<T> {
 }
 
 export interface ActionConfig {
-  icon: string;
+  icon: IconDefinition;
   label: string;
-  action: 'edit' | 'delete' | 'toggleStatus' | 'view';
+  action: 'edit' | 'delete' | 'toggleStatus' | 'view' | 'pagos' | string;
   danger?: boolean; // Para estilizar botones peligrosos como el de eliminar
 }

@@ -1,0 +1,39 @@
+.privacy-content {
+  .section {
+    margin-bottom: 1.5rem;
+    
+    h3 {
+      color: var(--primary-color, #2c3e50);
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    p {
+      color: var(--text-color, #555);
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+    
+    ul {
+      color: var(--text-color, #555);
+      line-height: 1.6;
+      padding-left: 1.25rem;
+      
+      li {
+        margin-bottom: 0.25rem;
+      }
+    }
+  }
+  
+  .last-updated {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color, #e0e0e0);
+    
+    small {
+      color: var(--text-muted, #888);
+    }
+  }
+}

@@ -11,6 +11,7 @@ import { ColumnConfig, ActionConfig } from '../../../../../shared/components/dat
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { VentaDetalleModalComponent } from '../../components/venta-detalle-modal/venta-detalle-modal.component';
+import { faEdit, faEye } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-ventas-list-page',
@@ -49,8 +50,8 @@ export default class VentasListPageComponent implements OnInit {
   ];
 
   actions: ActionConfig[] = [
-    { icon: '📄', label: 'Ver Detalle', action: 'view' },
-    { icon: '✏️', label: 'Editar', action: 'edit' },
+    { icon: faEye, label: '', action: 'view' },
+    { icon: faEdit, label: '', action: 'edit' },
   ];
 
   ngOnInit(): void {

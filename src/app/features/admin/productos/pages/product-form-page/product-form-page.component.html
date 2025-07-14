@@ -39,7 +39,10 @@
       <div class="form-section" formArrayName="presentaciones">
         <div class="section-header">
           <h2 class="section-title">Presentaciones</h2>
-          <app-button type="button" variant="secondary" (click)="addPresentacion()">➕ Añadir Presentación</app-button>
+          <app-button type="button" variant="secondary" (click)="addPresentacion()">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            Añadir Presentación
+          </app-button>
         </div>
 
         @if (presentaciones.controls.length === 0) {
@@ -52,7 +55,10 @@
           <div [formGroupName]="$index" class="presentacion-group">
             <div class="presentacion-header">
               <h3>Presentación #{{ $index + 1 }}</h3>
-              <app-button type="button" variant="danger" (click)="removePresentacion($index)">🗑️ Eliminar</app-button>
+              <app-button type="button" variant="danger" (click)="removePresentacion($index)">
+                <fa-icon [icon]="faTrash"></fa-icon>
+                Eliminar
+              </app-button>
             </div>
             <div class="form-grid">
               <div class="input-group">

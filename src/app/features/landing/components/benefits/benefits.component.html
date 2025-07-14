@@ -1,0 +1,25 @@
+<section id="beneficios" class="benefits-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">
+        Nuestro épico y extenso portafolio de productos BBQ está unido por tres características:
+      </h2>
+    </div>
+
+    <div class="benefits-grid">
+      <div class="benefit-card" *ngFor="let benefit of benefits">
+        <div class="benefit-icon">
+          <span class="icon">{{ benefit.icon }}</span>
+        </div>
+        <h3 class="benefit-title">{{ benefit.title }}</h3>
+        <p class="benefit-description">{{ benefit.description }}</p>
+      </div>
+    </div>
+
+    <div class="quality-statement">
+      <h3 class="quality-title">
+        Esto asegura que nuestro carbón sea el más caliente, duradero y limpio disponible.
+      </h3>
+    </div>
+  </div>
+</section>

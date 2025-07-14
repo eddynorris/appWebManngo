@@ -1,195 +1,35 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SmoothScrollService } from '../../services/smooth-scroll.service';
 
 @Component({
   selector: 'app-landing-header',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <header class="header">
-      <nav class="navbar">
-        <div class="nav-container">
-          <!-- Logo -->
-          <div class="nav-logo">
-            <a href="#" class="logo-link">
-              <span class="logo-text">MANNGO</span>
-            </a>
-          </div>
-
-          <!-- Desktop Navigation -->
-          <ul class="nav-menu" [class.active]="isMenuOpen">
-            <li class="nav-item">
-              <a href="#productos" class="nav-link">PRODUCTOS</a>
-            </li>
-            <li class="nav-item">
-              <a href="#beneficios" class="nav-link">BENEFICIOS</a>
-            </li>
-            <li class="nav-item">
-              <a href="#recetas" class="nav-link">RECETAS</a>
-            </li>
-            <li class="nav-item">
-              <a href="#testimonios" class="nav-link">TESTIMONIOS</a>
-            </li>
-            <li class="nav-item">
-              <a href="#contacto" class="nav-link">CONTACTO</a>
-            </li>
-            <li class="nav-item">
-              <a href="/admin" class="nav-link admin-link">ADMIN</a>
-            </li>
-          </ul>
-
-          <!-- Mobile Menu Toggle -->
-          <div class="nav-toggle" (click)="toggleMenu()">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </div>
-        </div>
-      </nav>
-    </header>
-  `,
-  styles: [`
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-    }
-
-    .navbar {
-      padding: 1rem 0;
-    }
-
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .nav-logo .logo-text {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #ff4444;
-      text-decoration: none;
-      letter-spacing: 2px;
-    }
-
-    .nav-menu {
-      display: flex;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      gap: 2rem;
-    }
-
-    .nav-link {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-      transition: color 0.3s ease;
-      position: relative;
-    }
-
-    .nav-link:hover {
-      color: #ff4444;
-    }
-
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: #ff4444;
-      transition: width 0.3s ease;
-    }
-
-    .nav-link:hover::after {
-      width: 100%;
-    }
-
-    .admin-link {
-      background: #ff4444;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      transition: background 0.3s ease;
-    }
-
-    .admin-link:hover {
-      background: #ff6666;
-      color: #fff;
-    }
-
-    .admin-link::after {
-      display: none;
-    }
-
-    .nav-toggle {
-      display: none;
-      flex-direction: column;
-      cursor: pointer;
-    }
-
-    .bar {
-      width: 25px;
-      height: 3px;
-      background: #fff;
-      margin: 3px 0;
-      transition: 0.3s;
-    }
-
-    /* Mobile Styles */
-    @media (max-width: 768px) {
-      .nav-menu {
-        position: fixed;
-        left: -100%;
-        top: 70px;
-        flex-direction: column;
-        background: rgba(0, 0, 0, 0.95);
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        backdrop-filter: blur(10px);
-        padding: 2rem 0;
-        gap: 1rem;
-      }
-
-      .nav-menu.active {
-        left: 0;
-      }
-
-      .nav-toggle {
-        display: flex;
-      }
-
-      .nav-toggle.active .bar:nth-child(2) {
-        opacity: 0;
-      }
-
-      .nav-toggle.active .bar:nth-child(1) {
-        transform: translateY(8px) rotate(45deg);
-      }
-
-      .nav-toggle.active .bar:nth-child(3) {
-        transform: translateY(-8px) rotate(-45deg);
-      }
-    }
-  `]
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LandingHeaderComponent {
+export class LandingHeaderComponent implements OnInit {
+  private readonly smoothScrollService = inject(SmoothScrollService);
+  
   isMenuOpen = false;
+  activeSection = this.smoothScrollService.getActiveSection();
 
-  toggleMenu() {
+  ngOnInit(): void {
+    this.smoothScrollService.initializeScrollSpy();
+  }
+
+  toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  scrollToSection(sectionId: string): void {
+    this.smoothScrollService.scrollToSection(sectionId);
+    this.isMenuOpen = false; // Cerrar menú móvil después de navegar
+  }
+
+  isActiveSection(sectionId: string): boolean {
+    return this.activeSection() === sectionId;
   }
 }

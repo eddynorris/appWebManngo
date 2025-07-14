@@ -1,0 +1,108 @@
+<app-modal
+  [open]="visible"
+  [title]="'Términos y Condiciones'"
+  [size]="'lg'"
+  [showFooter]="false"
+  (close)="handleClose()"
+>
+  <div class="terms-content">
+    <div class="section">
+      <h3>1. Aceptación de los Términos</h3>
+      <p>
+        Al acceder y utilizar el sitio web de Manngo, usted acepta cumplir con estos términos y condiciones. 
+        Si no está de acuerdo con alguno de estos términos, no debe utilizar nuestro sitio web.
+      </p>
+    </div>
+
+    <div class="section">
+      <h3>2. Productos y Servicios</h3>
+      <p>
+        Manngo se especializa en la producción y distribución de productos alimentarios de alta calidad. 
+        Nos reservamos el derecho de:
+      </p>
+      <ul>
+        <li>Modificar la disponibilidad de productos sin previo aviso</li>
+        <li>Cambiar precios y especificaciones de productos</li>
+        <li>Discontinuar productos según nuestras políticas comerciales</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>3. Pedidos y Pagos</h3>
+      <p>
+        Al realizar un pedido, usted confirma que:
+      </p>
+      <ul>
+        <li>La información proporcionada es veraz y completa</li>
+        <li>Tiene autorización para usar el método de pago seleccionado</li>
+        <li>Acepta pagar el precio total incluyendo impuestos y gastos de envío</li>
+      </ul>
+      <p>
+        Nos reservamos el derecho de cancelar pedidos por razones de disponibilidad, 
+        errores en precios o problemas con el método de pago.
+      </p>
+    </div>
+
+    <div class="section">
+      <h3>4. Entrega y Transporte</h3>
+      <p>
+        Los tiempos de entrega son estimados y pueden variar según la ubicación y disponibilidad. 
+        Manngo no se hace responsable por retrasos causados por circunstancias fuera de nuestro control.
+      </p>
+    </div>
+
+    <div class="section">
+      <h3>5. Devoluciones y Reembolsos</h3>
+      <p>
+        Debido a la naturaleza perecedera de nuestros productos:
+      </p>
+      <ul>
+        <li>Solo aceptamos devoluciones por productos defectuosos o dañados</li>
+        <li>Las reclamaciones deben realizarse dentro de las 24 horas posteriores a la entrega</li>
+        <li>Se requiere evidencia fotográfica para procesar reclamos</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>6. Uso del Sitio Web</h3>
+      <p>
+        Usted se compromete a:
+      </p>
+      <ul>
+        <li>Usar el sitio web únicamente para fines legales</li>
+        <li>No interferir con el funcionamiento del sitio</li>
+        <li>No realizar actividades que puedan dañar nuestra reputación</li>
+        <li>Respetar los derechos de propiedad intelectual</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>7. Limitación de Responsabilidad</h3>
+      <p>
+        Manngo no será responsable por daños indirectos, incidentales o consecuenciales 
+        que puedan surgir del uso de nuestros productos o servicios, excepto en los casos 
+        expresamente previstos por la ley.
+      </p>
+    </div>
+
+    <div class="section">
+      <h3>8. Modificaciones</h3>
+      <p>
+        Nos reservamos el derecho de modificar estos términos y condiciones en cualquier momento. 
+        Las modificaciones entrarán en vigor inmediatamente después de su publicación en el sitio web.
+      </p>
+    </div>
+
+    <div class="section">
+      <h3>9. Contacto</h3>
+      <p>
+        Para cualquier consulta sobre estos términos y condiciones, puede contactarnos a través 
+        de nuestros canales oficiales de atención al cliente.
+      </p>
+    </div>
+
+    <div class="last-updated">
+      <small><em>Última actualización: {{ getCurrentDate() }}</em></small>
+    </div>
+  </div>
+</app-modal>

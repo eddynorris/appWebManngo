@@ -1,0 +1,88 @@
+<footer id="contacto" class="footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- Productos -->
+        <div class="footer-section">
+          <h3 class="footer-title">PRODUCTOS</h3>
+          <ul class="footer-links">
+            <li><a (click)="scrollToSection('productos')" class="nav-link" style="cursor: pointer;">Sacos de carbon de 30kg</a></li>
+            <li><a (click)="scrollToSection('productos')" class="nav-link" style="cursor: pointer;">Sacos de carbon de 20kg</a></li>
+            <li><a (click)="scrollToSection('productos')" class="nav-link" style="cursor: pointer;">Sacos de carbon de 10kg</a></li>
+            <li><a (click)="scrollToSection('productos')" class="nav-link" style="cursor: pointer;">Sacos de carbon de 5kg</a></li>
+            <li><a (click)="scrollToSection('productos')" class="nav-link" style="cursor: pointer;">Briquetas de carbon de 4kg</a></li>
+            <li><a (click)="scrollToSection('productos')" class="nav-link" style="cursor: pointer;">Bolsas de carbon de 5kg</a></li>
+            <li><a (click)="scrollToSection('productos')" class="nav-link" style="cursor: pointer;">Bolsas de carbon de 3kg</a></li>
+          </ul>
+        </div>
+
+        <!-- Empresa -->
+        <div class="footer-section">
+          <h3 class="footer-title">EMPRESA</h3>
+          <ul class="footer-links">
+            <li><a (click)="openStoryModal()" class="footer-link" style="cursor: pointer;">Nuestra Historia</a></li>
+            <li><a (click)="openFaqModal()" class="footer-link" style="cursor: pointer;">FAQ</a></li>
+          </ul>
+        </div>
+
+        <!-- Redes Sociales -->
+        <div class="footer-section">
+          <h3 class="footer-title">SOCIAL</h3>
+          <div class="social-links">
+            <a href="https://www.facebook.com/manngodist" class="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><fa-icon [icon]="['fab', 'facebook-f']"></fa-icon></a>
+            <a href="https://www.instagram.com/manngocarbon/" class="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><fa-icon [icon]="['fab', 'instagram']"></fa-icon></a>
+            <a href="https://www.youtube.com/@manngoCharcoal" class="social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><fa-icon [icon]="['fab', 'youtube']"></fa-icon></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slogan animado -->
+  <div class="footer-slogan">
+    <div class="slogan-scroll">
+      <span class="slogan-text">Potencia que transforma, sabor que perdura.</span>
+      <span class="slogan-text"> 🔥 🔥 🔥 </span>
+      <span class="slogan-text">No es solo fuego, es el alma de la parrilla.</span>
+      <span class="slogan-text"> 🔥 🔥 🔥 </span>
+      <span class="slogan-text">Potencia que transforma, sabor que perdura.</span>
+    </div>
+  </div>
+
+  <!-- Footer bottom -->
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-content">
+        <div class="footer-info">
+          <p></p>
+          <p>Manngo j&k EIRL ©2025</p>
+        </div>
+        <div class="footer-legal">
+          <a (click)="openPrivacyModal()" class="legal-link" style="cursor: pointer;">Política de Privacidad</a>
+          <a (click)="openTermsModal()" class="legal-link" style="cursor: pointer;">Términos y Condiciones</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Modales -->
+<app-privacy-policy-modal
+  [visible]="showPrivacyModal()"
+  (close)="closePrivacyModal()"
+/>
+
+<app-terms-conditions-modal
+  [visible]="showTermsModal()"
+  (close)="closeTermsModal()"
+/>
+
+<app-our-story-modal
+  [visible]="showStoryModal()"
+  (close)="closeStoryModal()"
+/>
+
+<app-faq-modal
+  [visible]="showFaqModal()"
+  (close)="closeFaqModal()"
+/>

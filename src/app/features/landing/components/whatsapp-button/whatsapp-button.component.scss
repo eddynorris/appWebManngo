@@ -1,0 +1,55 @@
+@use '../../../../../styles/variables' as vars;
+
+.whatsapp-button {
+  display: inline-flex;
+  align-items: center;
+  gap: vars.$spacer-xs;
+  padding: vars.$spacer-sm vars.$spacer-md;
+  background-color: #25D366;
+  color: white;
+  border-radius: vars.$border-radius-pill;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: vars.$font-size-sm;
+  transition: all 0.3s ease;
+  box-shadow: vars.$box-shadow-sm;
+  position: fixed;
+  bottom: vars.$spacer-lg;
+  right: vars.$spacer-lg;
+  z-index: 1000;
+
+  &:hover {
+    background-color: #1DA851;
+    transform: translateY(-2px);
+    box-shadow: vars.$box-shadow-sm;
+    color: white;
+  }
+
+  &:focus {
+    outline: 2px solid vars.$color-primary;
+    outline-offset: 2px;
+  }
+
+  fa-icon {
+    font-size: 1.2rem;
+  }
+
+  .button-text {
+    white-space: nowrap;
+  }
+
+  // Responsive behavior
+  @media (max-width: 768px) {
+    bottom: vars.$spacer-md;
+    right: vars.$spacer-md;
+    padding: vars.$spacer-sm;
+
+    .button-text {
+      display: none;
+    }
+
+    fa-icon {
+      font-size: 1.5rem;
+    }
+  }
+}

@@ -1,12 +1,13 @@
 import { Component, ChangeDetectionStrategy, input, output, ContentChild, TemplateRef } from '@angular/core';
 import { CurrencyPipe, DatePipe, NgTemplateOutlet } from '@angular/common';
 import { ColumnConfig, ActionConfig } from './data-table.types';
-import { RouterLink } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CurrencyPipe, DatePipe, NgTemplateOutlet],
+  imports: [CurrencyPipe, DatePipe, NgTemplateOutlet, FontAwesomeModule],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

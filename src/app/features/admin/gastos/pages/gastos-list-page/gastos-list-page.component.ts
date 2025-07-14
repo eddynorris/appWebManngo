@@ -10,6 +10,7 @@ import { ColumnConfig, ActionConfig } from '../../../../../shared/components/dat
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-gastos-list-page',
@@ -47,8 +48,8 @@ export default class GastosListPageComponent implements OnInit {
   ];
 
   actions: ActionConfig[] = [
-    { icon: '✏️', label: 'Editar', action: 'edit' },
-    { icon: '🗑️', label: 'Eliminar', action: 'delete', danger: true },
+    { icon: faEdit, label: '', action: 'edit' },
+    { icon: faTrash, label: '', action: 'delete', danger: true },
   ];
 
   ngOnInit(): void {

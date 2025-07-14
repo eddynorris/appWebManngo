@@ -4,6 +4,11 @@
     // Los estilos base ya están en las clases globales
 
     .modal-content {
+      display: flex; // Añadir esto para que el header, body y footer se organicen
+      flex-direction: column; // Organizar el contenido en columna
+      max-height: 90vh; // Define una altura máxima, 90% de la altura de la ventana
+      overflow-y: auto;
+
       // Tamaños específicos del modal
       &.modal-sm {
         width: 90%;

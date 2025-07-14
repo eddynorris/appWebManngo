@@ -1,0 +1,41 @@
+<header class="header">
+  <nav class="navbar">
+    <div class="nav-container">
+      <!-- Logo -->
+      <div class="nav-logo">
+        <a (click)="scrollToSection('hero')" class="logo-link" style="cursor: pointer;">
+          <img src="assets/images/manngo-logo-3.png" alt="Manngo Logo" class="logo-image" width="160" height="auto">
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <ul class="nav-menu" [class.active]="isMenuOpen">
+        <li class="nav-item">
+          <a (click)="scrollToSection('productos')" class="nav-link" [class.active]="isActiveSection('productos')" style="cursor: pointer;">PRODUCTOS</a>
+        </li>
+<!--         <li class="nav-item">
+          <a (click)="scrollToSection('beneficios')" class="nav-link" [class.active]="isActiveSection('beneficios')" style="cursor: pointer;">BENEFICIOS</a>
+        </li>
+        <li class="nav-item">
+          <a (click)="scrollToSection('recetas')" class="nav-link" [class.active]="isActiveSection('recetas')" style="cursor: pointer;">RECETAS</a>
+        </li> -->
+        <li class="nav-item">
+          <a (click)="scrollToSection('testimonios')" class="nav-link" [class.active]="isActiveSection('testimonios')" style="cursor: pointer;">TESTIMONIOS</a>
+        </li>
+        <li class="nav-item">
+          <a (click)="scrollToSection('contacto')" class="nav-link" [class.active]="isActiveSection('contacto')" style="cursor: pointer;">CONTACTO</a>
+        </li>
+        <li class="nav-item">
+          <a href="/admin" class="nav-link admin-link">ADMIN</a>
+        </li>
+      </ul>
+
+      <!-- Mobile Menu Toggle -->
+      <div class="nav-toggle" (click)="toggleMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+</header>

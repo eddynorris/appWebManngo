@@ -14,13 +14,15 @@
               (click)="toggleSubmenu(item.label)"
               class="nav-item nav-item-parent"
               [class.expanded]="isSubmenuExpanded(item.label)">
-              <span class="nav-icon">{{ item.icon }}</span>
+              <span class="nav-icon">
+                <fa-icon [icon]="item.icon"></fa-icon>
+              </span>
               <span class="nav-label">{{ item.label }}</span>
               <span class="nav-arrow">
                 @if (isSubmenuExpanded(item.label)) {
-                  ▼
+                  <fa-icon [icon]="faChevronDown"></fa-icon>
                 } @else {
-                  ▶
+                  <fa-icon [icon]="faChevronRight"></fa-icon>
                 }
               </span>
             </button>
@@ -31,7 +33,9 @@
                     [routerLink]="subitem.route"
                     routerLinkActive="active"
                     class="nav-item nav-subitem">
-                    <span class="nav-icon">{{ subitem.icon }}</span>
+                    <span class="nav-icon">
+                      <fa-icon [icon]="subitem.icon"></fa-icon>
+                    </span>
                     <span class="nav-label">{{ subitem.label }}</span>
                   </a>
                 }
@@ -43,7 +47,9 @@
             [routerLink]="item.route"
             routerLinkActive="active"
             class="nav-item">
-            <span class="nav-icon">{{ item.icon }}</span>
+            <span class="nav-icon">
+              <fa-icon [icon]="item.icon"></fa-icon>
+            </span>
             <span class="nav-label">{{ item.label }}</span>
           </a>
         }
@@ -57,11 +63,7 @@
     <header class="header">
       <div class="header-left">
         <button (click)="toggleSidebar()" class="toggle-btn">
-          @if (isSidebarOpen()) {
-            ☰
-          } @else {
-            ☰
-          }
+          <fa-icon [icon]="faBars"></fa-icon>
         </button>
         <h1>Panel de Administración</h1>
       </div>
@@ -69,7 +71,8 @@
       <div class="header-right">
         <span class="user-info">Bienvenido, Admin</span>
         <button (click)="logout()" class="logout-btn">
-          🚪 Salir
+          <fa-icon [icon]="faSignOutAlt"></fa-icon>
+          Salir
         </button>
       </div>
     </header>

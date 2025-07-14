@@ -1,0 +1,105 @@
+.story-content {
+  .hero-section {
+    margin-bottom: 2rem;
+    
+    .story-intro {
+      .lead {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--primary-color, #2c3e50);
+        line-height: 1.6;
+        text-align: center;
+        margin-bottom: 1rem;
+        font-style: italic;
+      }
+    }
+  }
+
+  .section {
+    margin-bottom: 1.5rem;
+    
+    h3 {
+      color: var(--primary-color, #2c3e50);
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    p {
+      color: var(--text-color, #555);
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+
+    .value-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: var(--background-light, #f8f9fa);
+      border: 1px solid var(--border-color, #e0e0e0);
+
+      .value-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      .value-content {
+        h4 {
+          color: var(--primary-color, #2c3e50);
+          font-size: 1rem;
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+        }
+
+        p {
+          color: var(--text-color, #666);
+          font-size: 0.9rem;
+          line-height: 1.4;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .closing-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--primary-color, #2c3e50);
+    
+    .thank-you {
+      text-align: center;
+      
+      h3 {
+        color: var(--primary-color, #2c3e50);
+        font-size: 1.3rem;
+        margin-bottom: 0.75rem;
+      }
+      
+      p {
+        color: var(--text-color, #555);
+        font-size: 1rem;
+        line-height: 1.6;
+        font-style: italic;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .values-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .hero-section .story-intro .lead {
+      font-size: 1.1rem;
+    }
+  }
+}

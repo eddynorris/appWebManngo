@@ -7,10 +7,10 @@ import { LandingRecipesPreviewComponent } from '../components/recipes-preview/re
 import { LandingTestimonialsComponent } from '../components/testimonials/testimonials.component';
 import { LandingCtaBannerComponent } from '../components/cta-banner/cta-banner.component';
 import { LandingFooterComponent } from '../components/footer/footer.component';
+import { WhatsappButtonComponent } from '../components/whatsapp-button/whatsapp-button.component';
 
 @Component({
   selector: 'app-landing-home',
-  standalone: true,
   imports: [
     LandingHeaderComponent,
     LandingHeroComponent,
@@ -19,17 +19,24 @@ import { LandingFooterComponent } from '../components/footer/footer.component';
     LandingRecipesPreviewComponent,
     LandingTestimonialsComponent,
     LandingCtaBannerComponent,
-    LandingFooterComponent
+    LandingFooterComponent,
+    WhatsappButtonComponent
   ],
   template: `
     <app-landing-header />
     <app-landing-hero />
     <app-landing-products-preview />
-    <app-landing-benefits />
+<!--<app-landing-benefits />
     <app-landing-recipes-preview />
-    <app-landing-testimonials />
+    <app-landing-testimonials /> -->
     <app-landing-cta-banner />
     <app-landing-footer />
+
+    <!-- WhatsApp Button -->
+    <app-whatsapp-button
+      phoneNumber="+51927577215"
+      message="¡Hola! Me interesa conocer más sobre sus productos de carbón Manngo."
+      buttonText="Contactar" />
   `
 })
 export class HomePage {}

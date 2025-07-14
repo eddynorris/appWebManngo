@@ -1,0 +1,45 @@
+<section id="productos" class="products-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">ECHA UN VISTAZO A</h2>
+      <h3 class="section-subtitle">TODA LA LÍNEA AQUÍ</h3>
+      <p class="section-description">
+        Carbón cuidadadosamente escogido para su negocio, parrilla u hogar. Humo minimo y no chispea
+        Mira ese potencial !!!
+      </p>
+    </div>
+
+    <div class="products-grid">
+      <div class="product-card" *ngFor="let product of products">
+        <div class="product-image">
+          @if (product.imageSrc) {
+            <img
+              [ngSrc]="product.imageSrc"
+              [alt]="product.name"
+              [width]="product.imageWidth"
+              [height]="product.imageHeight"
+              priority="true"
+              class="product-img"
+            />
+          } @else {
+            <div class="product-placeholder" [style.background]="product.color">
+              <span class="product-icon">{{ product.icon }}</span>
+            </div>
+          }
+        </div>
+        <div class="product-info">
+          <h4 class="product-name">{{ product.name }}</h4>
+          <p class="product-description">{{ product.description }}</p>
+          <p class="product-link">VER DETALLES</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-footer">
+      <a href="https://wa.me/51927577215?text=¡Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos%20de%20carbón%20Manngo."
+      class="btn-view-all"
+      target="_blank"
+      rel="noopener noreferrer">PRUEBALO AHORA!!</a>
+    </div>
+  </div>
+</section>

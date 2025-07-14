@@ -1,0 +1,68 @@
+<app-modal
+  [open]="visible"
+  [title]="'Política de Privacidad'"
+  [size]="'lg'"
+  [showFooter]="false"
+  (close)="handleClose()"
+>
+  <div class="privacy-content">
+    <div class="section">
+      <h3>1. Información que Recopilamos</h3>
+      <p>
+        En Manngo, recopilamos únicamente la información necesaria para brindarle nuestros servicios de calidad.
+        Esto incluye datos de contacto como nombre, email y teléfono cuando se registra en nuestro sitio web
+        o realiza una compra.
+      </p>
+    </div>
+
+    <div class="section">
+      <h3>2. Uso de la Información</h3>
+      <p>
+        Utilizamos su información personal para:
+      </p>
+      <ul>
+        <li>Procesar y entregar sus pedidos</li>
+        <li>Comunicarnos sobre el estado de sus compras</li>
+        <li>Enviar información sobre nuevos productos y promociones (si ha optado por recibirlas)</li>
+        <li>Mejorar nuestros servicios y experiencia del usuario</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>3. Protección de Datos</h3>
+      <p>
+        Nos comprometemos a proteger su información personal mediante medidas de seguridad técnicas y
+        organizacionales apropiadas. No vendemos, intercambiamos ni transferimos su información personal
+        a terceros sin su consentimiento, excepto cuando sea necesario para completar una transacción
+        o cumplir con requisitos legales.
+      </p>
+    </div>
+
+    <div class="section">
+      <h3>4. Cookies</h3>
+      <p>
+        Nuestro sitio web utiliza cookies para mejorar su experiencia de navegación y analizar el tráfico.
+        Puede configurar su navegador para rechazar cookies, aunque esto puede afectar la funcionalidad
+        del sitio.
+      </p>
+    </div>
+
+    <div class="section">
+      <h3>5. Sus Derechos</h3>
+      <p>
+        Usted tiene derecho a:
+      </p>
+      <ul>
+        <li>Acceder a su información personal</li>
+        <li>Corregir datos inexactos</li>
+        <li>Solicitar la eliminación de sus datos</li>
+        <li>Oponerse al procesamiento de sus datos</li>
+        <li>Solicitar la portabilidad de sus datos</li>
+      </ul>
+    </div>
+
+    <div class="last-updated">
+      <small><em>Última actualización: {{ getCurrentDate() }}</em></small>
+    </div>
+  </div>
+</app-modal>

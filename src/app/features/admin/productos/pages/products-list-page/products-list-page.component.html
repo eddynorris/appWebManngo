@@ -4,13 +4,18 @@
       <h1>Gestión de Productos</h1>
       <p>Busca, crea, edita y gestiona todos tus productos</p>
     </div>
-    <a routerLink="/admin/products/new" class="btn-primary">➕ Nuevo Producto</a>
+    <a routerLink="/admin/products/new" class="btn-primary">
+      <fa-icon [icon]="faPlus"></fa-icon>
+      Nuevo Producto
+    </a>
   </div>
 
   <!-- Filters Section -->
   <div class="filters-section">
     <div class="search-box">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon">
+        <fa-icon [icon]="faSearch"></fa-icon>
+      </span>
       <input
         type="text"
         placeholder="Buscar por nombre o descripción..."

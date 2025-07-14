@@ -3,7 +3,8 @@
     <h1>Dashboard - Sistema Manngo</h1>
     <p>Monitoreo de alertas y estado general del sistema</p>
     <button (click)="refresh()" class="refresh-btn" [disabled]="isLoading()">
-      🔄 Actualizar
+      <fa-icon [icon]="faSync"></fa-icon>
+      Actualizar
     </button>
   </div>
 
@@ -14,7 +15,9 @@
     </div>
   } @else if (error()) {
     <div class="error-state">
-      <div class="error-icon">⚠️</div>
+      <div class="error-icon">
+        <fa-icon [icon]="faExclamationTriangle"></fa-icon>
+      </div>
       <h3>Error al cargar los datos</h3>
       <p>{{ error() }}</p>
       <button (click)="refresh()" class="btn-primary">Reintentar</button>
@@ -24,7 +27,9 @@
     <section class="metrics-summary">
       <div class="metric-card stock-alerts">
         <div class="metric-header">
-          <span class="metric-icon">📦</span>
+          <span class="metric-icon">
+            <fa-icon [icon]="faBoxes"></fa-icon>
+          </span>
           <span class="metric-value">{{ totalAlertasStock() }}</span>
         </div>
         <div class="metric-title">Productos con Stock Bajo</div>
@@ -32,7 +37,9 @@
 
       <div class="metric-card batch-alerts">
         <div class="metric-header">
-          <span class="metric-icon">🏷️</span>
+          <span class="metric-icon">
+            <fa-icon [icon]="faTag"></fa-icon>
+          </span>
           <span class="metric-value">{{ totalLotesBajos() }}</span>
         </div>
         <div class="metric-title">Lotes con Cantidad Baja</div>
@@ -40,7 +47,9 @@
 
       <div class="metric-card pending-clients">
         <div class="metric-header">
-          <span class="metric-icon">💰</span>
+          <span class="metric-icon">
+            <fa-icon [icon]="faMoneyBillWave"></fa-icon>
+          </span>
           <span class="metric-value">{{ totalClientesPendientes() }}</span>
         </div>
         <div class="metric-title">Clientes con Saldo Pendiente</div>
@@ -50,56 +59,46 @@
     <!-- Clientes con Saldo Pendiente -->
     <section class="clientes-pendientes-section">
       <div class="section-header">
-        <h2>👥 Clientes con Saldo Pendiente</h2>
+        <h2>
+          <fa-icon [icon]="faUsers"></fa-icon>
+          Clientes con Saldo Pendiente
+        </h2>
       </div>
 
-      @if (clientesSaldoPendiente().length === 0) {
+      @if (clientesParaTabla().length === 0) {
         <div class="empty-state">
-          <div class="empty-icon">✅</div>
+          <div class="empty-icon">
+            <fa-icon [icon]="faCheckCircle"></fa-icon>
+          </div>
           <h3>¡Al día!</h3>
           <p>No hay clientes con saldos pendientes.</p>
         </div>
       } @else {
         <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>ID Cliente</th>
-                <th>Nombre</th>
-                <th>Saldo Pendiente</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (cliente of clientesSaldoPendiente(); track cliente.cliente_id) {
-                <tr>
-                  <td class="cliente-id">#{{ cliente.cliente_id }}</td>
-                  <td class="cliente-nombre">{{ cliente.nombre }}</td>
-                  <td class="cliente-saldo">{{ cliente.saldo_pendiente_total | currency:'S/ ' }}</td>
-                  <td class="acciones">
-                    <button class="btn-action" type="button" (click)="onViewDeuda(cliente.cliente_id)" title="Ver detalle del cliente">
-                      👁️ Ver
-                    </button>
-                    <button class="btn-action" type="button" (click)="onGoToPagos(cliente.cliente_id)" title="Gestionar pagos">
-                      💰 Pagos
-                    </button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+          <app-data-table
+            [data]="clientesParaTabla()"
+            [columns]="columnasClientes"
+            [actions]="accionesClientes"
+            [isLoading]="isLoading()"
+            (onAction)="handleTableAction($event)"
+          />
         </div>
       }
     </section>
     <!-- Alertas de Stock Bajo por Almacén -->
     <section class="stock-alerts-section">
       <div class="section-header">
-        <h2>🏪 Alertas de Stock Bajo por Almacén</h2>
+        <h2>
+          <fa-icon [icon]="faStore"></fa-icon>
+          Alertas de Stock Bajo por Almacén
+        </h2>
       </div>
 
       @if (stockPorAlmacenes().length === 0) {
         <div class="empty-state">
-          <div class="empty-icon">✅</div>
+          <div class="empty-icon">
+            <fa-icon [icon]="faCheckCircle"></fa-icon>
+          </div>
           <h3>¡Excelente!</h3>
           <p>No hay productos con stock bajo en ningún almacén.</p>
         </div>
@@ -126,9 +125,11 @@
                          [class.critica]="producto.cantidad <= (producto.stock_minimo * 0.5)"
                          [class.media]="producto.cantidad > (producto.stock_minimo * 0.5) && producto.cantidad < producto.stock_minimo">
                       @if (producto.cantidad <= (producto.stock_minimo * 0.5)) {
-                        🔴 Crítico
+                        <fa-icon [icon]="faExclamationCircle" style="color: #e74c3c;"></fa-icon>
+                        Crítico
                       } @else {
-                        🟡 Bajo
+                        <fa-icon [icon]="faExclamationTriangle" style="color: #f39c12;"></fa-icon>
+                        Bajo
                       }
                     </div>
                   </div>
@@ -143,12 +144,17 @@
     <!-- Alertas de Lotes Bajos -->
     <section class="lotes-alerts-section">
       <div class="section-header">
-        <h2>🏷️ Lotes con Cantidad Baja</h2>
+        <h2>
+          <fa-icon [icon]="faTag"></fa-icon>
+          Lotes con Cantidad Baja
+        </h2>
       </div>
 
       @if (alertasLotes().length === 0) {
         <div class="empty-state">
-          <div class="empty-icon">✅</div>
+          <div class="empty-icon">
+            <fa-icon [icon]="faCheckCircle"></fa-icon>
+          </div>
           <h3>¡Perfecto!</h3>
           <p>Todos los lotes tienen cantidades adecuadas.</p>
         </div>

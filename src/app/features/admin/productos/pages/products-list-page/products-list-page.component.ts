@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPlus, faSearch, faEdit, faTrash, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { ProductService } from '../../services/product.service';
 import { Producto, ProductosResponse } from '../../../../../types/contract.types';
 import { DataTableComponent } from '../../../../../shared/components/data-table/data-table.component';
@@ -11,7 +13,7 @@ import { ConfirmationModalComponent } from '../../../../../shared/components/con
 @Component({
   selector: 'app-products-list-page',
   standalone: true,
-  imports: [RouterLink, FormsModule, DataTableComponent, ConfirmationModalComponent],
+  imports: [RouterLink, FormsModule, DataTableComponent, ConfirmationModalComponent, FontAwesomeModule],
   templateUrl: './products-list-page.component.html',
   styleUrl: './products-list-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +22,14 @@ export default class ProductsListPageComponent {
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
+
+  // FontAwesome icons
+  faPlus = faPlus;
+  faSearch = faSearch;
+  faEdit = faEdit;
+  faTrash = faTrash;
+  faToggleOn = faToggleOn;
+  faToggleOff = faToggleOff;
 
   // State management with signals
   products = signal<Producto[]>([]);
@@ -39,9 +49,9 @@ export default class ProductsListPageComponent {
   ];
 
   actions: ActionConfig[] = [
-    { icon: '✏️', label: 'Editar', action: 'edit' },
-    { icon: '🔄', label: 'Activar/Desactivar', action: 'toggleStatus' },
-    { icon: '🗑️', label: 'Eliminar', action: 'delete', danger: true },
+    { icon: faEdit, label: '', action: 'edit' },
+    { icon: faToggleOn, label: '', action: 'toggleStatus' },
+    { icon: faTrash, label: '', action: 'delete', danger: true },
   ];
   // -- Fin Configuración de la Tabla --
 
