@@ -12,11 +12,10 @@ if (!apiUrl) {
 
 const targetPath = './src/environments/environment.prod.ts';
 
-// Contenido del archivo que se va a generar
 const envConfigFile = `
 export const environment = {
   production: true,
-  apiUrl: '${apiUrl}',
+  apiUrl: 'https://api.manngojk.lat',
 };
 `;
 
