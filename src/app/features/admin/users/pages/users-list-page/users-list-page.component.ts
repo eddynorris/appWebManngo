@@ -63,7 +63,6 @@ export default class UsersListPageComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showError('Error al cargar los usuarios.');
-        console.error(err);
         this.isLoading.set(false);
       },
     });
@@ -94,7 +93,6 @@ export default class UsersListPageComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showError('Error al eliminar el usuario.');
-        console.error(err);
       },
     });
     this.closeDeleteModal();

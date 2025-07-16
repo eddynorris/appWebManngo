@@ -163,7 +163,6 @@ export default class DashboardPageComponent {
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Error loading dashboard data:', err);
         this.error.set('Error al cargar los datos del dashboard');
         this.isLoading.set(false);
       }

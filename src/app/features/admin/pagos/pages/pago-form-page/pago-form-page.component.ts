@@ -96,7 +96,6 @@ export default class PagoFormPageComponent implements OnInit {
         },
         error: (err) => {
           this.notificationService.showError(`Error al ${id ? 'actualizar' : 'crear'} el pago.`);
-          console.error(err);
         }
       });
   }

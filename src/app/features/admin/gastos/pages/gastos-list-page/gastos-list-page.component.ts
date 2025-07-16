@@ -66,7 +66,6 @@ export default class GastosListPageComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showError('Error al cargar los gastos.');
-        console.error(err);
         this.isLoading.set(false);
       },
     });
@@ -96,7 +95,6 @@ export default class GastosListPageComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showError('Error al eliminar el gasto.');
-        console.error(err);
       },
     });
     this.closeDeleteModal();

@@ -10,5 +10,5 @@ import { ToastComponent } from './shared/components/toast/toast.component';
   styleUrl: './app.scss'
 })
 export class App {
-  protected title = 'appManngoWeb';
+  protected title = 'Manngo J&K';
 }

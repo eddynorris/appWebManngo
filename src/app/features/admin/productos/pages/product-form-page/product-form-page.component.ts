@@ -150,7 +150,6 @@ export default class ProductFormPageComponent implements OnInit {
         },
         error: (err: any) => {
           this.notificationService.showError('Ocurrió un error al guardar el producto.');
-          console.error('Error al guardar el producto', err);
         }
       });
   }

@@ -134,7 +134,6 @@ export default class PedidoFormPageComponent implements OnInit {
         },
         error: (err) => {
           this.notificationService.showError(`Error al ${id ? 'actualizar' : 'crear'} el pedido.`);
-          console.error(err);
         }
       });
   }

@@ -100,7 +100,6 @@ export default class GastoFormPageComponent implements OnInit {
         },
         error: (err) => {
           this.notificationService.showError(`Error al ${id ? 'actualizar' : 'crear'} el gasto.`);
-          console.error(err);
         }
       });
   }

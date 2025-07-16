@@ -81,7 +81,6 @@ export default class ProductsListPageComponent {
       },
       error: (err: any) => {
         this.notificationService.showError('Ocurrió un error al cargar los productos.');
-        console.error('Error loading products', err);
         this.isLoading.set(false);
       }
     });
@@ -127,7 +126,6 @@ export default class ProductsListPageComponent {
       },
       error: (err: any) => {
         this.notificationService.showError('Ocurrió un error al eliminar el producto.');
-        console.error('Error deleting product', err);
       }
     });
 
@@ -147,7 +145,6 @@ export default class ProductsListPageComponent {
       },
       error: (err: any) => {
         this.notificationService.showError('Ocurrió un error al actualizar el estado.');
-        console.error('Error updating product status', err);
       }
     });
   }

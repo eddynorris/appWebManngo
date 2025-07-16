@@ -68,7 +68,6 @@ export default class VentasListPageComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showError('Error al cargar las ventas.');
-        console.error(err);
         this.isLoading.set(false);
       }
     });

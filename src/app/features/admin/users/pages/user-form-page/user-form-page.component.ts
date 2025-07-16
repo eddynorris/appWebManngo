@@ -113,7 +113,6 @@ export default class UserFormPageComponent implements OnInit {
         },
         error: (err) => {
           this.notificationService.showError(`Error al ${id ? 'actualizar' : 'crear'} el usuario.`);
-          console.error(err);
         }
       });
   }

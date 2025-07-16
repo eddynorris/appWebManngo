@@ -66,7 +66,6 @@ export default class PagosListPageComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showError('Error al cargar los pagos.');
-        console.error(err);
         this.isLoading.set(false);
       },
     });
@@ -96,7 +95,6 @@ export default class PagosListPageComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showError('Error al eliminar el pago.');
-        console.error(err);
       },
     });
     this.closeDeleteModal();

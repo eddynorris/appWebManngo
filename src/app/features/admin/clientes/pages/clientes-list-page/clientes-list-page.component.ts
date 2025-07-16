@@ -56,7 +56,6 @@ export default class ClientesListPageComponent {
       },
       error: (err) => {
         this.notificationService.showError('Error al cargar los clientes.');
-        console.error(err);
         this.isLoading.set(false);
       }
     });
@@ -87,7 +86,6 @@ export default class ClientesListPageComponent {
       },
       error: (err) => {
         this.notificationService.showError('Error al eliminar el cliente.');
-        console.error(err);
       }
     });
     this.closeDeleteModal();

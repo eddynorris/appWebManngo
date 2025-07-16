@@ -65,13 +65,11 @@ export default class InventariosPageComponent implements OnInit {
         if (Array.isArray(data)) {
           this.almacenes.set(data);
         } else {
-          console.error('La respuesta de almacenes no es un array:', data);
           this.notificationService.showError('Error: formato de datos de almacenes incorrecto.');
         }
       },
       error: (err: any) => {
         this.notificationService.showError('Error al cargar los almacenes.');
-        console.error('Error al cargar almacenes:', err);
       }
     });
   }
@@ -85,7 +83,6 @@ export default class InventariosPageComponent implements OnInit {
       },
       error: (err: any) => {
         this.notificationService.showError('Error al cargar el inventario.');
-        console.error('Error al cargar inventario:', err);
       },
     });
   }

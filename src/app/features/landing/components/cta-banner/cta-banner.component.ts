@@ -22,7 +22,6 @@ export class LandingCtaBannerComponent {
   onSubmit() {
     if (this.newsletterForm.valid) {
       // Aquí iría la lógica para enviar el email al backend
-      console.log('Email suscrito:', this.newsletterForm.value.email);
       this.isSubmitted = true;
       this.newsletterForm.reset();
 

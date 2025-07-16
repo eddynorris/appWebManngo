@@ -181,7 +181,6 @@ export default class VentaFormPageComponent implements OnInit {
         },
         error: (err) => {
           this.notificationService.showError(`Error al ${id ? 'actualizar' : 'crear'} la venta.`);
-          console.error(err);
         }
       });
   }

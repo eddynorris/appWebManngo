@@ -18,8 +18,8 @@ export default class LoginPageComponent {
   private readonly authService = inject(AuthService);
 
   loginForm = this.fb.group({
-    username: ['admin', [Validators.required]],
-    password: ['admin123', [Validators.required]],
+    username: ['', [Validators.required]],
+    password: ['', [Validators.required]],
   });
 
   // Signals for state management

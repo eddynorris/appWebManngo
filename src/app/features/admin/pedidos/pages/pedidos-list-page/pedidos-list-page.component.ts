@@ -83,7 +83,6 @@ export default class PedidosListPageComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showError('Error al cargar los pedidos.');
-        console.error(err);
         this.isLoading.set(false);
       },
     });
@@ -113,7 +112,6 @@ export default class PedidosListPageComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showError('Error al eliminar el pedido.');
-        console.error(err);
       },
     });
     this.closeDeleteModal();

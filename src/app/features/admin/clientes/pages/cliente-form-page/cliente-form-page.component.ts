@@ -81,7 +81,6 @@ export default class ClienteFormPageComponent implements OnInit {
         },
         error: (err) => {
           this.notificationService.showError(`Error al ${id ? 'actualizar' : 'crear'} el cliente.`);
-          console.error(err);
         }
       });
   }

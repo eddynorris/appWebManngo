@@ -59,7 +59,6 @@ export class AuthService {
           return decoded;
         }
       } catch (error) {
-        console.error('Error decodificando el token:', error);
         return null;
       }
     }
