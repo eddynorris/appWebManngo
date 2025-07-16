@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    apiUrl: 'https://manngojk.lat/api'
+    apiUrl: 'https://api.manngojk.lat'
 };

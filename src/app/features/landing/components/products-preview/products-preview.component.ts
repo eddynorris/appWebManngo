@@ -12,7 +12,8 @@ export class LandingProductsPreviewComponent {
   products = [
     {
       name: 'Carbón Premium 5KG BIOBRASA',
-      description: 'Carbón de madera dura de primera calidad',
+      description: 'Disfruta de asados perfectos con este carbón de madera dura premium',
+      price: 'S/ 24.50',
       icon: '🔥',
       color: 'linear-gradient(135deg, #ff4444, #ff6666)',
       imageSrc: 'assets/images/biobrasa.webp',
@@ -21,7 +22,8 @@ export class LandingProductsPreviewComponent {
     },
     {
       name: 'Briquetas de Carbon 4KG',
-      description: 'Sin aditivos ni químicos, 100% natural',
+      description: 'Disfruta de un calor uniforme y sin químicos, 100% natural',
+      price: 'S/ 18.50',
       icon: '🔥',
       color: 'linear-gradient(135deg, #ff6666, #ff8888)',
       imageSrc: 'assets/images/briquetafogo.webp',
@@ -30,7 +32,8 @@ export class LandingProductsPreviewComponent {
     },
     {
       name: 'Carbon Premium 3KG Fogo de Chao',
-      description: 'Carbon selecto de primera calidad',
+      description: 'Carbón selecto para parrilladas exquisitas y duraderas',
+      price: 'S/ 17.00',
       icon: '🔥',
       color: 'linear-gradient(135deg, #ff8888, #ffaaaa)',
       imageSrc: 'assets/images/carbonfogo.webp',
@@ -39,7 +42,8 @@ export class LandingProductsPreviewComponent {
     },
     {
       name: 'Carbón Selecto 5KG',
-      description: 'Saco de carbón presente en todas las necesidades del consumidor',
+      description: 'Versátil y de alta calidad para todas tus necesidades de carbón',
+      price: 'S/ 16.00',
       icon: '🔥',
       color: 'linear-gradient(135deg, #ff4444, #ff6666)',
       imageSrc: 'assets/images/Carbon5.webp',
@@ -48,7 +52,8 @@ export class LandingProductsPreviewComponent {
     },
     {
       name: 'Carbon Parrillero 10KG',
-      description: 'Bolsa de Carbón de madera dura de primera calidad',
+      description: 'Ideal para tus reuniones, larga duración y máximo sabor',
+      price: 'S/ 32.00',
       icon: '🔥',
       color: 'linear-gradient(135deg, #ff6666, #ff8888)',
       imageSrc: 'assets/images/Carbon10.webp',
@@ -57,7 +62,8 @@ export class LandingProductsPreviewComponent {
     },
     {
       name: 'Carbon Selecto 20KG',
-      description: 'Ideal para tu negocio!',
+      description: 'El tamaño perfecto para tu negocio, rentabilidad asegurada!',
+      price: 'S/ 64.00',
       icon: '🔥',
       color: 'linear-gradient(135deg, #ff8888, #ffaaaa)',
       imageSrc: 'assets/images/Carbon20.webp',
@@ -66,7 +72,8 @@ export class LandingProductsPreviewComponent {
     },
     {
       name: 'Carbon Selecto 30KG',
-      description: 'Necesitas mucho carbón? Este es tu producto',
+      description: 'Saco de carbón de gran volumen para una producción imparable',
+      price: 'S/ 96.00',
       icon: '🔥',
       color: 'linear-gradient(135deg, #ff8888, #ffaaaa)',
       imageSrc: 'assets/images/Carbon30.webp',

@@ -10,11 +10,11 @@
         Atendemos a Abancay, Andahuaylas y Aymaraes
       </p>
       <div class="hero-buttons">
-        <a href="#productos" class="btn-primary">VER PRODUCTOS</a>
+        <button (click)="scrollToProducts()" class="btn-primary">VER PRODUCTOS</button>
       </div>
     </div>
   </div>
   <div class="hero-background">
-    <video src="assets/videos/carbon-video.mp4" autoplay loop muted playsinline class="hero-video"></video>
+    <video #heroVideo src="assets/videos/carbon-video.mp4" autoplay loop muted playsinline class="hero-video"></video>
   </div>
 </section>
