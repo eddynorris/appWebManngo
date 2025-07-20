@@ -83,20 +83,22 @@
         }
       </div>
 
-      <!-- Lote Selection (Optional) -->
-      <div class="form-group">
-        <label for="lote_id">Lote (opcional)</label>
-        <select
-          id="lote_id"
-          formControlName="lote_id"
-          class="form-control"
-        >
-          <option [value]="null">Sin lote específico</option>
-          @for (lote of lotes(); track lote.id) {
-            <option [value]="lote.id">{{ lote.descripcion }}</option>
-          }
-        </select>
-      </div>
+      <!-- Lote Selection (Only for adding inventory) -->
+      @if (adjustmentType() === 'add') {
+        <div class="form-group">
+          <label for="lote_id">Lote (opcional)</label>
+          <select
+            id="lote_id"
+            formControlName="lote_id"
+            class="form-control"
+          >
+            <option [value]="null">Sin lote específico</option>
+            @for (lote of lotes(); track lote.id) {
+              <option [value]="lote.id">{{ lote.descripcion }}</option>
+            }
+          </select>
+        </div>
+      }
 
       <!-- Warning for negative stock -->
       @if (finalQuantity() < 0) {

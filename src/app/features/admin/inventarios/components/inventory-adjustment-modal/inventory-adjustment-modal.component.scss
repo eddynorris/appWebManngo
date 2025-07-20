@@ -67,20 +67,32 @@
     }
 
     &.add {
-      &.active,
-      &:hover {
-        border-color: var(--color-success);
-        background: var(--color-success);
+      &.active {
+        border-color: var.$color-success;
+        background: var.$color-success;
         color: white;
+        font-weight: 600;
+      }
+      
+      &:hover:not(.active) {
+        border-color: var.$color-success;
+        background: rgba(40, 167, 69, 0.1);
+        color: var.$color-success;
       }
     }
 
     &.subtract {
-      &.active,
-      &:hover {
-        border-color: var(--color-warning);
-        background: var(--color-warning);
+      &.active {
+        border-color: var.$color-warning;
+        background: var.$color-warning;
         color: white;
+        font-weight: 600;
+      }
+      
+      &:hover:not(.active) {
+        border-color: var.$color-warning;
+        background: rgba(255, 193, 7, 0.1);
+        color: var.$color-warning;
       }
     }
   }

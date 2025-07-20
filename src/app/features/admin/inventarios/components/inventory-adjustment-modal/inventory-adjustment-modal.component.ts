@@ -91,6 +91,11 @@ export class InventoryAdjustmentModalComponent {
       motivo: '',
       lote_id: null
     });
+    
+    // Always set lote_id to null when subtracting since the field is hidden
+    if (type === 'subtract') {
+      this.form.get('lote_id')?.setValue(null);
+    }
   }
 
   onSubmit(): void {
@@ -113,11 +118,22 @@ export class InventoryAdjustmentModalComponent {
       return;
     }
 
-    this.save.emit({
+    // Prepare the save data
+    const saveData: {
+      cantidad: number;
+      motivo: string;
+      lote_id?: number;
+    } = {
       cantidad: finalQuantity,
-      motivo: formValue.motivo!,
-      lote_id: formValue.lote_id || undefined
-    });
+      motivo: formValue.motivo!
+    };
+
+    // Only include lote_id when adding inventory
+    if (type === 'add' && formValue.lote_id) {
+      saveData.lote_id = formValue.lote_id;
+    }
+
+    this.save.emit(saveData);
   }
 
   onClose(): void {
