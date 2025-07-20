@@ -4,9 +4,6 @@
   display: block;
 }
 
-/* Los estilos base de formulario ya están en los estilos globales,
-   aquí agregamos estilos específicos para la tabla de detalles */
-
 .details-array {
   display: flex;
   flex-direction: column;
@@ -155,9 +152,8 @@
   }
 }
 
-/* Mejoras visuales adicionales */
 .form-section {
-  &:nth-child(2) { /* Sección de detalles */
+  &:nth-child(2) {
     .section-title {
       color: vars.$color-primary;
       border-bottom-color: vars.$color-primary;
@@ -165,7 +161,6 @@
   }
 }
 
-/* Indicador visual para campos requeridos */
 .input-group {
   label {
     position: relative;
@@ -180,7 +175,6 @@
   }
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   .details-header,
   .details-row {
@@ -190,7 +184,7 @@
   }
 
   .details-header {
-    display: none; /* Ocultar header en móvil */
+    display: none;
   }
 
   .details-row {

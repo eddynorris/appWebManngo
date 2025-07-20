@@ -1,19 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
-
-/* Importar variables globales */
 @use './styles/variables' as vars;
-
-/* Importar componentes globales */
 @use './styles/components';
 
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Tipografías y estilos globales */
 body {
   font-family: vars.$font-family-base;
   line-height: vars.$line-height-base;
@@ -22,12 +15,10 @@ body {
   overflow-x: hidden;
 }
 
-/* Scroll suave */
 html {
   scroll-behavior: smooth;
 }
 
-/* Estilos para elementos comunes */
 a {
   color: inherit;
   text-decoration: none;
@@ -39,14 +30,12 @@ button {
   outline: none;
 }
 
-/* Utilidades */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
-/* Mejoras de accesibilidad */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -59,19 +48,16 @@ button {
   }
 }
 
-/* Estilos para elementos de formulario */
 input, textarea, select {
   font-family: inherit;
   font-size: inherit;
 }
 
-/* Mejoras de responsive */
 img {
   max-width: 100%;
   height: auto;
 }
 
-/* Estilos para el scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
