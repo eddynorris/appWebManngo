@@ -1,0 +1,214 @@
+@import '../../../../../styles/variables';
+@import '../../../../../styles/mixins';
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.stock-info {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+
+  .info-card {
+    flex: 1;
+    text-align: center;
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .stock-value {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+
+      &.negative {
+        color: var(--color-danger);
+      }
+    }
+  }
+}
+
+.adjustment-type {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+
+  .btn-adjustment {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    .icon {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    &:hover {
+      background: var(--color-bg-tertiary);
+    }
+
+    &.add {
+      &.active,
+      &:hover {
+        border-color: var(--color-success);
+        background: var(--color-success);
+        color: white;
+      }
+    }
+
+    &.subtract {
+      &.active,
+      &:hover {
+        border-color: var(--color-warning);
+        background: var(--color-warning);
+        color: white;
+      }
+    }
+  }
+}
+
+.form-group {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+
+    .required {
+      color: var(--color-danger);
+      margin-left: 0.25rem;
+    }
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+    }
+
+    &.error {
+      border-color: var(--color-danger);
+      
+      &:focus {
+        border-color: var(--color-danger);
+        box-shadow: 0 0 0 3px rgba(var(--color-danger-rgb), 0.1);
+      }
+    }
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .error-message {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--color-danger);
+  }
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+
+  &.alert-warning {
+    background: rgba(var(--color-warning-rgb), 0.1);
+    border: 1px solid var(--color-warning);
+    color: var(--color-warning-dark);
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+
+  .btn {
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &.btn-secondary {
+      background: var(--color-bg-tertiary);
+      color: var(--color-text-secondary);
+
+      &:hover {
+        background: var(--color-border);
+      }
+    }
+
+    &.btn-success {
+      background: var(--color-success);
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: var(--color-success-dark);
+      }
+    }
+
+    &.btn-warning {
+      background: var(--color-warning);
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: var(--color-warning-dark);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@include responsive(tablet) {
+  .stock-info {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .adjustment-type {
+    flex-direction: column;
+  }
+}

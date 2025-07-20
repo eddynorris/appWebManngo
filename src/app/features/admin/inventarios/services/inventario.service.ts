@@ -23,5 +23,12 @@ export class InventarioService {
     return this.http.get<InventariosResponse>(this.apiUrl, { params });
   }
 
-  // Other methods like force stock adjustment could be added here later
+  updateInventario(inventarioId: number, data: {
+    cantidad: number;
+    motivo?: string;
+    lote_id?: number;
+    stock_minimo?: number;
+  }): Observable<Inventario> {
+    return this.http.put<Inventario>(`${this.apiUrl}/${inventarioId}`, data);
+  }
 }

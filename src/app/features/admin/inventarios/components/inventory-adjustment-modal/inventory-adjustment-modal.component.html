@@ -1,0 +1,131 @@
+<app-modal
+  [open]="isOpen"
+  [title]="modalTitle()"
+  size="md"
+  [showFooter]="true"
+  (close)="onClose()"
+>
+  <div class="modal-body">
+    <!-- Current Stock Info -->
+    <div class="stock-info">
+      <div class="info-card">
+        <label>Stock Actual:</label>
+        <span class="stock-value">{{ currentStock() }}</span>
+      </div>
+      <div class="info-card">
+        <label>Stock Final:</label>
+        <span class="stock-value" [class.negative]="finalQuantity() < 0">
+          {{ finalQuantity() }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Adjustment Type Buttons -->
+    <div class="adjustment-type">
+      <button
+        type="button"
+        class="btn-adjustment add"
+        [class.active]="adjustmentType() === 'add'"
+        (click)="setAdjustmentType('add')"
+      >
+        <span class="icon">+</span>
+        Agregar
+      </button>
+      <button
+        type="button"
+        class="btn-adjustment subtract"
+        [class.active]="adjustmentType() === 'subtract'"
+        (click)="setAdjustmentType('subtract')"
+      >
+        <span class="icon">-</span>
+        Quitar
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Quantity -->
+      <div class="form-group">
+        <label for="cantidad">
+          {{ adjustmentType() === 'add' ? 'Cantidad a agregar' : 'Cantidad a quitar' }}
+          <span class="required">*</span>
+        </label>
+        <input
+          id="cantidad"
+          type="number"
+          formControlName="cantidad"
+          class="form-control"
+          [class.error]="isFieldInvalid('cantidad')"
+          min="1"
+          step="1"
+        />
+        @if (isFieldInvalid('cantidad')) {
+          <span class="error-message">{{ getFieldError('cantidad') }}</span>
+        }
+      </div>
+
+      <!-- Reason -->
+      <div class="form-group">
+        <label for="motivo">
+          Motivo del ajuste
+          <span class="required">*</span>
+        </label>
+        <textarea
+          id="motivo"
+          formControlName="motivo"
+          class="form-control"
+          [class.error]="isFieldInvalid('motivo')"
+          rows="3"
+          placeholder="Describe el motivo del ajuste de inventario..."
+        ></textarea>
+        @if (isFieldInvalid('motivo')) {
+          <span class="error-message">{{ getFieldError('motivo') }}</span>
+        }
+      </div>
+
+      <!-- Lote Selection (Optional) -->
+      <div class="form-group">
+        <label for="lote_id">Lote (opcional)</label>
+        <select
+          id="lote_id"
+          formControlName="lote_id"
+          class="form-control"
+        >
+          <option [value]="null">Sin lote específico</option>
+          @for (lote of lotes(); track lote.id) {
+            <option [value]="lote.id">{{ lote.descripcion }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Warning for negative stock -->
+      @if (finalQuantity() < 0) {
+        <div class="alert alert-warning">
+          <strong>Advertencia:</strong> El stock final será negativo ({{ finalQuantity() }}).
+          Esto no está permitido.
+        </div>
+      }
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <div class="modal-footer" footer>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="onClose()"
+    >
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="btn"
+      [class.btn-success]="adjustmentType() === 'add'"
+      [class.btn-warning]="adjustmentType() === 'subtract'"
+      [disabled]="form.invalid || finalQuantity() < 0"
+      (click)="onSubmit()"
+    >
+      {{ adjustmentType() === 'add' ? 'Agregar' : 'Quitar' }} Inventario
+    </button>
+  </div>
+</app-modal>

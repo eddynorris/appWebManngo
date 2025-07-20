@@ -6,7 +6,7 @@
     "description": "Documentación OpenAPI generada a partir de los recursos y modelos de la API Flask Manngo. Incluye todos los endpoints, modelos y relaciones principales."
   },
   "servers": [
-    { "url": "https://manngojk.lat", "description": "Servidor AWS" }
+    { "url": "https://api.manngojk.lat", "description": "Servidor AWS" }
   ],
   "components": {
     "securitySchemes": {

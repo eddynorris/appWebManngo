@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "https://api.manngojk.lat",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

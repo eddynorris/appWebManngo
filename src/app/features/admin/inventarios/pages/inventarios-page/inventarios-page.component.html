@@ -22,7 +22,9 @@
   <app-data-table
     [data]="inventario()"
     [columns]="columns"
+    [actions]="actions"
     [isLoading]="loadingService.isLoading()"
+    (onAction)="onTableAction($event)"
   ></app-data-table>
 
   <!-- Pagination -->
@@ -33,3 +35,22 @@
     ></app-pagination>
   }
 </div>
+
+<!-- Inventory Adjustment Modal -->
+<app-inventory-adjustment-modal
+  [isOpen]="isAdjustmentModalOpen()"
+  [inventario]="selectedInventario()"
+  (close)="closeAdjustmentModal()"
+  (save)="onAdjustmentSave($event)"
+></app-inventory-adjustment-modal>
+
+<!-- Confirmation Modal -->
+@if (isConfirmationModalOpen()) {
+  <app-confirmation-modal
+    [title]="'Confirmar Ajuste de Inventario'"
+    [message]="getConfirmationMessage()"
+    [confirmText]="'Confirmar Ajuste'"
+    (confirm)="confirmAdjustment()"
+    (cancel)="closeConfirmationModal()"
+  ></app-confirmation-modal>
+}
