@@ -77,6 +77,10 @@ export default class VentasListPageComponent implements OnInit {
     this.loadVentas(page);
   }
 
+  onPerPageChange(perPage: number): void {
+    this.loadVentas(1, perPage); // Reset to page 1 when changing per page
+  }
+
   handleTableAction(event: { action: string; item: Venta }): void {
     const { action, item } = event;
     if (action === 'edit') {

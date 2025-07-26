@@ -1,6 +1,8 @@
 import { Component, inject, signal, computed, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { MovimientoService } from '../../services/movimiento.service';
 import { LoteService } from '../../services/lote.service';
 import { NotificationService } from '../../../../../shared/services/notification.service';
@@ -19,7 +21,7 @@ interface ReporteInventarioItem {
 
 @Component({
   selector: 'app-reporte-inventario-por-lote-page',
-  imports: [CommonModule, ReactiveFormsModule, DataTableComponent],
+  imports: [CommonModule, ReactiveFormsModule, DataTableComponent, FontAwesomeModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reporte-inventario-por-lote-page.component.html',
   styleUrls: ['./reporte-inventario-por-lote-page.component.scss'],
@@ -29,10 +31,20 @@ export default class ReporteInventarioPorLotePageComponent implements OnInit {
   private readonly loteService = inject(LoteService);
   private readonly notificationService = inject(NotificationService);
 
+  // FontAwesome icons
+  faSearch = faSearch;
+  faTrash = faTrash;
+
   readonly cargando = signal(false);
   readonly reporteGenerado = signal(false);
   readonly datosReporte = signal<ReporteInventarioItem[]>([]);
   readonly lotes = signal<Lote[]>([]);
+
+  // Computed property para el total de kilogramos
+  readonly totalKilogramos = computed(() => {
+    const datos = this.datosReporte();
+    return datos.reduce((total, item) => total + item.kilogramos_totales, 0);
+  });
 
   readonly filtrosForm = new FormGroup({
     lote_id: new FormControl<number | null>(null),

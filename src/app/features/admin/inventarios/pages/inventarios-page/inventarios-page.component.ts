@@ -122,6 +122,10 @@ export default class InventariosPageComponent implements OnInit {
     this.loadInventario(page);
   }
 
+  onPerPageChange(perPage: number): void {
+    this.loadInventario(1); // Reset to page 1 when changing per page
+  }
+
   // Handle table actions
   onTableAction(event: { action: string; item: Inventario }): void {
     if (event.action === 'adjust') {

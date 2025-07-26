@@ -1,0 +1,159 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1><fa-icon [icon]="faChartLine"></fa-icon> Reporte Financiero</h1>
+      <p>Análisis integral de ventas, gastos y ganancias del negocio</p>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  @if (resumenFormateado(); as resumen) {
+    <div class="summary-grid">
+      <div class="metric-card ventas">
+        <div class="metric-header">
+          <div class="metric-icon"><fa-icon [icon]="faDollarSign"></fa-icon></div>
+          <div class="metric-value">{{ resumen.ventasFormateadas }}</div>
+        </div>
+        <div class="metric-title">Ventas Totales</div>
+        <div class="metric-subtitle">{{ resumen.numero_ventas }} transacciones</div>
+      </div>
+      
+      <div class="metric-card gastos">
+        <div class="metric-header">
+          <div class="metric-icon"><fa-icon [icon]="faMoneyBillWave"></fa-icon></div>
+          <div class="metric-value">{{ resumen.gastosFormateados }}</div>
+        </div>
+        <div class="metric-title">Gastos Totales</div>
+        <div class="metric-subtitle">{{ resumen.numero_gastos }} transacciones</div>
+      </div>
+      <div class="metric-card deuda">
+        <div class="metric-header">
+          <div class="metric-icon"><fa-icon [icon]="faHandHoldingDollar"></fa-icon></div>
+          <div class="metric-value">{{ resumen.deudaFormateada }}</div>
+        </div>
+        <div class="metric-title">Total Deuda</div>
+        <div class="metric-subtitle">Pendiente de cobro</div>
+      </div>
+      
+      <div class="metric-card pagado">
+        <div class="metric-header">
+          <div class="metric-icon"><fa-icon [icon]="faCreditCard"></fa-icon></div>
+          <div class="metric-value">{{ resumen.pagadoFormateado }}</div>
+        </div>
+        <div class="metric-title">Total Pagado</div>
+        <div class="metric-subtitle">Cobros realizados</div>
+      </div>
+      
+      <div class="metric-card ganancia" [class.positiva]="resumen.gananciaPositiva" [class.negativa]="!resumen.gananciaPositiva">
+        <div class="metric-header">
+          <div class="metric-icon"><fa-icon [icon]="resumen.gananciaPositiva ? faTurnUp : faTurnDown"></fa-icon></div>
+          <div class="metric-value">{{ resumen.gananciaFormateada }}</div>
+        </div>
+        <div class="metric-title">Ganancia Neta</div>
+        <div class="metric-subtitle">{{ resumen.margenFormateado }} margen</div>
+      </div>
+    
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="filters-container" [formGroup]="filtrosForm">
+    <h3 class="filters-title">Configurar Reporte</h3>
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="fecha_inicio">Fecha Inicio <span class="optional">(opcional)</span>:</label>
+        <input id="fecha_inicio" type="date" formControlName="fecha_inicio" placeholder="Sin restricción de fecha">
+      </div>
+      
+      <div class="filter-group">
+        <label for="fecha_fin">Fecha Fin <span class="optional">(opcional)</span>:</label>
+        <input id="fecha_fin" type="date" formControlName="fecha_fin" placeholder="Sin restricción de fecha">
+      </div>
+      
+      <div class="filter-group">
+        <label for="almacen_id">Almacén:</label>
+        <select id="almacen_id" formControlName="almacen_id">
+          <option value="">Todos los almacenes</option>
+          @for (almacen of almacenes(); track almacen.id) {
+            <option [value]="almacen.id">{{ almacen.nombre }}</option>
+          }
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="lote_id">Lote:</label>
+        <select id="lote_id" formControlName="lote_id">
+          <option value="">Todos los lotes</option>
+          @for (lote of lotes(); track lote.id) {
+            <option [value]="lote.id">{{ lote.descripcion || 'Lote #' + lote.id }}</option>
+          }
+        </select>
+      </div>
+      
+
+      
+      <div class="filter-group col-full">
+        <label>&nbsp;</label>
+        <div class="filter-actions">
+          <button type="button" class="btn-primary" (click)="generarReporte()" [disabled]="cargando() || filtrosForm.invalid">
+            @if (cargando()) {
+              <span class="spinner-small"></span>
+              Generando...
+            } @else {
+              <fa-icon [icon]="faSearch"></fa-icon> Generar Reporte
+            }
+          </button>
+          <button type="button" class="btn-secondary" (click)="limpiarFiltros()">
+            <fa-icon [icon]="faTrash"></fa-icon> Limpiar
+          </button>
+          @if (datosGenerados()) {
+            <button type="button" class="btn-success" (click)="exportarReporte()">
+              <fa-icon [icon]="faFileExcel"></fa-icon> Exportar XLSX
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table for Sales by Presentation -->
+  @if (ventasPorPresentacion().length > 0) {
+    <div class="table-container">
+      <div class="table-header">
+        <h3>Ventas por Presentación</h3>
+      </div>
+      <app-data-table
+        [data]="ventasPorPresentacion()"
+        [columns]="columnasVentasPresentacion"
+        [isLoading]="cargando()"
+      />
+    </div>
+  } @else if (!cargando() && datosGenerados()) {
+    <div class="empty-state">
+      <div class="empty-icon"><fa-icon [icon]="faChartBar"></fa-icon></div>
+      <h3>No se encontraron datos</h3>
+      <p>No hay ventas por presentación disponibles para los filtros seleccionados.</p>
+      <button type="button" class="btn-ghost" (click)="limpiarFiltros()">
+        Ajustar Filtros
+      </button>
+    </div>
+  }
+
+  <!-- Initial State -->
+  @if (!datosGenerados() && !cargando()) {
+    <div class="empty-state">
+      <div class="empty-icon"><fa-icon [icon]="faChartBar"></fa-icon></div>
+      <h3>Generar Reporte Financiero</h3>
+      <p>Selecciona los filtros y haz clic en "Generar Reporte" para ver el análisis financiero detallado.</p>
+    </div>
+  }
+
+  <!-- Loading State -->
+  @if (cargando()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Generando reporte financiero...</p>
+    </div>
+  }
+</div>

@@ -64,7 +64,7 @@
               <input type="number" formControlName="precio_estimado" placeholder="Precio">
             </div>
             <button type="button" (click)="removeDetalle(i)" class="btn-icon danger" title="Eliminar producto">
-              🗑️
+              <fa-icon [icon]="faTrash"></fa-icon>
             </button>
           </div>
         }

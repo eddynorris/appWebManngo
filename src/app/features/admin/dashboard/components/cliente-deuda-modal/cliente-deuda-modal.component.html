@@ -13,12 +13,19 @@
           <div class="venta-card">
             <div class="venta-header">
               <div class="venta-info">
-                <h3>Venta #{{ venta.venta_id }}</h3>
+                <h3 class="venta-id-clickable" (click)="navigateToVentaDetail(venta.venta_id)" title="Hacer clic para ver detalle de la venta">
+                  Venta #{{ venta.venta_id }}
+                </h3>
                 <span class="status-badge" [class]="venta.estado_pago">{{ venta.estado_pago | titlecase }}</span>
               </div>
               <div class="venta-saldos">
                 <span>Total: {{ venta.total_venta | currency:'S/ ' }}</span>
                 <span class="saldo-pendiente">Pendiente: {{ venta.saldo_pendiente_venta | currency:'S/ ' }}</span>
+              </div>
+              <div class="venta-actions">
+                <button class="btn-detail" (click)="navigateToVentaDetail(venta.venta_id)" title="Ver detalle de la venta">
+                  <fa-icon [icon]="faEye"></fa-icon> Ver Detalle
+                </button>
               </div>
             </div>
             @if (venta.pagos.length > 0) {

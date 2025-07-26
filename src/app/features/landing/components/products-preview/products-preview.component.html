@@ -23,7 +23,7 @@
             />
           } @else {
             <div class="product-placeholder" [style.background]="product.color">
-              <span class="product-icon">{{ product.icon }}</span>
+              <span class="product-icon"><fa-icon [icon]="product.icon"></fa-icon></span>
             </div>
           }
         </div>

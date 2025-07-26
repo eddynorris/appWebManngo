@@ -75,6 +75,10 @@ export default class PagosListPageComponent implements OnInit {
     this.loadPagos(page);
   }
 
+  onPerPageChange(perPage: number): void {
+    this.loadPagos(1, perPage); // Reset to page 1 when changing per page
+  }
+
   handleTableAction(event: { action: string; item: Pago }): void {
     if (event.action === 'edit') {
       this.router.navigate(['/admin/pagos/edit', event.item.id]);

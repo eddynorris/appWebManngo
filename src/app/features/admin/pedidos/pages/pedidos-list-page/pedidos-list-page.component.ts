@@ -92,6 +92,10 @@ export default class PedidosListPageComponent implements OnInit {
     this.loadPedidos(page);
   }
 
+  onPerPageChange(perPage: number): void {
+    this.loadPedidos(1, perPage); // Reset to page 1 when changing per page
+  }
+
   handleTableAction(event: { action: string; item: Pedido }): void {
     if (event.action === 'edit') {
       this.router.navigate(['/admin/pedidos/edit', event.item.id]);

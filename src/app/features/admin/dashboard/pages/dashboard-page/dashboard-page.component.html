@@ -54,6 +54,16 @@
         </div>
         <div class="metric-title">Clientes con Saldo Pendiente</div>
       </div>
+
+      <div class="metric-card total-debt">
+        <div class="metric-header">
+          <span class="metric-icon">
+            <fa-icon [icon]="faHandHoldingDollar"></fa-icon>
+          </span>
+          <span class="metric-value">{{ totalDeudaClientes() | currency:'PEN':'symbol-narrow':'1.2-2' }}</span>
+        </div>
+        <div class="metric-title">Total Deuda Clientes</div>
+      </div>
     </section>
 
     <!-- Clientes con Saldo Pendiente -->

@@ -6,6 +6,7 @@ import { TermsConditionsModalComponent } from '../modals/terms-conditions-modal/
 import { OurStoryModalComponent } from '../modals/our-story-modal/our-story-modal.component';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faFacebookF, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
+import { faFire } from '@fortawesome/free-solid-svg-icons';
 import { SmoothScrollService } from '../../services/smooth-scroll.service';
 
 
@@ -34,6 +35,9 @@ export class LandingFooterComponent {
   showTermsModal = signal(false);
   showStoryModal = signal(false);
   showFaqModal = signal(false);
+
+  // FontAwesome icons
+  faFire = faFire;
 
   constructor() {
     this.library.addIcons(faFacebookF, faInstagram, faYoutube);

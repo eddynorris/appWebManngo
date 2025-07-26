@@ -13,6 +13,7 @@ import { Pagination } from '../../../types/contract.types';
 export class PaginationComponent {
   pagination = input.required<Pagination>();
   pageChange = output<number>();
+  perPageChange = output<number>();
 
   totalPages = computed(() => this.pagination().pages);
   currentPage = computed(() => this.pagination().page);
@@ -37,5 +38,11 @@ export class PaginationComponent {
 
   onPrevious(): void {
     this.goToPage(this.currentPage() - 1);
+  }
+
+  onPerPageChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const newPerPage = parseInt(target.value, 10);
+    this.perPageChange.emit(newPerPage);
   }
 }

@@ -1,0 +1,98 @@
+@use '../../../../../../styles/variables' as vars;
+
+// Usa las clases globales ya definidas en _components.scss
+// Solo agregamos estilos específicos del componente
+
+// Summary Grid - Layout específico para las métricas
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+// Extensiones específicas para metric-card
+.metric-card {
+  // Las clases base ya están en _components.scss, solo agregamos variaciones específicas
+  
+  &.ventas {
+    border-left-color: vars.$color-success;
+    
+    .metric-value {
+      color: vars.$color-success;
+    }
+  }
+
+  &.gastos {
+    border-left-color: vars.$color-warning;
+    
+    .metric-value {
+      color: vars.$color-warning-dark;
+    }
+  }
+
+  &.ganancia {
+    &.positiva {
+      border-left-color: vars.$color-success;
+      
+      .metric-value {
+        color: vars.$color-success;
+      }
+    }
+
+    &.negativa {
+      border-left-color: vars.$color-danger;
+      
+      .metric-value {
+        color: vars.$color-danger;
+      }
+    }
+  }
+
+  &.deuda {
+    border-left-color: vars.$color-warning;
+    
+    .metric-value {
+      color: vars.$color-warning-dark;
+    }
+  }
+
+  &.pagado {
+    border-left-color: vars.$color-info;
+    
+    .metric-value {
+      color: vars.$color-info;
+    }
+  }
+
+  .metric-subtitle {
+    font-size: vars.$font-size-sm;
+    color: vars.$color-text-muted;
+    margin-top: 0.25rem;
+  }
+}
+
+// Optimización específica para table-header en este componente
+.table-container .table-header {
+  // Usamos la clase base, solo agregamos si necesitamos modificaciones específicas
+  @media (max-width: 576px) {
+    padding: 1rem;
+    
+    h3 {
+      font-size: 1rem;
+    }
+  }
+}
+
+// Estilo para campos opcionales
+.optional {
+  font-size: vars.$font-size-sm;
+  color: vars.$color-text-muted;
+  font-weight: normal;
+  font-style: italic;
+}

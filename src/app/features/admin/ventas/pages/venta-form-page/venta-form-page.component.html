@@ -99,7 +99,7 @@
               {{ (detalleGroup.get('cantidad')?.value || 0) * (detalleGroup.get('precio_unitario')?.value || 0) | currency:'S/.' }}
             </div>
             <button type="button" (click)="removeDetalle(i)" class="btn-icon danger" title="Eliminar producto">
-              🗑️
+              <fa-icon [icon]="faTrash"></fa-icon>
             </button>
           </div>
         }

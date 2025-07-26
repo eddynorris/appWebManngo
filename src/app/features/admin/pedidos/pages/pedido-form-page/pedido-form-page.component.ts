@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } fr
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { PedidoService } from '../../services/pedido.service';
 import { ClienteService } from '../../../clientes/services/cliente.service';
@@ -15,7 +17,7 @@ import { ButtonComponent } from '../../../../../shared/components/button/button.
 @Component({
   selector: 'app-pedido-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule],
   templateUrl: './pedido-form-page.component.html',
   styleUrl: './pedido-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +30,9 @@ export default class PedidoFormPageComponent implements OnInit {
   private readonly clienteService = inject(ClienteService);
   private readonly productService = inject(ProductService);
   private readonly notificationService = inject(NotificationService);
+
+  // FontAwesome icons
+  faTrash = faTrash;
 
   pedidoForm: FormGroup;
   isLoading = signal(false);

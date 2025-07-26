@@ -26,7 +26,7 @@
           </td>
         </tr>
       } @else {
-        @for (item of data(); track item.id) {
+        @for (item of data(); track trackByFn($index, item)) {
           <tr [class.inactive]="item.activo === false">
             @for (column of columns(); track column.key) {
               <td>

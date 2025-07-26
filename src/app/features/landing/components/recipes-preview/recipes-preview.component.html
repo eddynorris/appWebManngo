@@ -12,7 +12,7 @@
       <div class="recipe-card" *ngFor="let recipe of recipes">
         <div class="recipe-image">
           <div class="recipe-placeholder" [style.background]="recipe.gradient">
-            <span class="recipe-icon">{{ recipe.icon }}</span>
+            <span class="recipe-icon"><fa-icon [icon]="recipe.icon"></fa-icon></span>
           </div>
         </div>
         <div class="recipe-content">

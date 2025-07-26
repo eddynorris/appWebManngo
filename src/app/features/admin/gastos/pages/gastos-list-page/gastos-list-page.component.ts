@@ -75,6 +75,10 @@ export default class GastosListPageComponent implements OnInit {
     this.loadGastos(page);
   }
 
+  onPerPageChange(perPage: number): void {
+    this.loadGastos(1, perPage); // Reset to page 1 when changing per page
+  }
+
   handleTableAction(event: { action: string; item: Gasto }): void {
     if (event.action === 'edit') {
       this.router.navigate(['/admin/gastos/edit', event.item.id]);

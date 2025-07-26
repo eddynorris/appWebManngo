@@ -70,6 +70,7 @@ export default class AdminLayoutComponent {
       hasSubmenu: true,
       submenu: [
         { label: 'Inventario por Lote', route: '/admin/reportes/reporte-inventario-por-lote', icon: faBox },
+        { label: 'Reporte Financiero', route: '/admin/reportes/reporte-financiero', icon: faBox },
       ]
     },
   ];

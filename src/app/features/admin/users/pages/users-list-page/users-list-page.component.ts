@@ -72,6 +72,10 @@ export default class UsersListPageComponent implements OnInit {
     this.loadUsers(page);
   }
 
+  onPerPageChange(perPage: number): void {
+    this.loadUsers(1, perPage); // Reset to page 1 when changing per page
+  }
+
   handleTableAction(event: { action: string; item: User }): void {
     if (event.action === 'edit') {
       this.router.navigate(['/admin/users/edit', event.item.id]);

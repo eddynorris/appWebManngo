@@ -37,4 +37,10 @@ export class DataTableComponent<T extends { id?: number; activo?: boolean }> {
     // Soporte para claves anidadas (ej: 'cliente.nombre')
     return column.key.split('.').reduce((obj, key) => obj && obj[key], item as any);
   }
+
+  // Track function mejorada para evitar problemas de renderizado infinito
+  trackByFn(index: number, item: T): any {
+    // Priorizar ID si existe, sino usar index como fallback
+    return item.id !== undefined ? item.id : index;
+  }
 }

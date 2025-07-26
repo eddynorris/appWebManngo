@@ -121,7 +121,7 @@
     </button>
     <button
       type="button"
-      class="btn"
+      class="btn btn-primary"
       [class.btn-success]="adjustmentType() === 'add'"
       [class.btn-warning]="adjustmentType() === 'subtract'"
       [disabled]="form.invalid || finalQuantity() < 0"

@@ -1,0 +1,42 @@
+@use '../../../../../../styles/variables' as vars;
+
+// Table summary styles
+.table-summary {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: vars.$color-bg-secondary;
+  border-radius: vars.$border-radius;
+  border-left: 4px solid vars.$color-primary;
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+    .summary-label {
+      font-weight: 600;
+      color: vars.$color-text-primary;
+      font-size: vars.$font-size-base;
+    }
+
+    .summary-value {
+      font-weight: 700;
+      color: vars.$color-primary;
+      font-size: vars.$font-size-lg;
+      text-align: right;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .summary-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+
+      .summary-value {
+        text-align: left;
+      }
+    }
+  }
+}

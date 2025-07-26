@@ -1,4 +1,4 @@
-@use '../../../../../../styles/variables' as var;
+@use '../../../../../../styles/variables' as vars;
 
 .modal-body {
   padding: 1.5rem;
@@ -9,9 +9,9 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: var(--color-bg-secondary);
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
+  background: vars.$color-bg-secondary;
+  border-radius: vars.$border-radius;
+  border: 1px solid vars.$color-border;
 
   .info-card {
     flex: 1;
@@ -19,19 +19,19 @@
 
     label {
       display: block;
-      font-size: 0.875rem;
-      color: var(--color-text-secondary);
+      font-size: vars.$font-size-sm;
+      color: vars.$color-text-secondary;
       margin-bottom: 0.25rem;
     }
 
     .stock-value {
       display: block;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--color-text-primary);
+      font-size: vars.$font-size-xl;
+      font-weight: vars.$font-weight-semibold;
+      color: vars.$color-text-primary;
 
       &.negative {
-        color: var(--color-danger);
+        color: vars.$color-danger;
       }
     }
   }
@@ -49,50 +49,52 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    background: var(--color-bg-secondary);
-    color: var(--color-text-secondary);
-    font-weight: 500;
+    border: 2px solid vars.$color-border;
+    border-radius: vars.$border-radius;
+    background: vars.$color-bg-secondary;
+    color: vars.$color-text-secondary;
+    font-weight: vars.$font-weight-medium;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: vars.$transition-base;
 
     .icon {
       font-size: 1.25rem;
-      font-weight: 700;
+      font-weight: vars.$font-weight-bold;
     }
 
     &:hover {
-      background: var(--color-bg-tertiary);
+      background: vars.$color-bg-primary;
+      border-color: vars.$color-primary;
+      color: vars.$color-text-primary;
     }
 
     &.add {
       &.active {
-        border-color: var.$color-success;
-        background: var.$color-success;
-        color: white;
-        font-weight: 600;
+        border-color: vars.$color-success;
+        background: vars.$color-success;
+        color: vars.$color-text-white;
+        font-weight: vars.$font-weight-semibold;
       }
       
       &:hover:not(.active) {
-        border-color: var.$color-success;
+        border-color: vars.$color-success;
         background: rgba(40, 167, 69, 0.1);
-        color: var.$color-success;
+        color: vars.$color-success;
       }
     }
 
     &.subtract {
       &.active {
-        border-color: var.$color-warning;
-        background: var.$color-warning;
-        color: white;
-        font-weight: 600;
+        border-color: vars.$color-warning;
+        background: vars.$color-warning;
+        color: vars.$color-text-white;
+        font-weight: vars.$font-weight-semibold;
       }
       
       &:hover:not(.active) {
-        border-color: var.$color-warning;
+        border-color: vars.$color-warning;
         background: rgba(255, 193, 7, 0.1);
-        color: var.$color-warning;
+        color: vars.$color-warning-dark;
       }
     }
   }
@@ -104,11 +106,11 @@
   label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--color-text-primary);
+    font-weight: vars.$font-weight-medium;
+    color: vars.$color-text-primary;
 
     .required {
-      color: var(--color-danger);
+      color: vars.$color-danger;
       margin-left: 0.25rem;
     }
   }
@@ -116,23 +118,25 @@
   .form-control {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    font-size: 0.875rem;
-    transition: all 0.2s ease;
+    border: 1px solid vars.$color-border;
+    border-radius: vars.$border-radius-sm;
+    font-size: vars.$font-size-sm;
+    background: vars.$color-bg-primary;
+    color: vars.$color-text-primary;
+    transition: vars.$transition-base;
 
     &:focus {
       outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+      border-color: vars.$color-primary;
+      box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
     }
 
     &.error {
-      border-color: var(--color-danger);
+      border-color: vars.$color-danger;
 
       &:focus {
-        border-color: var(--color-danger);
-        box-shadow: 0 0 0 3px rgba(var(--color-danger-rgb), 0.1);
+        border-color: vars.$color-danger;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
       }
     }
   }
@@ -146,20 +150,20 @@
     display: block;
     margin-top: 0.25rem;
     font-size: 0.75rem;
-    color: var(--color-danger);
+    color: vars.$color-danger;
   }
 }
 
 .alert {
   padding: 0.75rem 1rem;
-  border-radius: 6px;
+  border-radius: vars.$border-radius-sm;
   margin-top: 1rem;
-  font-size: 0.875rem;
+  font-size: vars.$font-size-sm;
 
   &.alert-warning {
-    background: rgba(var(--color-warning-rgb), 0.1);
-    border: 1px solid var(--color-warning);
-    color: var(--color-warning-dark);
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid vars.$color-warning;
+    color: vars.$color-warning-dark;
   }
 }
 
@@ -168,41 +172,50 @@
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
+  border-top: 1px solid vars.$color-border;
+  background: vars.$color-bg-secondary;
 
   .btn {
     padding: 0.625rem 1.25rem;
     border: none;
-    border-radius: 6px;
-    font-weight: 500;
+    border-radius: vars.$border-radius-sm;
+    font-weight: vars.$font-weight-medium;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: vars.$transition-base;
 
     &.btn-secondary {
-      background: var(--color-bg-tertiary);
-      color: var(--color-text-secondary);
+      background: vars.$color-secondary;
+      color: vars.$color-text-white;
 
       &:hover {
-        background: var(--color-border);
+        background: vars.$color-secondary-dark;
+      }
+    }
+
+    &.btn-primary {
+      background: vars.$color-primary;
+      color: vars.$color-text-white;
+
+      &:hover:not(:disabled) {
+        background: vars.$color-primary-dark;
       }
     }
 
     &.btn-success {
-      background: var(--color-success);
-      color: white;
+      background: vars.$color-success;
+      color: vars.$color-text-white;
 
       &:hover:not(:disabled) {
-        background: var(--color-success-dark);
+        background: vars.$color-success-dark;
       }
     }
 
     &.btn-warning {
-      background: var(--color-warning);
-      color: white;
+      background: vars.$color-warning;
+      color: vars.$color-text-white;
 
       &:hover:not(:disabled) {
-        background: var(--color-warning-dark);
+        background: vars.$color-warning-dark;
       }
     }
 

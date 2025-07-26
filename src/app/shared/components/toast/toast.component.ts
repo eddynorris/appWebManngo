@@ -1,9 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NotificationService } from '../../services/notification.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCheckCircle, faExclamationTriangle, faInfoCircle, faTimes, faBullhorn } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-toast',
   standalone: true,
+  imports: [FontAwesomeModule],
   template: `
     <div class="toast-container">
       @for (notification of notificationService.getNotifications(); track notification.id) {
@@ -14,11 +17,11 @@ import { NotificationService } from '../../services/notification.service';
         >
           <div class="toast-icon">
             @switch (notification.type) {
-              @case ('success') { ✅ }
-              @case ('error') { ❌ }
-              @case ('warning') { ⚠️ }
-              @case ('info') { ℹ️ }
-              @default { 📢 }
+              @case ('success') { <fa-icon [icon]="faCheckCircle"></fa-icon> }
+              @case ('error') { <fa-icon [icon]="faExclamationTriangle"></fa-icon> }
+              @case ('warning') { <fa-icon [icon]="faExclamationTriangle"></fa-icon> }
+              @case ('info') { <fa-icon [icon]="faInfoCircle"></fa-icon> }
+              @default { <fa-icon [icon]="faBullhorn"></fa-icon> }
             }
           </div>
 
@@ -47,7 +50,7 @@ import { NotificationService } from '../../services/notification.service';
             (click)="notificationService.removeNotification(notification.id)"
             aria-label="Cerrar notificación"
           >
-            ✕
+            <fa-icon [icon]="faTimes"></fa-icon>
           </button>
         </div>
       }
@@ -58,4 +61,11 @@ import { NotificationService } from '../../services/notification.service';
 })
 export class ToastComponent {
   protected readonly notificationService = inject(NotificationService);
+
+  // FontAwesome icons
+  faCheckCircle = faCheckCircle;
+  faExclamationTriangle = faExclamationTriangle;
+  faInfoCircle = faInfoCircle;
+  faTimes = faTimes;
+  faBullhorn = faBullhorn;
 }

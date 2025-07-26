@@ -42,6 +42,7 @@ export interface DashboardResponse {
   alertas_stock_bajo: AlertaStockBajo[];
   alertas_lotes_bajos: AlertaLoteBajo[];
   clientes_con_saldo_pendiente: ClienteSaldoPendiente[];
+  total_deuda_clientes: number;
 }
 
 // Interfaces para agrupar datos en el componente

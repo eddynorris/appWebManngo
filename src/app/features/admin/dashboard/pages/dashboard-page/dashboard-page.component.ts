@@ -13,7 +13,8 @@ import {
   faCircle,
   faExclamationCircle,
   faBoxes,
-  faUsers
+  faUsers,
+  faHandHoldingDollar
 } from '@fortawesome/free-solid-svg-icons';
 import { DashboardService } from '../../services/dashboard.service';
 import {
@@ -35,7 +36,7 @@ interface ClienteParaTabla extends ClienteSaldoPendiente {
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [CommonModule, ClienteDeudaModalComponent, DataTableComponent, FontAwesomeModule],
+  imports: [CommonModule, ClienteDeudaModalComponent, DataTableComponent, FontAwesomeModule, CurrencyPipe],
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,6 +57,7 @@ export default class DashboardPageComponent {
   faExclamationCircle = faExclamationCircle;
   faBoxes = faBoxes;
   faUsers = faUsers;
+  faHandHoldingDollar = faHandHoldingDollar;
 
   // State management
   dashboardData = signal<DashboardResponse | null>(null);
@@ -116,6 +118,10 @@ export default class DashboardPageComponent {
     return this.dashboardData()?.clientes_con_saldo_pendiente.length || 0;
   });
 
+  totalDeudaClientes = computed(() => {
+    return this.dashboardData()?.total_deuda_clientes || 0;
+  });
+
   // Configuración para DataTableComponent
   readonly columnasClientes: ColumnConfig<ClienteParaTabla>[] = [
     {
@@ -133,20 +139,25 @@ export default class DashboardPageComponent {
       key: 'saldo_pendiente_total',
       label: 'Saldo Pendiente',
       type: 'currency'
+    },
+    {
+      key: 'ciudad',
+      label: 'Ciudad',
+      type: 'text'
+    },
+    {
+      key: 'actions',
+      label: 'Acciones',
+      type: 'actions'
     }
   ];
 
   readonly accionesClientes: ActionConfig[] = [
     {
       icon: faEye,
-      label: 'Ver detalle',
-      action: 'view'
+      label: 'Ver Detalle',
+      action: 'deuda'
     },
-    {
-      icon: faMoneyBillWave,
-      label: 'Gestionar pagos',
-      action: 'pagos'
-    }
   ];
 
   ngOnInit(): void {
@@ -176,12 +187,14 @@ export default class DashboardPageComponent {
   // Manejador de acciones de la tabla
   handleTableAction(event: { action: string; item: ClienteParaTabla }): void {
     switch (event.action) {
-      case 'view':
+      case 'deuda':
         this.onViewDeuda(event.item.cliente_id);
         break;
       case 'pagos':
         this.onGoToPagos(event.item.cliente_id);
         break;
+      default:
+        console.log('Acción no reconocida:', event.action);
     }
   }
 

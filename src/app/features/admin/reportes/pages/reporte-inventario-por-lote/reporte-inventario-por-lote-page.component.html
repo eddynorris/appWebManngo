@@ -33,13 +33,13 @@
       <div class="filter-actions">
         <button type="button" class="btn-primary" (click)="aplicarFiltros()" [disabled]="cargando()">
           @if (cargando()) {
-            ⏳ Generando...
+            Generando...
           } @else {
-            🔍 Generar Reporte
+            <fa-icon [icon]="faSearch"></fa-icon> Generar Reporte
           }
         </button>
         <button type="button" class="btn-secondary" (click)="limpiarFiltros()">
-          🗑️ Limpiar
+          <fa-icon [icon]="faTrash"></fa-icon> Limpiar
         </button>
       </div>
     </div>
@@ -52,6 +52,12 @@
       [data]="datosReporte()"
       [columns]="columnasReporte"
     />
+    <div class="table-summary">
+      <div class="summary-item">
+        <span class="summary-label">Total Kilogramos:</span>
+        <span class="summary-value">{{ totalKilogramos().toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} kg</span>
+      </div>
+    </div>
   </div>
 }
 

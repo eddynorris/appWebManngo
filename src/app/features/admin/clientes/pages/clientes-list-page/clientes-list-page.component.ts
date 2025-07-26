@@ -65,6 +65,10 @@ export default class ClientesListPageComponent {
     this.loadClientes(page);
   }
 
+  onPerPageChange(perPage: number): void {
+    this.loadClientes(1, perPage); // Reset to page 1 when changing per page
+  }
+
   handleTableAction(event: { action: string; item: Cliente }): void {
     if (event.action === 'edit') {
       this.router.navigate(['/admin/clientes/edit', event.item.id]);

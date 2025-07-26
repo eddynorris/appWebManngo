@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } fr
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { VentaService } from '../../services/venta.service';
 import { Venta, Cliente, Almacen, PresentacionConStockLocal, PresentacionConStockGlobal } from '../../../../../types/contract.types';
@@ -15,7 +17,7 @@ type PresentacionParaVenta = (PresentacionConStockLocal & { stock_por_almacen?: 
 @Component({
   selector: 'app-venta-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule],
   templateUrl: './venta-form-page.component.html',
   styleUrl: './venta-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +29,9 @@ export default class VentaFormPageComponent implements OnInit {
   private readonly ventaService = inject(VentaService);
   private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
+
+  // FontAwesome icons
+  faTrash = faTrash;
 
   ventaForm: FormGroup;
   isLoading = signal(false);

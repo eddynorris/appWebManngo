@@ -1,6 +1,23 @@
 <div class="pagination-container" *ngIf="pagination() as p">
-  <div class="pagination-summary">
-    Mostrando {{ p.per_page * (p.page - 1) + 1 }} - {{ p.per_page * p.page > p.total ? p.total : p.per_page * p.page }} de {{ p.total }}
+  <div class="pagination-left">
+    <div class="pagination-summary">
+      Mostrando {{ p.per_page * (p.page - 1) + 1 }} - {{ p.per_page * p.page > p.total ? p.total : p.per_page * p.page }} de {{ p.total }}
+    </div>
+    <div class="per-page-selector">
+      <label for="perPageSelect">Mostrar:</label>
+      <select 
+        id="perPageSelect"
+        [value]="p.per_page" 
+        (change)="onPerPageChange($event)"
+        class="per-page-select"
+      >
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      <span>por página</span>
+    </div>
   </div>
   <nav class="pagination-controls">
     <button (click)="onPrevious()" [disabled]="p.page === 1" class="pagination-button">

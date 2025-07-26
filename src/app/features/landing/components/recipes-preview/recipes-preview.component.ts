@@ -1,21 +1,28 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faDrumstickBite, faBacon, faHamburger } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-landing-recipes-preview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FontAwesomeModule],
   templateUrl: './recipes-preview.component.html',
   styleUrls: ['./recipes-preview.component.scss']
 })
 export class LandingRecipesPreviewComponent {
+  // FontAwesome icons
+  faDrumstickBite = faDrumstickBite;
+  faBacon = faBacon;
+  faHamburger = faHamburger;
+
   recipes = [
     {
       title: 'Costillas BBQ Perfectas',
       description: 'Aprende la técnica secreta para costillas tiernas y jugosas con el sabor ahumado perfecto.',
       time: '4-6 horas',
       difficulty: 'Intermedio',
-      icon: '🍖',
+      icon: this.faBacon,
       gradient: 'linear-gradient(135deg, #ff4444, #ff6666)'
     },
     {
@@ -23,7 +30,7 @@ export class LandingRecipesPreviewComponent {
       description: 'La receta ganadora de campeonatos para el brisket más tierno y sabroso.',
       time: '12-14 horas',
       difficulty: 'Avanzado',
-      icon: '🥩',
+      icon: this.faBacon,
       gradient: 'linear-gradient(135deg, #ff6666, #ff8888)'
     },
     {
@@ -31,7 +38,7 @@ export class LandingRecipesPreviewComponent {
       description: 'Técnica infalible para pollo ahumado con piel crujiente y carne jugosa.',
       time: '2-3 horas',
       difficulty: 'Principiante',
-      icon: '🍗',
+      icon: this.faDrumstickBite,
       gradient: 'linear-gradient(135deg, #ff8888, #ffaaaa)'
     }
   ];
