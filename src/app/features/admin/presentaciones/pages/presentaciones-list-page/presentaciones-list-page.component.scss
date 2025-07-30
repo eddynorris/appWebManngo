@@ -59,34 +59,7 @@
   overflow: hidden;
 }
 
-// Estilos de badges y elementos específicos usando variables globales
-.type-badge {
-  padding: vars.$spacer-xs vars.$spacer-sm + 0.25rem;
-  border-radius: vars.$border-radius-pill;
-  font-size: vars.$font-size-sm;
-  font-weight: vars.$font-weight-medium;
-  text-transform: uppercase;
-  
-  &.type-saco {
-    background: lighten(vars.$color-info, 35%);
-    color: darken(vars.$color-info, 10%);
-  }
-  
-  &.type-granel {
-    background: lighten(vars.$color-secondary, 45%);
-    color: darken(vars.$color-secondary, 5%);
-  }
-  
-  &.type-bolsa {
-    background: lighten(vars.$color-success, 35%);
-    color: darken(vars.$color-success, 10%);
-  }
-  
-  &.type-contenedor {
-    background: lighten(vars.$color-warning, 25%);
-    color: darken(vars.$color-warning, 15%);
-  }
-}
+// Type badges now use global classes from _components.scss
 
 .text-muted {
   color: vars.$color-text-muted;

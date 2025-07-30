@@ -112,49 +112,30 @@
     border: 1px solid vars.$color-border-light;
   }
 
-  .btn-icon.danger {
-    height: 40px;
-    width: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: vars.$border-radius-sm;
-    transition: vars.$transition-base;
-
-    &:hover {
-      transform: scale(1.1);
-      box-shadow: vars.$box-shadow;
-    }
-  }
+  // Remove redundant btn-icon styles - using global classes
 
 }
 
 .total-container {
   margin-top: 1.5rem;
-  background: linear-gradient(135deg, vars.$color-primary 0%, vars.$color-primary 100%);
+  background: vars.$color-primary;
   border-radius: vars.$border-radius;
   padding: 0;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
-
+  box-shadow: vars.$box-shadow;
+  
   .total-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 2rem;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
   }
 
-  .total-label {
-    .total-text {
-      font-size: 1.125rem;
-      font-weight: vars.$font-weight-semibold;
-      color: rgba(255, 255, 255, 0.9);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+  .total-label .total-text {
+    font-size: 1.125rem;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
   .total-amount {
@@ -172,14 +153,7 @@
       font-size: 2rem;
       font-weight: vars.$font-weight-bold;
       color: vars.$color-text-white;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
   }
 }
 
@@ -200,10 +174,6 @@
     background: vars.$color-success-dark;
     transform: translateY(-1px);
     box-shadow: vars.$box-shadow;
-  }
-
-  &:active {
-    transform: translateY(0);
   }
 }
 

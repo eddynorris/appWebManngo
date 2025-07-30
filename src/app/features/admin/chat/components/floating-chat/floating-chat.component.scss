@@ -1,21 +1,20 @@
 @use '../../../../../../styles/variables' as vars;
 
-// Floating Chat Button
 .floating-chat-button {
   position: fixed;
+  z-index: vars.$z-index-fixed;
+  transition: vars.$transition-slow;
+  background: linear-gradient(135deg, vars.$color-primary, vars.$color-secondary);
   bottom: vars.$spacer-lg;
   right: vars.$spacer-lg;
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, vars.$color-primary, vars.$color-secondary);
   border-radius: vars.$border-radius-pill;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: vars.$box-shadow-lg;
-  transition: vars.$transition-slow;
-  z-index: vars.$z-index-fixed;
   
   &:hover {
     transform: translateY(-3px) scale(1.05);
@@ -24,13 +23,6 @@
 
   &:active {
     transform: translateY(-1px) scale(1.02);
-  }
-
-  &.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: scale(0.8);
   }
 
   .chat-button-icon {
@@ -52,13 +44,8 @@
   }
 }
 
-// Floating Chat Modal
 .floating-chat-modal {
   position: fixed;
-  bottom: 100px;
-  right: vars.$spacer-lg;
-  width: 380px;
-  height: 500px;
   background: vars.$color-bg-primary;
   border-radius: vars.$border-radius-lg;
   box-shadow: vars.$box-shadow-lg;
@@ -66,19 +53,21 @@
   flex-direction: column;
   overflow: hidden;
   z-index: vars.$z-index-modal;
-  animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border: vars.$border-width solid vars.$color-border;
-  isolation: isolate; // Crear nuevo contexto de apilamiento
-  contain: layout style paint; // Mejorar rendimiento
-
+  contain: layout style paint;
+  bottom: 100px;
+  right: vars.$spacer-lg;
+  width: 380px;
+  height: 500px;
+  animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
   &.minimized {
     height: 60px;
     cursor: pointer;
   }
 }
 
-// Chat Header
-.chat-header {
+.floating-chat-modal .chat-header {
   background: linear-gradient(135deg, vars.$color-primary, vars.$color-secondary);
   color: vars.$color-text-white;
   padding: vars.$spacer-md;
@@ -180,11 +169,11 @@
 .messages-container {
   flex: 1;
   overflow-y: auto;
+  scroll-behavior: smooth;
   padding: vars.$spacer-md;
   display: flex;
   flex-direction: column;
   gap: vars.$spacer-sm + vars.$spacer-xs;
-  scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -423,98 +412,23 @@
   }
 }
 
-// Animations
-@keyframes modalSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+// Simplified animations
+@keyframes modalSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes messageSlideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-@keyframes messageSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes typing {
-  0%, 60%, 100% {
-    transform: translateY(0);
-  }
-  30% {
-    transform: translateY(-6px);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-// Responsive Design - Optimizado
+// Responsive - condensed
 @media (max-width: vars.$breakpoint-md) {
-  .floating-chat-button {
-    bottom: vars.$spacer-md;
-    right: vars.$spacer-md;
-    width: 56px;
-    height: 56px;
-  }
-
-  .floating-chat-modal {
-    bottom: 90px;
-    right: vars.$spacer-md;
-    left: vars.$spacer-md;
-    width: auto;
-    height: 450px;
-
-    &.minimized { height: 56px; }
-  }
-
-  .chat-header {
-    padding: vars.$spacer-sm + vars.$spacer-xs;
-    
-    .header-avatar { width: 32px; height: 32px; }
-    .header-btn { width: 28px; height: 28px; }
-  }
-
-  .messages-container,
-  .chat-footer {
-    padding: vars.$spacer-sm + vars.$spacer-xs;
-  }
-
+  .floating-chat-button { bottom: vars.$spacer-md; right: vars.$spacer-md; width: 56px; height: 56px; }
+  .floating-chat-modal { bottom: 90px; right: vars.$spacer-md; left: vars.$spacer-md; width: auto; height: 450px; &.minimized { height: 56px; } }
+  .chat-header { padding: vars.$spacer-sm + vars.$spacer-xs; .header-avatar { width: 32px; height: 32px; } .header-btn { width: 28px; height: 28px; } }
+  .messages-container, .chat-footer { padding: vars.$spacer-sm + vars.$spacer-xs; }
   .message-content { max-width: 85%; }
   .chat-input { font-size: 16px; }
   .send-button { width: 36px; height: 36px; }
 }
-
 @media (max-width: vars.$breakpoint-sm) {
   .floating-chat-modal { height: 400px; }
   .message-avatar { width: 24px; height: 24px; }

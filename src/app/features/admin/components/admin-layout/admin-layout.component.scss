@@ -1,4 +1,5 @@
-// Sidebar y layout moderno - optimizado para budget
+@use 'src/styles/variables' as vars;
+
 :host {
   display: block;
   height: 100vh;
@@ -16,12 +17,12 @@
 }
 
 .sidebar {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
-  color: white;
+  background: linear-gradient(135deg, vars.$color-secondary-dark 0%, vars.$color-secondary 50%, vars.$color-secondary-light 100%);
+  color: vars.$color-text-white;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+  border-right: vars.$border-width solid rgba(148, 163, 184, 0.2);
+  box-shadow: vars.$box-shadow-lg;
 
   .sidebar-header {
     padding: 2rem 1.5rem;

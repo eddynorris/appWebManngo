@@ -137,6 +137,18 @@ $z-index-tooltip: 1070;
 // MIXINS Y UTILIDADES
 // -----------------------------------------------------------------------------
 
+@use 'sass:color';
+
+// Función para lighten usando color.adjust
+@function lighten-color($color, $amount) {
+  @return color.adjust($color, $lightness: $amount);
+}
+
+// Función para darken usando color.adjust
+@function darken-color($color, $amount) {
+  @return color.adjust($color, $lightness: -$amount);
+}
+
 // Mixin para botones base
 @mixin button-base {
   display: inline-flex;

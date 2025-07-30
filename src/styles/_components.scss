@@ -792,3 +792,102 @@
     padding: 1rem;
   }
 }
+
+// -----------------------------------------------------------------------------
+// FLOATING CHAT COMPONENTS
+// -----------------------------------------------------------------------------
+
+.floating-element {
+  position: fixed;
+  z-index: vars.$z-index-fixed;
+  transition: vars.$transition-slow;
+  
+  &.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(0.8);
+  }
+}
+
+.chat-modal {
+  position: fixed;
+  background: vars.$color-bg-primary;
+  border-radius: vars.$border-radius-lg;
+  box-shadow: vars.$box-shadow-lg;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: vars.$z-index-modal;
+  border: vars.$border-width solid vars.$color-border;
+  contain: layout style paint;
+  
+  &.minimized {
+    height: 60px;
+    cursor: pointer;
+  }
+}
+
+.chat-gradient-bg {
+  background: linear-gradient(135deg, vars.$color-primary, vars.$color-secondary);
+}
+
+.chat-header {
+  color: vars.$color-text-white;
+  padding: vars.$spacer-md;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.scrollable-area {
+  overflow-y: auto;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: vars.$color-border-dark;
+    border-radius: vars.$border-radius-sm;
+    
+    &:hover {
+      background: vars.$color-text-muted;
+    }
+  }
+}
+
+// Badge components moved to global
+.type-badge {
+  padding: vars.$spacer-xs vars.$spacer-sm + 0.25rem;
+  border-radius: vars.$border-radius-pill;
+  font-size: vars.$font-size-sm;
+  font-weight: vars.$font-weight-medium;
+  text-transform: uppercase;
+  
+  &.type-saco {
+    background: vars.lighten-color(vars.$color-info, 35%);
+    color: vars.darken-color(vars.$color-info, 10%);
+  }
+  
+  &.type-granel {
+    background: vars.lighten-color(vars.$color-secondary, 45%);
+    color: vars.darken-color(vars.$color-secondary, 5%);
+  }
+  
+  &.type-bolsa {
+    background: vars.lighten-color(vars.$color-success, 35%);
+    color: vars.darken-color(vars.$color-success, 10%);
+  }
+  
+  &.type-contenedor {
+    background: vars.lighten-color(vars.$color-warning, 25%);
+    color: vars.darken-color(vars.$color-warning, 15%);
+  }
+}
