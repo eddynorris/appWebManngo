@@ -76,12 +76,16 @@
               <select formControlName="presentacion_id" class="product-select">
                 <option value="" disabled>Selecciona un producto</option>
                 @for (p of presentaciones(); track p.id) {
-                  <option [value]="p.id" [disabled]="p.stock_disponible === 0">
+                  <option [value]="p.id" [disabled]="p.stock_disponible === 0" [class]="p.stock_disponible === 0 ? 'out-of-stock' : ''">
                     {{ p.nombre }} ({{ p.capacidad_kg }} kg)
                     @if (p.stock_disponible !== undefined) {
-                      <span class="stock-info stock-{{ p.stock_disponible > 10 ? 'ok' : (p.stock_disponible === 0 ? 'out' : 'low') }}">
-                        (Stock: {{ p.stock_disponible }})
-                      </span>
+                      @if (p.stock_disponible === 0) {
+                        <span class="stock-info stock-out"> - SIN STOCK</span>
+                      } @else {
+                        <span class="stock-info stock-{{ p.stock_disponible > 10 ? 'ok' : 'low' }}">
+                          (Stock: {{ p.stock_disponible }})
+                        </span>
+                      }
                     }
                   </option>
                 }
@@ -99,8 +103,22 @@
               {{ (detalleGroup.get('cantidad')?.value || 0) * (detalleGroup.get('precio_unitario')?.value || 0) | currency:'S/.' }}
             </div>
             <button type="button" (click)="removeDetalle(i)" class="btn-icon danger" title="Eliminar producto">
-              <fa-icon [icon]="faTrash"></fa-icon>
+              <fa-icon [icon]="faTimesCircle"></fa-icon>
             </button>
+          </div>
+        }
+        <!-- Fila del total -->
+        @if (detalles.length > 0) {
+          <div class="total-container">
+            <div class="total-content">
+              <div class="total-label">
+                <span class="total-text">Total de la Venta</span>
+              </div>
+              <div class="total-amount">
+                <span class="currency">S/.</span>
+                <span class="amount">{{ ventaTotal().toFixed(2) }}</span>
+              </div>
+            </div>
           </div>
         }
       </div>

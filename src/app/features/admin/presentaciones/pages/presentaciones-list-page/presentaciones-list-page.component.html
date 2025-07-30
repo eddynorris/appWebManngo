@@ -1,0 +1,67 @@
+<div class="list-page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>Gestión de Presentaciones</h1>
+        <p>Administra las diferentes presentaciones de productos disponibles en el sistema.</p>
+      </div>
+      <div class="action-section">
+        <app-button
+          variant="ghost"
+          size="sm"
+          (click)="refresh()"
+          [disabled]="isLoading()">
+          <fa-icon icon="sync"></fa-icon>
+          Actualizar
+        </app-button>
+        <app-button
+          variant="primary"
+          size="sm"
+          (click)="createNew()">
+          <fa-icon icon="plus"></fa-icon>
+          Nueva Presentación
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <app-spinner></app-spinner>
+  } @else {
+    <div class="table-container">
+      <app-data-table
+        [data]="presentaciones()"
+        [columns]="columns"
+        [actions]="actions"
+        [isLoading]="isLoading()"
+        (onAction)="onTableAction($event)">
+      </app-data-table>
+
+      @if (totalPages() > 1) {
+        <app-pagination
+          [pagination]="{
+            page: currentPage(),
+            pages: totalPages(),
+            total: totalItems(),
+            per_page: itemsPerPage()
+          }"
+          (pageChange)="onPageChange($event)">
+        </app-pagination>
+      }
+    </div>
+  }
+
+  @if (!isLoading() && presentaciones().length === 0) {
+    <div class="empty-state">
+      <fa-icon icon="box" size="3x"></fa-icon>
+      <h3>No hay presentaciones registradas</h3>
+      <p>Comienza agregando la primera presentación de producto al sistema.</p>
+      <app-button
+        variant="primary"
+        (click)="createNew()">
+        <fa-icon icon="plus"></fa-icon>
+        Crear Primera Presentación
+      </app-button>
+    </div>
+  }
+</div>

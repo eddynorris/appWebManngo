@@ -1,0 +1,10 @@
+// El componente usa clases globales del sistema de diseño
+// No se requieren estilos específicos adicionales
+
+.three-cols {
+  grid-template-columns: repeat(3, 1fr);
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}

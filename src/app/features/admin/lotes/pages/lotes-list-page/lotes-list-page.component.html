@@ -1,0 +1,22 @@
+<div class="page-header">
+  <div class="header-content">
+    <h1>Gestión de Lotes</h1>
+    <p>Administra los lotes de productos y su información de stock</p>
+  </div>
+  <div class="header-actions">
+    <button (click)="createLote()" class="btn-primary">
+      <fa-icon [icon]="faPlus"></fa-icon>
+      Nuevo Lote
+    </button>
+  </div>
+</div>
+
+<div class="table-container">
+  <app-data-table
+    [data]="lotes()"
+    [columns]="columns"
+    [actions]="actions"
+    [isLoading]="isLoading()"
+    (onAction)="onAction($event)">
+  </app-data-table>
+</div>

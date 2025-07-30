@@ -209,9 +209,24 @@ export type PresentacionConStockLocal = PresentacionProducto & {
   stock_disponible: number;
 };
 
+export type PresentacionDisponible = {
+  id: number;
+  producto_id: number;
+  nombre: string;
+  capacidad_kg: string;
+  tipo: string;
+  precio_venta: string;
+  activo: boolean;
+  url_foto?: string;
+  stock_disponible: number;
+  lote_id?: number;
+  lote_descripcion?: string;
+};
+
 export type VentaFormDataResponse = {
   clientes: Cliente[];
   almacenes?: Almacen[]; // Opcional, solo para admin sin almacen_id
+  presentaciones_disponibles?: PresentacionDisponible[];
   presentaciones_con_stock_global?: PresentacionConStockGlobal[];
   presentaciones_con_stock_local?: PresentacionConStockLocal[];
 };

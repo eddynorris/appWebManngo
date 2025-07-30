@@ -1,0 +1,84 @@
+<div class="form-page-container">
+  <div class="page-header">
+    <h1>
+      @if (isViewMode()) {
+        Ver Proveedor
+      } @else if (isEditMode()) {
+        Editar Proveedor
+      } @else {
+        Crear Nuevo Proveedor
+      }
+    </h1>
+    <p>
+      @if (isViewMode()) {
+        Información detallada del proveedor seleccionado.
+      } @else if (isEditMode()) {
+        Modifica la información del proveedor existente.
+      } @else {
+        Completa los datos para registrar un nuevo proveedor en el sistema.
+      }
+    </p>
+  </div>
+
+  <form [formGroup]="proveedorForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
+    <!-- SECCIÓN DE INFORMACIÓN BÁSICA -->
+    <div class="form-section">
+      <h2 class="section-title">Información del Proveedor</h2>
+      <div class="form-grid">
+        <div class="input-group full-width">
+          <label for="nombre">Nombre del Proveedor *</label>
+          <input 
+            id="nombre" 
+            type="text" 
+            formControlName="nombre" 
+            placeholder="Ingresa el nombre del proveedor">
+          @if (getFieldError('nombre')) {
+            <span class="error-message">{{ getFieldError('nombre') }}</span>
+          }
+        </div>
+
+        <div class="input-group">
+          <label for="telefono">Teléfono</label>
+          <input 
+            id="telefono" 
+            type="tel" 
+            formControlName="telefono" 
+            placeholder="Número de teléfono">
+          @if (getFieldError('telefono')) {
+            <span class="error-message">{{ getFieldError('telefono') }}</span>
+          }
+        </div>
+
+        <div class="input-group">
+          <label for="direccion">Dirección</label>
+          <input 
+            id="direccion" 
+            type="text" 
+            formControlName="direccion" 
+            placeholder="Dirección del proveedor">
+          @if (getFieldError('direccion')) {
+            <span class="error-message">{{ getFieldError('direccion') }}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN DE ACCIONES -->
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-ghost">Cancelar</button>
+      
+      @if (isViewMode()) {
+        <button type="button" (click)="edit()" class="btn-primary">
+          Editar Proveedor
+        </button>
+      } @else {
+        <button type="submit" class="btn-primary" [disabled]="proveedorForm.invalid || isLoading()">
+          @if (isLoading()) {
+            <div class="spinner-small"></div>
+          }
+          {{ isEditMode() ? 'Actualizar Proveedor' : 'Crear Proveedor' }}
+        </button>
+      }
+    </div>
+  </form>
+</div>

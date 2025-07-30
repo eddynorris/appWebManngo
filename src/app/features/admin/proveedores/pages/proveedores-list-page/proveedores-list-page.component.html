@@ -1,0 +1,67 @@
+<div class="list-page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>Gestión de Proveedores</h1>
+        <p>Administra la información de todos los proveedores registrados en el sistema.</p>
+      </div>
+      <div class="action-section">
+        <app-button
+          variant="ghost"
+          size="sm"
+          (click)="refresh()"
+          [disabled]="isLoading()">
+          <fa-icon icon="sync"></fa-icon>
+          Actualizar
+        </app-button>
+        <app-button
+          variant="primary"
+          size="sm"
+          (click)="createNew()">
+          <fa-icon icon="plus"></fa-icon>
+          Nuevo Proveedor
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <app-spinner></app-spinner>
+  } @else {
+    <div class="table-container">
+      <app-data-table
+        [data]="proveedores()"
+        [columns]="columns"
+        [actions]="actions"
+        [isLoading]="isLoading()"
+        (onAction)="onTableAction($event)">
+      </app-data-table>
+
+      @if (totalPages() > 1) {
+        <app-pagination
+          [pagination]="{
+            page: currentPage(),
+            pages: totalPages(),
+            total: totalItems(),
+            per_page: itemsPerPage()
+          }"
+          (pageChange)="onPageChange($event)">
+        </app-pagination>
+      }
+    </div>
+  }
+
+  @if (!isLoading() && proveedores().length === 0) {
+    <div class="empty-state">
+      <fa-icon icon="users" size="3x"></fa-icon>
+      <h3>No hay proveedores registrados</h3>
+      <p>Comienza agregando el primer proveedor al sistema.</p>
+      <app-button
+        variant="primary"
+        (click)="createNew()">
+        <fa-icon icon="plus"></fa-icon>
+        Crear Primer Proveedor
+      </app-button>
+    </div>
+  }
+</div>

@@ -31,7 +31,8 @@ import {
   faEdit,
   faTrash,
   faToggleOn,
-  faToggleOff
+  faToggleOff,
+  faTimesCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp as fabWhatsapp } from '@fortawesome/free-brands-svg-icons';
 
@@ -86,6 +87,7 @@ export const appConfig: ApplicationConfig = {
           faTrash,
           faToggleOn,
           faToggleOff,
+          faTimesCircle,
           fabWhatsapp
         );
         return library;

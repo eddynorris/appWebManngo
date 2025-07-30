@@ -4,15 +4,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { VentaService } from '../../services/venta.service';
-import { Venta, Cliente, Almacen, PresentacionConStockLocal, PresentacionConStockGlobal } from '../../../../../types/contract.types';
+import { Venta, Cliente, Almacen, PresentacionConStockLocal, PresentacionConStockGlobal, PresentacionDisponible } from '../../../../../types/contract.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 
 // Tipo unificado para las presentaciones en el formulario
-type PresentacionParaVenta = (PresentacionConStockLocal & { stock_por_almacen?: never }) | (PresentacionConStockGlobal & { stock_disponible?: never });
+type PresentacionParaVenta = PresentacionDisponible | (PresentacionConStockLocal & { stock_por_almacen?: never }) | (PresentacionConStockGlobal & { stock_disponible?: never });
 
 @Component({
   selector: 'app-venta-form-page',
@@ -32,6 +32,7 @@ export default class VentaFormPageComponent implements OnInit {
 
   // FontAwesome icons
   faTrash = faTrash;
+  faTimesCircle = faTimesCircle;
 
   ventaForm: FormGroup;
   isLoading = signal(false);
@@ -44,6 +45,21 @@ export default class VentaFormPageComponent implements OnInit {
 
   // Para saber si el admin puede elegir almacén
   canSelectAlmacen = computed(() => this.authService.isAdmin() && this.almacenes().length > 0);
+
+  // Signal para forzar la reactividad del total
+  private totalUpdateTrigger = signal(0);
+
+  // Computed para calcular el total de la venta
+  ventaTotal = computed(() => {
+    // Incluir el trigger para forzar recálculo
+    this.totalUpdateTrigger();
+    
+    return this.detalles.controls.reduce((total, control) => {
+      const cantidad = Number(control.get('cantidad')?.value) || 0;
+      const precioUnitario = Number(control.get('precio_unitario')?.value) || 0;
+      return total + (cantidad * precioUnitario);
+    }, 0);
+  });
 
   constructor() {
     this.ventaForm = this.fb.group({
@@ -98,7 +114,7 @@ export default class VentaFormPageComponent implements OnInit {
            this.ventaForm.get('almacen_id')?.setValue(userAlmacenId);
         }
 
-        const presentacionesData = response.presentaciones_con_stock_global || response.presentaciones_con_stock_local || [];
+        const presentacionesData = response.presentaciones_disponibles || response.presentaciones_con_stock_global || response.presentaciones_con_stock_local || [];
         this.presentaciones.set(presentacionesData);
       });
   }
@@ -112,7 +128,7 @@ export default class VentaFormPageComponent implements OnInit {
       .subscribe(formData => {
         this.clientes.set(formData.clientes);
         if(formData.almacenes) this.almacenes.set(formData.almacenes);
-        const presentacionesData = formData.presentaciones_con_stock_global || formData.presentaciones_con_stock_local || [];
+        const presentacionesData = formData.presentaciones_disponibles || formData.presentaciones_con_stock_global || formData.presentaciones_con_stock_local || [];
         this.presentaciones.set(presentacionesData);
 
         // Ahora cargamos la venta y parchamos el formulario
@@ -133,11 +149,32 @@ export default class VentaFormPageComponent implements OnInit {
   }
 
   createDetalleGroup(detalle?: any): FormGroup {
-    return this.fb.group({
+    const group = this.fb.group({
       presentacion_id: [detalle?.presentacion_id || '', Validators.required],
       cantidad: [detalle?.cantidad || 1, [Validators.required, Validators.min(1)]],
       precio_unitario: [detalle?.precio_unitario || 0, [Validators.required, Validators.min(0.01)]],
     });
+
+    // Listen to presentacion_id changes to auto-populate precio_unitario
+    group.get('presentacion_id')?.valueChanges.subscribe(presentacionId => {
+      if (presentacionId) {
+        const presentacion = this.presentaciones().find(p => p.id === Number(presentacionId));
+        if (presentacion && presentacion.precio_venta) {
+          group.get('precio_unitario')?.setValue(Number(presentacion.precio_venta));
+        }
+      }
+      this.triggerTotalUpdate();
+    });
+
+    // Listen to cantidad and precio_unitario changes to update total
+    group.get('cantidad')?.valueChanges.subscribe(() => this.triggerTotalUpdate());
+    group.get('precio_unitario')?.valueChanges.subscribe(() => this.triggerTotalUpdate());
+
+    return group;
+  }
+
+  private triggerTotalUpdate(): void {
+    this.totalUpdateTrigger.update(val => val + 1);
   }
 
   addDetalle(): void {
@@ -146,6 +183,7 @@ export default class VentaFormPageComponent implements OnInit {
 
   removeDetalle(index: number): void {
     this.detalles.removeAt(index);
+    this.triggerTotalUpdate();
   }
 
   onSubmit(): void {

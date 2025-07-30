@@ -21,11 +21,12 @@ import {
   faChevronRight
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../../core/services/auth.service';
+import { FloatingChatComponent } from '../../chat/components/floating-chat/floating-chat.component';
 
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, CommonModule, FontAwesomeModule],
+  imports: [RouterOutlet, RouterLink, CommonModule, FontAwesomeModule, FloatingChatComponent],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,7 +58,10 @@ export default class AdminLayoutComponent {
   navigationItems = [
     { label: 'Dashboard', route: '/admin/dashboard', icon: faChartBar },
     { label: 'Productos', route: '/admin/products', icon: faBoxes },
+    { label: 'Presentaciones', route: '/admin/presentaciones', icon: faBox },
+    { label: 'Proveedores', route: '/admin/proveedores', icon: faTruck },
     { label: 'Clientes', route: '/admin/clientes', icon: faUsers },
+    { label: 'Lotes', route: '/admin/lotes', icon: faBox },
     { label: 'Ventas', route: '/admin/ventas', icon: faMoneyBillWave },
     { label: 'Pagos', route: '/admin/pagos', icon: faCreditCard },
     { label: 'Pedidos', route: '/admin/pedidos', icon: faTruck },

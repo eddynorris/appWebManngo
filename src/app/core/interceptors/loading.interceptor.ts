@@ -11,6 +11,7 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     '/dashboard', // Dashboard se carga rápido y tiene su propio estado
     '/assets',    // Recursos estáticos
     '/ping',      // Health checks
+    '/chat',      // Chat no debe mostrar loading global
   ];
 
   // Verificar si la URL está excluida

@@ -1,0 +1,114 @@
+<!-- Floating Chat Button -->
+<div class="floating-chat-button" 
+     [class.hidden]="isOpen()" 
+     (click)="toggleChat()"
+     title="Abrir Chat IA">
+  <div class="chat-button-icon">
+    <fa-icon [icon]="faMessage"></fa-icon>
+  </div>
+  @if (hasUnreadMessages()) {
+    <div class="unread-indicator"></div>
+  }
+</div>
+
+<!-- Chat Modal/Popup -->
+@if (isOpen()) {
+  <div class="floating-chat-modal" [class.minimized]="isMinimized()">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="header-info">
+        <div class="header-avatar">
+          <fa-icon [icon]="faRobot"></fa-icon>
+        </div>
+        <div class="header-text">
+          <h3>Asistente IA</h3>
+          <span class="header-subtitle">Manngo J&K</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        @if (!isMinimized()) {
+          <button type="button" (click)="minimizeChat()" class="btn-icon header-btn" title="Minimizar">
+            <fa-icon [icon]="faMinus"></fa-icon>
+          </button>
+        }
+        <button type="button" (click)="closeChat()" class="btn-icon header-btn close-btn" title="Cerrar">
+          <fa-icon [icon]="faClose"></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    @if (!isMinimized()) {
+      <!-- Chat Body -->
+      <div class="chat-body">
+        <div class="messages-container" #messagesContainer>
+          @for (message of messages(); track message.id) {
+            <div class="message-wrapper" [class.user-message]="message.isUser" [class.bot-message]="!message.isUser">
+              <div class="message-avatar">
+                <fa-icon [icon]="message.isUser ? faUser : faRobot"></fa-icon>
+              </div>
+              <div class="message-content">
+                <div class="message-bubble">
+                  <p class="message-text">{{ message.text }}</p>
+                  <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+                </div>
+              </div>
+            </div>
+          }
+          
+          @if (isLoading()) {
+            <div class="message-wrapper bot-message">
+              <div class="message-avatar">
+                <fa-icon [icon]="faRobot"></fa-icon>
+              </div>
+              <div class="message-content">
+                <div class="message-bubble typing">
+                  <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Chat Footer -->
+      <div class="chat-footer">
+        <form [formGroup]="chatForm" (ngSubmit)="onSubmit()" class="chat-form">
+          <div class="input-container">
+            <input 
+              type="text" 
+              formControlName="message"
+              placeholder="Escribe tu pregunta..." 
+              class="chat-input"
+              [disabled]="isLoading()"
+              (keydown)="onKeyDown($event)"
+              autofocus>
+            <button 
+              type="submit" 
+              class="btn-icon send-button"
+              [class.loading]="isLoading()"
+              [disabled]="chatForm.invalid || isLoading()"
+              title="Enviar mensaje">
+              <fa-icon [icon]="faPaperPlane"></fa-icon>
+            </button>
+          </div>
+        </form>
+        <div class="chat-actions">
+          <button type="button" (click)="clearChat()" class="btn-ghost btn-sm clear-btn">
+            Limpiar chat
+          </button>
+        </div>
+      </div>
+    } @else {
+      <!-- Minimized Header Click Area -->
+      <div class="minimized-click-area" (click)="maximizeChat()">
+        @if (hasUnreadMessages()) {
+          <div class="minimized-unread-indicator"></div>
+        }
+      </div>
+    }
+  </div>
+}

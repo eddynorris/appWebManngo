@@ -62,6 +62,21 @@ export const ADMIN_ROUTES: Routes = [
         loadChildren: () => import('./reportes/reportes.routes').then(m => m.REPORTES_ROUTES),
         data: { title: 'Reportes' }
       },
+      {
+        path: 'lotes',
+        loadChildren: () => import('./lotes/lotes.routes').then(m => m.LOTES_ROUTES),
+        data: { title: 'Lotes' }
+      },
+      {
+        path: 'proveedores',
+        loadChildren: () => import('./proveedores/proveedores.routes').then(m => m.proveedoresRoutes),
+        data: { title: 'Proveedores' }
+      },
+      {
+        path: 'presentaciones',
+        loadChildren: () => import('./presentaciones/presentaciones.routes').then(m => m.presentacionesRoutes),
+        data: { title: 'Presentaciones' }
+      },
 
       {
         path: '',

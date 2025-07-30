@@ -1,0 +1,122 @@
+@use 'src/styles/variables' as vars;
+
+.list-page-container {
+  padding: vars.$spacer-lg;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: vars.$spacer-xl;
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: vars.$spacer-xl;
+    
+    @media (max-width: vars.$breakpoint-md) {
+      flex-direction: column;
+      gap: vars.$spacer-md;
+    }
+  }
+  
+  .title-section {
+    flex: 1;
+    
+    h1 {
+      margin: 0 0 vars.$spacer-sm 0;
+      color: vars.$color-text-primary;
+      font-size: vars.$font-size-xl * 1.6; // 2rem equivalente
+      font-weight: vars.$font-weight-semibold;
+      font-family: vars.$font-family-heading;
+    }
+    
+    p {
+      margin: 0;
+      color: vars.$color-text-secondary;
+      font-size: vars.$font-size-base;
+      line-height: vars.$line-height-base;
+    }
+  }
+  
+  .action-section {
+    display: flex;
+    gap: vars.$spacer-sm + 0.25rem; // 0.75rem
+    align-items: center;
+    
+    @media (max-width: vars.$breakpoint-md) {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+}
+
+.table-container {
+  background: vars.$color-bg-primary;
+  border-radius: vars.$border-radius-lg;
+  box-shadow: vars.$box-shadow;
+  overflow: hidden;
+}
+
+// Estilos de badges y elementos específicos usando variables globales
+.type-badge {
+  padding: vars.$spacer-xs vars.$spacer-sm + 0.25rem;
+  border-radius: vars.$border-radius-pill;
+  font-size: vars.$font-size-sm;
+  font-weight: vars.$font-weight-medium;
+  text-transform: uppercase;
+  
+  &.type-saco {
+    background: lighten(vars.$color-info, 35%);
+    color: darken(vars.$color-info, 10%);
+  }
+  
+  &.type-granel {
+    background: lighten(vars.$color-secondary, 45%);
+    color: darken(vars.$color-secondary, 5%);
+  }
+  
+  &.type-bolsa {
+    background: lighten(vars.$color-success, 35%);
+    color: darken(vars.$color-success, 10%);
+  }
+  
+  &.type-contenedor {
+    background: lighten(vars.$color-warning, 25%);
+    color: darken(vars.$color-warning, 15%);
+  }
+}
+
+.text-muted {
+  color: vars.$color-text-muted;
+  font-style: italic;
+  font-size: vars.$font-size-sm;
+}
+
+// Los estilos de tabla ahora son manejados por DataTableComponent
+
+.empty-state {
+  text-align: center;
+  padding: vars.$spacer-xxl * 1.33 vars.$spacer-xl; // 4rem 2rem
+  color: vars.$color-text-secondary;
+  
+  fa-icon {
+    color: vars.$color-text-light;
+    margin-bottom: vars.$spacer-lg;
+  }
+  
+  h3 {
+    margin: 0 0 vars.$spacer-sm 0;
+    color: vars.$color-text-primary;
+    font-size: vars.$font-size-xl * 1.2; // 1.5rem
+    font-weight: vars.$font-weight-semibold;
+    font-family: vars.$font-family-heading;
+  }
+  
+  p {
+    margin: 0 0 vars.$spacer-xl 0;
+    font-size: vars.$font-size-base;
+    line-height: vars.$line-height-base;
+  }
+}
