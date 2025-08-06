@@ -29,12 +29,12 @@ export class PresentacionService {
   // Obtener todas las presentaciones con paginación y filtros opcionales
   getPresentaciones(
     page: number = 1,
-    limit: number = 10,
+    per_page: number = 10,
     filtros?: { [key: string]: string | number | boolean }
   ): Observable<PresentacionesResponse> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString());
+      .set('per_page', per_page.toString());
 
     if (filtros) {
       Object.keys(filtros).forEach(key => {
@@ -50,7 +50,7 @@ export class PresentacionService {
   // Obtener datos necesarios para el formulario (productos)
   getFormData(): Observable<PresentacionFormData> {
     // Petición con paginación alta para obtener todos los productos
-    const params = new HttpParams().set('limit', '1000'); // Limite alto para obtener todos
+    const params = new HttpParams().set('per_page', '1000'); // per_pagee alto para obtener todos
     
     const productos$ = this.http.get<{ data: Producto[] }>(`${environment.apiUrl}/productos`, { params });
     

@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, computed, OnDestroy } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from '../../services/cliente.service';
@@ -8,24 +10,34 @@ import { ColumnConfig, ActionConfig } from '../../../../../shared/components/dat
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-clientes-list-page',
   standalone: true,
-  imports: [RouterLink, FormsModule, DataTableComponent, ConfirmationModalComponent, PaginationComponent],
+  imports: [RouterLink, FormsModule, DataTableComponent, ConfirmationModalComponent, PaginationComponent, FontAwesomeModule],
   templateUrl: './clientes-list-page.component.html',
   styleUrl: './clientes-list-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class ClientesListPageComponent {
+export default class ClientesListPageComponent implements OnDestroy {
   private readonly clienteService = inject(ClienteService);
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
 
+  // FontAwesome icons
+  faPlus = faPlus;
+  faSearch = faSearch;
+  faEdit = faEdit;
+  faTrash = faTrash;
+
   clientes = signal<Cliente[]>([]);
   pagination = signal<Pagination | null>(null);
   isLoading = signal(false);
+  searchTerm = signal('');
+  private searchSubject = new Subject<string>();
+  private searchSubscription: Subscription | undefined;
   isDeleteModalVisible = signal(false);
   clienteToDelete = signal<Cliente | null>(null);
 
@@ -42,13 +54,32 @@ export default class ClientesListPageComponent {
     { icon: faTrash, label: '', action: 'delete', danger: true },
   ];
 
+  // Computed values
+  filteredClientes = computed(() => {
+    const search = this.searchTerm().toLowerCase();
+    if (!search) return this.clientes();
+
+    return this.clientes().filter(cliente =>
+      cliente.nombre?.toLowerCase().includes(search)
+    );
+  });
+
   ngOnInit(): void {
     this.loadClientes();
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.searchTerm.set(value);
+      this.loadClientes();
+    });
   }
 
-  loadClientes(page: number = 1, limit: number = 10): void {
+  loadClientes(page: number = 1, per_page: number = 10): void {
     this.isLoading.set(true);
-    this.clienteService.getClientes(page, limit).subscribe({
+    // Pass search term to API if exists
+    const searchParam = this.searchTerm() || undefined;
+    this.clienteService.getClientes(page, per_page, searchParam).subscribe({
       next: (response) => {
         this.clientes.set(response.data);
         this.pagination.set(response.pagination);
@@ -59,6 +90,10 @@ export default class ClientesListPageComponent {
         this.isLoading.set(false);
       }
     });
+  }
+
+  onSearchChange(value: string): void {
+    this.searchSubject.next(value);
   }
 
   onPageChange(page: number): void {
@@ -98,5 +133,9 @@ export default class ClientesListPageComponent {
   closeDeleteModal(): void {
     this.isDeleteModalVisible.set(false);
     this.clienteToDelete.set(null);
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription?.unsubscribe();
   }
 }

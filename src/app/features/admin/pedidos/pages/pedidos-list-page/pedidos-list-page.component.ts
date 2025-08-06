@@ -72,10 +72,10 @@ export default class PedidosListPageComponent implements OnInit {
       });
   }
 
-  loadPedidos(page: number = 1, limit: number = 10): void {
+  loadPedidos(page: number = 1, per_page: number = 10): void {
     this.isLoading.set(true);
     const filters = this.filterForm.value;
-    this.pedidoService.getPedidos(page, limit, filters).subscribe({
+    this.pedidoService.getPedidos(page, per_page, filters).subscribe({
       next: (response) => {
         this.pedidos.set(response.data);
         this.pagination.set(response.pagination);

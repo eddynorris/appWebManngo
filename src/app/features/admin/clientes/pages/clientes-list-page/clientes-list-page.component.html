@@ -5,12 +5,32 @@
       <h1>Gestión de Clientes</h1>
       <p>Busca, crea, edita y gestiona todos tus clientes</p>
     </div>
-    <a routerLink="/admin/clientes/new" class="btn-primary">➕ Nuevo Cliente</a>
+    <a routerLink="/admin/clientes/new" class="btn-primary">
+      <fa-icon [icon]="faPlus"></fa-icon>
+      Nuevo Cliente
+    </a>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="search-box">
+      <span class="search-icon">
+        <fa-icon [icon]="faSearch"></fa-icon>
+      </span>
+      <input
+        type="text"
+        placeholder="Buscar por nombre..."
+        [ngModel]="searchTerm()"
+        (input)="onSearchChange($any($event.target).value)">
+    </div>
+    <div class="results-info">
+      Mostrando <strong>{{ filteredClientes().length }}</strong> de <strong>{{ pagination()?.total || 0 }}</strong> resultados.
+    </div>
   </div>
 
   <!-- Reusable Data Table -->
   <app-data-table
-    [data]="clientes()"
+    [data]="filteredClientes()"
     [columns]="columns"
     [actions]="actions"
     [isLoading]="isLoading()"

@@ -53,9 +53,9 @@ export default class UsersListPageComponent implements OnInit {
     this.loadUsers();
   }
 
-  loadUsers(page: number = 1, limit: number = 10): void {
+  loadUsers(page: number = 1, per_page: number = 10): void {
     this.isLoading.set(true);
-    this.userService.getUsers(page, limit).subscribe({
+    this.userService.getUsers(page, per_page).subscribe({
       next: (response) => {
         this.users.set(response.data);
         this.pagination.set(response.pagination);

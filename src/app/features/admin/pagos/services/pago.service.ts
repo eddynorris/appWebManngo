@@ -11,10 +11,10 @@ export class PagoService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/pagos`;
 
-  getPagos(page: number = 1, limit: number = 10): Observable<PagosResponse> {
+  getPagos(page: number = 1, per_page: number = 10): Observable<PagosResponse> {
     const params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString());
+      .set('per_page', per_page.toString());
     return this.http.get<PagosResponse>(this.apiUrl, { params });
   }
 

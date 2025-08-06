@@ -14,12 +14,12 @@ export class VentaService {
   // Obtener todas las ventas con paginación y filtros opcionales
   getVentas(
     page: number = 1,
-    limit: number = 10,
+    per_page: number = 10,
     filtros?: { [key: string]: string | number | boolean }
   ): Observable<VentasResponse> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString());
+      .set('per_page', per_page.toString());
 
     if (filtros) {
       Object.keys(filtros).forEach(key => {

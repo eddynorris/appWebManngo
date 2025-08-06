@@ -11,10 +11,10 @@ export class GastoService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/gastos`;
 
-  getGastos(page: number = 1, limit: number = 10): Observable<GastosResponse> {
+  getGastos(page: number = 1, per_page: number = 10): Observable<GastosResponse> {
     const params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString());
+      .set('per_page', per_page.toString());
     return this.http.get<GastosResponse>(this.apiUrl, { params });
   }
 

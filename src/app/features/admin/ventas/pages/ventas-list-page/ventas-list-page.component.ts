@@ -58,9 +58,9 @@ export default class VentasListPageComponent implements OnInit {
     this.loadVentas();
   }
 
-  loadVentas(page: number = 1, limit: number = 10): void {
+  loadVentas(page: number = 1, per_page: number = 10): void {
     this.isLoading.set(true);
-    this.ventaService.getVentas(page, limit).subscribe({
+    this.ventaService.getVentas(page, per_page).subscribe({
       next: (response) => {
         this.ventas.set(response.data);
         this.pagination.set(response.pagination);

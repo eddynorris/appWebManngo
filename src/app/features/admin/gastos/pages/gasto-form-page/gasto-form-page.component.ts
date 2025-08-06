@@ -6,7 +6,8 @@ import { finalize } from 'rxjs';
 
 import { GastoService } from '../../services/gasto.service';
 import { AlmacenService } from '../../../almacenes/services/almacen.service';
-import { Gasto, Almacen } from '../../../../../types/contract.types';
+import { LoteService } from '../../../lotes/services/lote.service';
+import { Gasto, Almacen, Lote } from '../../../../../types/contract.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 
@@ -24,6 +25,7 @@ export default class GastoFormPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly gastoService = inject(GastoService);
   private readonly almacenService = inject(AlmacenService);
+  private readonly loteService = inject(LoteService);
   private readonly notificationService = inject(NotificationService);
 
   gastoForm: FormGroup;
@@ -32,8 +34,9 @@ export default class GastoFormPageComponent implements OnInit {
   gastoId = signal<number | null>(null);
 
   almacenes = signal<Almacen[]>([]);
+  lotes = signal<Lote[]>([]);
   // TODO: Fetch categories from an endpoint
-  categorias = signal(['logistica', 'personal', 'otros']);
+  categorias = signal(['logistica', 'personal', 'otros', 'materia prima']);
 
   constructor() {
     this.gastoForm = this.fb.group({
@@ -42,11 +45,13 @@ export default class GastoFormPageComponent implements OnInit {
       fecha: [new Date().toISOString().substring(0, 10), Validators.required],
       categoria: ['', Validators.required],
       almacen_id: [null as number | null, Validators.required],
+      lote_id: [null as number | null], // Campo opcional
     });
   }
 
   ngOnInit(): void {
     this.loadAlmacenes();
+    this.loadLotes();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode.set(true);
@@ -57,6 +62,15 @@ export default class GastoFormPageComponent implements OnInit {
 
   loadAlmacenes(): void {
     this.almacenService.getAlmacenes().subscribe(data => this.almacenes.set(data));
+  }
+
+  loadLotes(): void {
+    this.loteService.getLotes(1, 100).subscribe({
+      next: (response) => this.lotes.set(response.data),
+      error: (err) => {
+        this.notificationService.showError('Error al cargar los lotes.');
+      }
+    });
   }
 
   loadGastoData(id: number): void {
@@ -84,6 +98,7 @@ export default class GastoFormPageComponent implements OnInit {
     const payload: Partial<Gasto> = {
       ...formValue,
       almacen_id: Number(formValue.almacen_id),
+      lote_id: formValue.lote_id ? Number(formValue.lote_id) : null,
       monto: String(formValue.monto)
     };
 

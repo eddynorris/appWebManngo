@@ -127,8 +127,10 @@ export type Gasto = {
   fecha?: string;
   categoria?: string;
   almacen_id?: number;
+  lote_id?: number | null;
   usuario_id?: number;
   almacen?: Almacen;
+  lote?: Lote;
   usuario?: User;
 };
 

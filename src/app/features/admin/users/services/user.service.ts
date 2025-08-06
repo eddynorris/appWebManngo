@@ -11,10 +11,10 @@ export class UserService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/usuarios`;
 
-  getUsers(page: number = 1, limit: number = 10): Observable<UsuariosResponse> {
+  getUsers(page: number = 1, per_page: number = 10): Observable<UsuariosResponse> {
     const params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString());
+      .set('per_page', per_page.toString());
     return this.http.get<UsuariosResponse>(this.apiUrl, { params });
   }
 

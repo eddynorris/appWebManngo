@@ -2,3 +2,41 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
+// Filters Section
+.filters-section {
+  margin-bottom: 1.5rem;
+
+  .search-box {
+    position: relative;
+    margin-bottom: 1rem;
+
+    input {
+      width: 100%;
+      padding: 0.875rem 1rem 0.875rem 3rem;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+      &:focus {
+        outline: none;
+        border-color: #ff4444;
+        box-shadow: 0 0 0 0.2rem rgba(255, 68, 68, 0.25);
+      }
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+    }
+  }
+
+  .results-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+}

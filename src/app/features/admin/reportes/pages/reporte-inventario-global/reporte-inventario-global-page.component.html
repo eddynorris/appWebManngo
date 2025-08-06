@@ -1,0 +1,126 @@
+<div class="reporte-global-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>
+        <fa-icon [icon]="faChartBar"></fa-icon>
+        Reporte Global de Inventario
+      </h1>
+      <p>Resumen completo del inventario en todos los almacenes</p>
+    </div>
+    <button 
+      class="btn-refresh" 
+      (click)="refreshData()" 
+      [disabled]="isLoading()">
+      <fa-icon [icon]="faBoxes"></fa-icon>
+      @if (isLoading()) {
+        Actualizando...
+      } @else {
+        Actualizar
+      }
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <!-- Loading State -->
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando reporte global...</p>
+    </div>
+  } @else {
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+
+      <div class="summary-card">
+        <div class="card-icon units">
+          <fa-icon [icon]="faBoxes"></fa-icon>
+        </div>
+        <div class="card-content">
+          <h3>{{ totalUnidades() | number }}</h3>
+          <p>Unidades Totales</p>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="card-icon warehouses">
+          <fa-icon [icon]="faWarehouse"></fa-icon>
+        </div>
+        <div class="card-content">
+          <h3>{{ totalAlmacenes() }}</h3>
+          <p>Almacenes</p>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="card-icon kg">
+          <fa-icon [icon]="faBoxes"></fa-icon>
+        </div>
+        <div class="card-content">
+          <h3>{{ totalKgDisponibles() | number:'1.1-1' }} kg</h3>
+          <p>Materia Prima Disponible</p>
+        </div>
+      </div>
+
+      <div class="summary-card projection">
+        <div class="card-icon projection-icon">
+          <fa-icon [icon]="faShoppingCart"></fa-icon>
+        </div>
+        <div class="card-content">
+          <h3>{{ totalProyeccionVenta() | currency:'S/ ' }}</h3>
+          <p>Proyección de Venta Total</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Report -->
+    @if (reporteData().length === 0) {
+      <div class="empty-state">
+        <fa-icon [icon]="faBoxes"></fa-icon>
+        <h3>Sin datos de inventario</h3>
+        <p>No se encontraron datos de inventario para mostrar.</p>
+      </div>
+    } @else {
+      <div class="report-content">
+        <h2>Detalle por Presentación</h2>
+        @for (item of reporteData(); track item.presentacion_id) {
+          <div class="presentacion-card">
+            <div class="presentacion-header">
+              <div class="presentacion-info">
+                <h3>{{ item.nombre_presentacion }}</h3>
+                <div class="presentacion-stats">
+                  <span class="stock-badge">{{ item.stock_total_unidades }} unidades</span>
+                  <span class="projection-badge">{{ item.proyeccion_venta | currency:'S/ ' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="almacenes-details">
+              <h4>Distribución por Almacén</h4>
+              <div class="almacenes-grid">
+                @for (detalle of item.detalle_por_almacen; track detalle.lote_id + '-' + detalle.almacen) {
+                  <div class="almacen-card">
+                    <div class="almacen-header">
+                      <h5>
+                        <fa-icon [icon]="faWarehouse"></fa-icon>
+                        {{ detalle.almacen }}
+                      </h5>
+                      <span class="stock-count">{{ detalle.stock }} unidades</span>
+                    </div>
+                    <div class="lote-info">
+                      <div class="lote-detail">
+                        <strong>Lote:</strong> {{ detalle.lote }}
+                      </div>
+                      <div class="lote-kg">
+                        <strong>Materia Prima:</strong> {{ detalle.lote_kg_disponible | number:'1.1-1' }} kg disponibles
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

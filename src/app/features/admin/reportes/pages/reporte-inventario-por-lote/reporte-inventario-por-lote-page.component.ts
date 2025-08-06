@@ -106,7 +106,7 @@ export default class ReporteInventarioPorLotePageComponent implements OnInit {
         lote_id: filtros.lote_id || undefined,
         fecha_inicio: filtros.fecha_inicio || undefined,
         fecha_fin: filtros.fecha_fin || undefined,
-        limit: 1000, // Obtener todos los registros para el reporte
+        limit: 10000, // Obtener todos los registros para el reporte
       })
       .subscribe({
         next: (response) => {

@@ -6,3 +6,19 @@
 .input-group.full-width {
   grid-column: 1 / -1;
 }
+
+// Field help text styling
+.field-help {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+// Ensure proper responsive behavior for three-column grid
+@media (max-width: 768px) {
+  .form-grid.three-cols {
+    grid-template-columns: 1fr !important;
+  }
+}

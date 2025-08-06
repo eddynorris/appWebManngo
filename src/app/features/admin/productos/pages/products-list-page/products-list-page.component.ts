@@ -86,9 +86,8 @@ export default class ProductsListPageComponent {
     });
   }
 
-  onSearchChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.searchTerm.set(target.value as string);
+  onSearchChange(value: string): void {
+    this.searchTerm.set(value);
     this.loadProducts(); // Recargar productos con el nuevo término de búsqueda
   }
 

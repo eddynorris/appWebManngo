@@ -20,7 +20,7 @@
         type="text"
         placeholder="Buscar por nombre o descripción..."
         [ngModel]="searchTerm()"
-        (ngModelChange)="onSearchChange($event)">
+        (input)="onSearchChange($any($event.target).value)">
     </div>
     <div class="results-info">
       Mostrando <strong>{{ filteredProducts().length }}</strong> de <strong>{{ totalProducts() }}</strong> resultados.

@@ -30,12 +30,12 @@ export class LoteService {
   // Obtener todos los lotes con paginación y filtros opcionales
   getLotes(
     page: number = 1,
-    limit: number = 10,
+    per_page: number = 10,
     filtros?: { [key: string]: string | number | boolean }
   ): Observable<LotesResponse> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString());
+      .set('per_page', per_page.toString());
 
     if (filtros) {
       Object.keys(filtros).forEach(key => {
@@ -51,7 +51,7 @@ export class LoteService {
   // Obtener datos necesarios para el formulario (productos y proveedores)
   getFormData(): Observable<LoteFormData> {
     // Peticiones con paginación alta para obtener todos los registros
-    const params = new HttpParams().set('limit', '1000'); // Limite alto para obtener todos
+    const params = new HttpParams().set('per_page', '1000'); // per_pagee alto para obtener todos
     
     const productos$ = this.http.get<{ data: Producto[] }>(`${environment.apiUrl}/productos`, { params });
     const proveedores$ = this.http.get<{ data: Proveedor[] }>(`${environment.apiUrl}/proveedores`, { params });

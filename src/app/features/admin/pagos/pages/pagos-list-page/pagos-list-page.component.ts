@@ -56,9 +56,9 @@ export default class PagosListPageComponent implements OnInit {
     this.loadPagos();
   }
 
-  loadPagos(page: number = 1, limit: number = 10): void {
+  loadPagos(page: number = 1, per_page: number = 10): void {
     this.isLoading.set(true);
-    this.pagoService.getPagos(page, limit).subscribe({
+    this.pagoService.getPagos(page, per_page).subscribe({
       next: (response) => {
         this.pagos.set(response.data);
         this.pagination.set(response.pagination);

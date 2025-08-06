@@ -56,9 +56,9 @@ export default class GastosListPageComponent implements OnInit {
     this.loadGastos();
   }
 
-  loadGastos(page: number = 1, limit: number = 10): void {
+  loadGastos(page: number = 1, per_page: number = 10): void {
     this.isLoading.set(true);
-    this.gastoService.getGastos(page, limit).subscribe({
+    this.gastoService.getGastos(page, per_page).subscribe({
       next: (response) => {
         this.gastos.set(response.data);
         this.pagination.set(response.pagination);

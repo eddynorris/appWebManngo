@@ -9,7 +9,7 @@ import { Producto, PresentacionProducto, ProductosResponse } from '../../../../t
 //   data: Producto[];
 //   total: number;
 //   page: number;
-//   limit: number;
+//   per_page: number;
 //   totalPages: number;
 // }
 
@@ -39,7 +39,7 @@ export class ProductService {
   readonly hasPrevPage = computed(() => this.currentPage() > 1);
 
   // Obtener productos con paginación y caché
-  loadProducts(page = 1, limit = 10, search?: string, forceReload = false): Observable<ProductosResponse> {
+  loadProducts(page = 1, per_page = 10, search?: string, forceReload = false): Observable<ProductosResponse> {
     // Si es la misma búsqueda y página, y no forzamos recarga, usar caché
     if (!forceReload &&
         search === this.lastSearch() &&
@@ -51,7 +51,7 @@ export class ProductService {
           pagination: {
             total: this.productos().length,
             page: this.currentPage(),
-            per_page: limit,
+            per_page: per_page,
             pages: this.totalPages()
           }
         });
@@ -63,7 +63,7 @@ export class ProductService {
 
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', limit.toString());
+      .set('per_page', per_page.toString());
 
     if (search) {
       params = params.set('search', search);

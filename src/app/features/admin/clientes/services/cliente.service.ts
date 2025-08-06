@@ -12,13 +12,17 @@ export class ClienteService {
   private readonly apiUrl = `${environment.apiUrl}/clientes`;
 
   // Obtener todos los clientes con paginación
-  getClientes(page: number = 1, limit: number = 10): Observable<ClientesResponse> {
-    return this.http.get<ClientesResponse>(this.apiUrl, {
-      params: {
-        page: page.toString(),
-        limit: limit.toString(),
-      }
-    });
+  getClientes(page: number = 1, per_page: number = 10, search?: string): Observable<ClientesResponse> {
+    const params: any = {
+      page: page.toString(),
+      per_page: per_page.toString(),
+    };
+
+    if (search) {
+      params.search = search;
+    }
+
+    return this.http.get<ClientesResponse>(this.apiUrl, { params });
   }
 
   // Obtener un cliente por ID

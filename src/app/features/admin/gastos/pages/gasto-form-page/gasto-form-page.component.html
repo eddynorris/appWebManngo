@@ -7,7 +7,7 @@
   <form [formGroup]="gastoForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
     <div class="form-section">
       <h2 class="section-title">Detalles del Gasto</h2>
-      <div class="form-grid two-cols">
+      <div class="form-grid">
         <div class="input-group full-width">
           <label for="descripcion">Descripción</label>
           <input id="descripcion" type="text" formControlName="descripcion" placeholder="Ej: Compra de material de oficina">
@@ -37,6 +37,16 @@
               <option [value]="almacen.id">{{ almacen.nombre }}</option>
             }
           </select>
+        </div>
+        <div class="input-group">
+          <label for="lote_id">Lote (Opcional)</label>
+          <select id="lote_id" formControlName="lote_id">
+            <option [ngValue]="null">Sin asociar a lote</option>
+            @for (lote of lotes(); track lote.id) {
+              <option [value]="lote.id">{{ lote.descripcion || 'Lote #' + lote.id }}</option>
+            }
+          </select>
+          <small class="field-help">Asocia este gasto a un lote específico si corresponde (ej: gastos de materia prima)</small>
         </div>
       </div>
     </div>

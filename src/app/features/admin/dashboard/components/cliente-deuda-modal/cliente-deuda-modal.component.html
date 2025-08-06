@@ -13,7 +13,7 @@
           <div class="venta-card">
             <div class="venta-header">
               <div class="venta-info">
-                <h3 class="venta-id-clickable" (click)="navigateToVentaDetail(venta.venta_id)" title="Hacer clic para ver detalle de la venta">
+                <h3 class="venta-id-clickable" (click)="showVentaDetail(venta.venta_id)" title="Hacer clic para ver detalle de la venta">
                   Venta #{{ venta.venta_id }}
                 </h3>
                 <span class="status-badge" [class]="venta.estado_pago">{{ venta.estado_pago | titlecase }}</span>
@@ -23,8 +23,17 @@
                 <span class="saldo-pendiente">Pendiente: {{ venta.saldo_pendiente_venta | currency:'S/ ' }}</span>
               </div>
               <div class="venta-actions">
-                <button class="btn-detail" (click)="navigateToVentaDetail(venta.venta_id)" title="Ver detalle de la venta">
-                  <fa-icon [icon]="faEye"></fa-icon> Ver Detalle
+                <button 
+                  class="btn-detail" 
+                  (click)="showVentaDetail(venta.venta_id)" 
+                  [disabled]="isLoadingVentaDetail()"
+                  title="Ver detalle de la venta">
+                  <fa-icon [icon]="faEye"></fa-icon> 
+                  @if (isLoadingVentaDetail()) {
+                    Cargando...
+                  } @else {
+                    Ver Detalle
+                  }
                 </button>
               </div>
             </div>
@@ -48,3 +57,12 @@
     }
   </div>
 </app-modal>
+
+<!-- Modal de Detalle de Venta -->
+@if (selectedVenta() && ventaDetalleVisible()) {
+  <app-venta-detalle-modal
+    [venta]="selectedVenta()!"
+    [visible]="ventaDetalleVisible"
+    (close)="closeVentaDetail()"
+  ></app-venta-detalle-modal>
+}
