@@ -18,7 +18,11 @@ import {
   faBars,
   faSignOutAlt,
   faChevronDown,
-  faChevronRight
+  faChevronRight,
+  faShoppingCart,
+  faWarehouse,
+  faFileInvoiceDollar,
+  faCogs
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../../core/services/auth.service';
 import { FloatingChatComponent } from '../../chat/components/floating-chat/floating-chat.component';
@@ -54,31 +58,69 @@ export default class AdminLayoutComponent {
   faSignOutAlt = faSignOutAlt;
   faChevronDown = faChevronDown;
   faChevronRight = faChevronRight;
+  faShoppingCart = faShoppingCart;
+  faWarehouse = faWarehouse;
+  faFileInvoiceDollar = faFileInvoiceDollar;
+  faCogs = faCogs;
 
   navigationItems = [
     { label: 'Dashboard', route: '/admin/dashboard', icon: faChartBar },
-    { label: 'Productos', route: '/admin/products', icon: faBoxes },
-    { label: 'Presentaciones', route: '/admin/presentaciones', icon: faBox },
-    { label: 'Proveedores', route: '/admin/proveedores', icon: faTruck },
-    { label: 'Clientes', route: '/admin/clientes', icon: faUsers },
-    { label: 'Lotes', route: '/admin/lotes', icon: faBox },
-    { label: 'Ventas', route: '/admin/ventas', icon: faMoneyBillWave },
-    { label: 'Pagos', route: '/admin/pagos', icon: faCreditCard },
-    { label: 'Pedidos', route: '/admin/pedidos', icon: faTruck },
-    { label: 'Gastos', route: '/admin/gastos', icon: faReceipt },
-    { label: 'Inventarios', route: '/admin/inventarios', icon: faClipboardList },
-    { label: 'Usuarios', route: '/admin/users', icon: faUser },
+    { 
+      label: 'Productos', 
+      icon: faBoxes, 
+      hasSubmenu: true,
+      submenu: [
+        { label: 'Lista de Productos', route: '/admin/products', icon: faBoxes },
+        { label: 'Presentaciones', route: '/admin/presentaciones', icon: faBox },
+        { label: 'Lotes', route: '/admin/lotes', icon: faBox }
+      ]
+    },
+    { 
+      label: 'Personas', 
+      icon: faUsers, 
+      hasSubmenu: true,
+      submenu: [
+        { label: 'Clientes', route: '/admin/clientes', icon: faUsers },
+        { label: 'Proveedores', route: '/admin/proveedores', icon: faTruck }
+      ]
+    },
+    { 
+      label: 'Transacciones', 
+      icon: faFileInvoiceDollar, 
+      hasSubmenu: true,
+      submenu: [
+        { label: 'Ventas', route: '/admin/ventas', icon: faMoneyBillWave },
+        { label: 'Pagos', route: '/admin/pagos', icon: faCreditCard },
+        { label: 'Gastos', route: '/admin/gastos', icon: faReceipt }
+      ]
+    },
+    { 
+      label: 'Operaciones', 
+      icon: faWarehouse, 
+      hasSubmenu: true,
+      submenu: [
+        { label: 'Pedidos', route: '/admin/pedidos', icon: faTruck },
+        { label: 'Inventarios', route: '/admin/inventarios', icon: faClipboardList }
+      ]
+    },
+    { 
+      label: 'Administración', 
+      icon: faCogs, 
+      hasSubmenu: true,
+      submenu: [
+        { label: 'Usuarios', route: '/admin/users', icon: faUser }
+      ]
+    },
     { 
       label: 'Reportes', 
       icon: faChartBar, 
       hasSubmenu: true,
       submenu: [
         { label: 'Inventario por Lote', route: '/admin/reportes/reporte-inventario-por-lote', icon: faBox },
-        { label: 'Reporte Financiero', route: '/admin/reportes/reporte-financiero', icon: faBox },
-        { label: 'Reporte Inventario Total', route: '/admin/reportes/reporte-inventario-global', icon: faBox },
-
+        { label: 'Reporte Financiero', route: '/admin/reportes/reporte-financiero', icon: faFileInvoiceDollar },
+        { label: 'Inventario Total', route: '/admin/reportes/reporte-inventario-global', icon: faWarehouse }
       ]
-    },
+    }
   ];
 
   toggleSidebar(): void {

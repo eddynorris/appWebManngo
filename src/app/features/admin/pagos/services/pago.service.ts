@@ -38,4 +38,9 @@ export class PagoService {
   getPagosByVentaId(ventaId: number): Observable<Pago[]> {
     return this.http.get<Pago[]>(`${this.apiUrl}/venta/${ventaId}`);
   }
+
+  // Crear pagos por lotes con soporte para archivo adjunto
+  createBatchPagos(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/batch`, formData);
+  }
 }

@@ -1,8 +1,213 @@
 
+@use 'src/styles/variables' as vars;
+
 :host {
   display: block;
 }
 
-.input-group.full-width {
-  grid-column: 1 / -1;
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: vars.$color-text-secondary;
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid vars.$color-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: vars.$color-text-secondary;
+  
+  p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: vars.$border-radius;
+  border: 1px solid vars.$color-border-light;
+  
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    
+    th {
+      background: vars.$color-bg-secondary;
+      padding: 1rem 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      color: vars.$color-text-primary;
+      border-bottom: 2px solid vars.$color-border;
+      font-size: 0.875rem;
+      white-space: nowrap;
+    }
+    
+    td {
+      padding: 1rem 0.75rem;
+      border-bottom: 1px solid vars.$color-border-light;
+      vertical-align: middle;
+      
+      &.text-center {
+        text-align: center;
+      }
+      
+      &.text-right {
+        text-align: right;
+      }
+      
+      &.font-weight-bold {
+        font-weight: 600;
+      }
+    }
+    
+    tr:hover {
+      background: vars.$color-bg-secondary;
+    }
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: vars.$border-radius-sm;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    
+    &.status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    &.status-partial {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+  }
+  
+  .input-small {
+    width: 100px;
+    padding: 0.5rem;
+    border: 1px solid vars.$color-border;
+    border-radius: vars.$border-radius-sm;
+    font-size: 0.875rem;
+    text-align: right;
+    
+    &:focus {
+      outline: none;
+      border-color: vars.$color-primary;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+  }
+}
+
+.table-footer {
+  padding: 1rem;
+  background: vars.$color-bg-secondary;
+  border-top: 2px solid vars.$color-border;
+  text-align: right;
+  font-size: 1.1rem;
+  color: vars.$color-primary;
+}
+
+.form-grid.three-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.file-upload-container {
+  .file-upload-box {
+    position: relative;
+    
+    .file-input {
+      display: none;
+    }
+    
+    .file-upload-label {
+      display: block;
+      border: 2px dashed vars.$color-border;
+      border-radius: vars.$border-radius;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        border-color: vars.$color-primary;
+        background: vars.$color-bg-secondary;
+      }
+      
+      .file-selected {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: vars.$color-success;
+        
+        .file-icon {
+          font-size: 1.5rem;
+        }
+        
+        .file-name {
+          font-weight: 600;
+        }
+        
+        .file-size {
+          color: vars.$color-text-secondary;
+          font-size: 0.875rem;
+        }
+      }
+      
+      .file-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        color: vars.$color-text-secondary;
+        
+        .upload-icon {
+          font-size: 2rem;
+        }
+        
+        .upload-text {
+          font-weight: 600;
+          color: vars.$color-text-primary;
+        }
+        
+        .upload-subtitle {
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+}
+
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
 }

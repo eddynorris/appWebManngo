@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { Venta, VentasResponse, VentaFormDataResponse } from '../../../../types/contract.types';
 
@@ -64,4 +65,17 @@ export class VentaService {
   updateEstadoPago(id: number, estado: string): Observable<Venta> {
     return this.http.patch<Venta>(`${this.apiUrl}/${id}/estado-pago`, { estado_pago: estado });
   }
+
+  // ... existing code ...
+
+  getVentasPendientesPago(): Observable<Venta[]> {
+    const params = new HttpParams()
+      .set('estado_pago', 'pendiente,parcial')
+      .set('all', 'true');
+    return this.http.get<any>(`${this.apiUrl}`, { params }).pipe(
+      map((response: any) => response.data) // <--- CAMBIO AQUÍ: Accede a la propiedad 'data'
+    );
+  }
+
+// ... existing code ...
 }

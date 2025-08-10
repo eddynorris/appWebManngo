@@ -1,50 +1,147 @@
 <div class="form-page-container">
   <div class="page-header">
-    <h1>{{ isEditMode() ? 'Editar Pago' : 'Registrar Nuevo Pago' }}</h1>
-    <p>Completa los datos para registrar un pago.</p>
+    <h1>Registrar Pagos por Lotes</h1>
+    <p>Selecciona las ventas pendientes y registra los pagos de manera eficiente.</p>
   </div>
 
-  <form [formGroup]="pagoForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
-    <div class="form-section">
-      <h2 class="section-title">Detalles del Pago</h2>
-      <div class="form-grid two-cols">
-        <div class="input-group">
-          <label for="venta_id">ID de Venta</label>
-          <input id="venta_id" type="number" formControlName="venta_id" placeholder="Ej: 123">
-          <!-- TODO: Convertir en un buscador de ventas pendientes -->
-        </div>
-        <div class="input-group">
-          <label for="monto">Monto (S/.)</label>
-          <input id="monto" type="number" formControlName="monto" placeholder="Ej: 100.00">
-        </div>
-        <div class="input-group">
-          <label for="fecha">Fecha del Pago</label>
-          <input id="fecha" type="date" formControlName="fecha">
-        </div>
-        <div class="input-group">
-          <label for="metodo_pago">Método de Pago</label>
-          <select id="metodo_pago" formControlName="metodo_pago">
-            <option value="" disabled>Selecciona un método</option>
-            @for (metodo of metodos_pago(); track metodo) {
-              <option [value]="metodo">{{ metodo | titlecase }}</option>
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando ventas pendientes...</p>
+    </div>
+  } @else {
+    <form [formGroup]="pagoForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
+      
+      <!-- Tabla de Ventas Pendientes -->
+      <div class="form-section">
+        <h2 class="section-title">Ventas Pendientes de Pago</h2>
+        @if (ventasPendientes().length === 0) {
+          <div class="empty-state">
+            <p>No hay ventas pendientes de pago en este momento.</p>
+            <button type="button" (click)="cancel()" class="btn-ghost">Volver al listado</button>
+          </div>
+        } @else {
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID Venta</th>
+                  <th>Cliente</th>
+                  <th>Fecha Venta</th>
+                  <th>Total (S/.)</th>
+                  <th>Pagado (S/.)</th>
+                  <th>Pendiente (S/.)</th>
+                  <th>Estado</th>
+                  <th>Monto a Pagar (S/.)</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (venta of ventasPendientes(); track venta.venta_id) {
+                  <tr>
+                    <td class="text-center">#{{ venta.venta_id }}</td>
+                    <td>{{ venta.cliente_nombre }}</td>
+                    <td>{{ venta.fecha_venta | date:'dd/MM/yyyy' }}</td>
+                    <td class="text-right">{{ +venta.total | number:'1.2-2' }}</td>
+                    <td class="text-right">{{ +venta.pagado | number:'1.2-2' }}</td>
+                    <td class="text-right font-weight-bold">{{ +venta.pendiente | number:'1.2-2' }}</td>
+                    <td>
+                      <span class="status-badge" 
+                            [ngClass]="venta.estado_pago === 'pendiente' ? 'status-pending' : 'status-partial'">
+                        {{ venta.estado_pago | titlecase }}
+                      </span>
+                    </td>
+                    <td>
+                      <input 
+                        type="number" 
+                        class="input-small" 
+                        [value]="venta.monto_pago"
+                        (input)="onMontoChange($event, venta.venta_id)"
+                        placeholder="0.00"
+                        min="0"
+                        [max]="venta.pendiente"
+                        step="0.01">
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+            
+            @if (totalAPagar() > 0) {
+              <div class="table-footer">
+                <strong>Total a Pagar: S/. {{ totalAPagar() | number:'1.2-2' }}</strong>
+              </div>
             }
-          </select>
-        </div>
-        <div class="input-group full-width">
-          <label for="referencia">Referencia (Opcional)</label>
-          <input id="referencia" type="text" formControlName="referencia" placeholder="Ej: Código de operación, Yape de...">
-        </div>
-      </div>
-    </div>
-
-    <div class="form-actions">
-      <button type="button" (click)="cancel()" class="btn-ghost">Cancelar</button>
-      <button type="submit" class="btn-primary" [disabled]="pagoForm.invalid || isLoading()">
-        @if (isLoading()) {
-          <div class="spinner-small"></div>
+          </div>
         }
-        {{ isEditMode() ? 'Actualizar Pago' : 'Crear Pago' }}
-      </button>
-    </div>
-  </form>
+      </div>
+
+      <!-- Detalles del Pago -->
+      @if (ventasPendientes().length > 0) {
+        <div class="form-section">
+          <h2 class="section-title">Detalles del Pago</h2>
+          <div class="form-grid three-cols">
+            <div class="input-group">
+              <label for="fecha">Fecha del Pago *</label>
+              <input id="fecha" type="date" formControlName="fecha" required>
+            </div>
+            <div class="input-group">
+              <label for="metodo_pago">Método de Pago *</label>
+              <select id="metodo_pago" formControlName="metodo_pago" required>
+                <option value="" disabled>Selecciona un método</option>
+                @for (metodo of metodos_pago(); track metodo) {
+                  <option [value]="metodo">{{ metodo | titlecase }}</option>
+                }
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="referencia">Referencia (Opcional)</label>
+              <input id="referencia" type="text" formControlName="referencia" 
+                     placeholder="Ej: Código de operación, Yape de...">
+            </div>
+          </div>
+        </div>
+
+        <!-- Subir Comprobante -->
+        <div class="form-section">
+          <h2 class="section-title">Comprobante de Pago</h2>
+          <div class="file-upload-container">
+            <div class="file-upload-box">
+              <input 
+                type="file" 
+                id="comprobante" 
+                (change)="onFileSelected($event)"
+                accept=".pdf,.jpg,.jpeg,.png"
+                class="file-input">
+              <label for="comprobante" class="file-upload-label">
+                @if (selectedFile()) {
+                  <div class="file-selected">
+                    <span class="file-icon">📄</span>
+                    <span class="file-name">{{ selectedFile()!.name }}</span>
+                    <span class="file-size">({{ (selectedFile()!.size / 1024 / 1024) | number:'1.1-1' }} MB)</span>
+                  </div>
+                } @else {
+                  <div class="file-placeholder">
+                    <span class="upload-icon">📁</span>
+                    <span class="upload-text">Clic aquí para subir comprobante</span>
+                    <span class="upload-subtitle">PDF, JPG, PNG - Máx. 5MB</span>
+                  </div>
+                }
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" (click)="cancel()" class="btn-ghost">Cancelar</button>
+          <button type="submit" class="btn-primary" 
+                  [disabled]="pagoForm.invalid || isLoading() || totalAPagar() === 0">
+            @if (isLoading()) {
+              <div class="spinner-small"></div>
+            }
+            Registrar Pagos (S/. {{ totalAPagar() | number:'1.2-2' }})
+          </button>
+        </div>
+      }
+    </form>
+  }
 </div>

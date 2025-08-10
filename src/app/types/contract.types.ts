@@ -258,3 +258,20 @@ export type GastosResponse = PaginatedResponse<Gasto>;
 export type ProductsResponse = PaginatedResponse<Producto>;
 export type MovimientosResponse = PaginatedResponse<Movimiento>;
 export type LotesResponse = PaginatedResponse<Lote>;
+
+// Tipos específicos para el formulario de pagos por lotes
+export type VentaPendientePago = {
+  venta_id: number;
+  cliente_nombre: string;
+  fecha_venta: string;
+  total: string;
+  pagado: string;
+  pendiente: string;
+  estado_pago: string;
+  monto_pago?: string; // Monto que se va a pagar (editable)
+};
+
+export type BatchPagoData = {
+  venta_id: number;
+  monto: string;
+};
