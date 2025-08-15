@@ -5,38 +5,143 @@
 
 // Filters Section
 .filters-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 
-  .search-box {
-    position: relative;
+  .filters-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
 
-    input {
-      width: 100%;
-      padding: 0.875rem 1rem 0.875rem 3rem;
-      border: 1px solid #ced4da;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 300px;
+      min-width: 250px;
 
-      &:focus {
-        outline: none;
-        border-color: #ff4444;
-        box-shadow: 0 0 0 0.2rem rgba(255, 68, 68, 0.25);
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        z-index: 1;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 16px 12px 40px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        &::placeholder {
+          color: #9ca3af;
+        }
       }
     }
 
-    .search-icon {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6c757d;
+    .ciudad-filter {
+      min-width: 180px;
+
+      .ciudad-filter-select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        &:hover {
+          border-color: #9ca3af;
+        }
+      }
+    }
+
+    .btn-export {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      min-width: 160px;
+      justify-content: center;
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      fa-icon {
+        font-size: 16px;
+      }
     }
   }
 
   .results-info {
-    color: #6c757d;
-    font-size: 0.9rem;
+    color: #6b7280;
+    font-size: 14px;
+
+    strong {
+      color: #374151;
+      font-weight: 600;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .filters-row {
+      flex-direction: column;
+      align-items: stretch;
+
+      .search-box {
+        max-width: none;
+        min-width: auto;
+      }
+
+      .ciudad-filter {
+        min-width: auto;
+      }
+
+      .btn-export {
+        min-width: auto;
+      }
+    }
   }
 }

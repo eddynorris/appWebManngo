@@ -6,7 +6,7 @@ export const CLIENTES_ROUTES: Routes = [
     loadComponent: () => import('./pages/clientes-list-page/clientes-list-page.component')
   },
   {
-    path: 'create',
+    path: 'new',
     loadComponent: () => import('./pages/cliente-form-page/cliente-form-page.component')
   },
   {

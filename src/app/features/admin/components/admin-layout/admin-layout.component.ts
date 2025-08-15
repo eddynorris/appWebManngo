@@ -91,7 +91,6 @@ export default class AdminLayoutComponent {
       hasSubmenu: true,
       submenu: [
         { label: 'Clientes', route: '/admin/clientes', icon: faUsers },
-        { label: 'Proyección de Ventas', route: '/admin/proyecciones', icon: faChartBar },
         { label: 'Proveedores', route: '/admin/proveedores', icon: faTruck }
       ]
     },

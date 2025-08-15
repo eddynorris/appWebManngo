@@ -10,7 +10,7 @@ import { ColumnConfig, ActionConfig } from '../../../../../shared/components/dat
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
-import { faEdit, faTrash, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPlus, faSearch, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
@@ -31,15 +31,27 @@ export default class ClientesListPageComponent implements OnDestroy {
   faSearch = faSearch;
   faEdit = faEdit;
   faTrash = faTrash;
+  faDownload = faDownload;
 
   clientes = signal<Cliente[]>([]);
   pagination = signal<Pagination | null>(null);
   isLoading = signal(false);
   searchTerm = signal('');
+  ciudadFilter = signal<string>(''); // Nuevo filtro de ciudad
   private searchSubject = new Subject<string>();
   private searchSubscription: Subscription | undefined;
   isDeleteModalVisible = signal(false);
   clienteToDelete = signal<Cliente | null>(null);
+
+  // Opciones del filtro de ciudad
+  ciudadFilterOptions = [
+    { value: '', label: 'Todas las ciudades' },
+    { value: 'Abancay', label: 'Abancay' },
+    { value: 'Andahuaylas', label: 'Andahuaylas' },
+    { value: 'Lima', label: 'Lima' },
+    { value: 'Chalhuanca', label: 'Chalhuanca' },
+    { value: 'Cusco', label: 'Cusco' },
+  ];
 
   columns: ColumnConfig<Cliente>[] = [
     { key: 'nombre', label: 'Nombre', type: 'text' },
@@ -77,9 +89,10 @@ export default class ClientesListPageComponent implements OnDestroy {
 
   loadClientes(page: number = 1, per_page: number = 10): void {
     this.isLoading.set(true);
-    // Pass search term to API if exists
+    // Pass search term and ciudad filter to API if exists
     const searchParam = this.searchTerm() || undefined;
-    this.clienteService.getClientes(page, per_page, searchParam).subscribe({
+    const ciudadParam = this.ciudadFilter() || undefined;
+    this.clienteService.getClientes(page, per_page, searchParam, ciudadParam).subscribe({
       next: (response) => {
         this.clientes.set(response.data);
         this.pagination.set(response.pagination);
@@ -94,6 +107,34 @@ export default class ClientesListPageComponent implements OnDestroy {
 
   onSearchChange(value: string): void {
     this.searchSubject.next(value);
+  }
+
+  onCiudadFilterChange(value: string): void {
+    this.ciudadFilter.set(value);
+    this.loadClientes();
+  }
+
+  handleExportExcel(): void {
+    const ciudadParam = this.ciudadFilter() || undefined;
+    
+    this.clienteService.exportarClientes(ciudadParam).subscribe({
+      next: (blob) => {
+        // Crear URL del blob y descargar archivo
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `clientes_${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        this.notificationService.showSuccess('Archivo Excel descargado exitosamente.');
+      },
+      error: (err) => {
+        this.notificationService.showError('Error al exportar los clientes.');
+      }
+    });
   }
 
   onPageChange(page: number): void {

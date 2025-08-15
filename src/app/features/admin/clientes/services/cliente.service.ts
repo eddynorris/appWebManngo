@@ -12,7 +12,7 @@ export class ClienteService {
   private readonly apiUrl = `${environment.apiUrl}/clientes`;
 
   // Obtener todos los clientes con paginación
-  getClientes(page: number = 1, per_page: number = 10, search?: string): Observable<ClientesResponse> {
+  getClientes(page: number = 1, per_page: number = 10, search?: string, ciudad?: string): Observable<ClientesResponse> {
     const params: any = {
       page: page.toString(),
       per_page: per_page.toString(),
@@ -20,6 +20,10 @@ export class ClienteService {
 
     if (search) {
       params.search = search;
+    }
+
+    if (ciudad) {
+      params.ciudad = ciudad;
     }
 
     return this.http.get<ClientesResponse>(this.apiUrl, { params });
@@ -75,5 +79,19 @@ export class ClienteService {
   // Obtener proyección detallada de un cliente específico
   getClienteProyeccion(id: number): Observable<ClienteProyeccion> {
     return this.http.get<ClienteProyeccion>(`${this.apiUrl}/proyecciones/${id}`);
+  }
+
+  // Exportar clientes a Excel
+  exportarClientes(ciudad?: string): Observable<Blob> {
+    const params: any = {};
+
+    if (ciudad) {
+      params.ciudad = ciudad;
+    }
+
+    return this.http.get(`${this.apiUrl}/exportar`, {
+      params,
+      responseType: 'blob'
+    });
   }
 }
