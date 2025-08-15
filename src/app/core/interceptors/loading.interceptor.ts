@@ -12,6 +12,8 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     '/assets',    // Recursos estáticos
     '/ping',      // Health checks
     '/chat',      // Chat no debe mostrar loading global
+    '/clientes/proyeccion', // Proyecciones tienen su propio loading en data-table
+    '/clientes/proyecciones', // Proyecciones detalle tienen su propio loading
   ];
 
   // Verificar si la URL está excluida

@@ -1,0 +1,137 @@
+@use '../../../../../../styles/variables' as vars;
+
+// Estilos específicos para la página de proyecciones de clientes
+// Nota: Se utilizan las clases globales de _components.scss siempre que sea posible
+
+// Layout específico para filtros de búsqueda
+.filters-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: vars.$spacer-lg;
+  gap: vars.$spacer;
+  
+  .search-box {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+    
+    .search-icon {
+      position: absolute;
+      left: vars.$spacer;
+      top: 50%;
+      transform: translateY(-50%);
+      color: vars.$color-text-secondary;
+      z-index: 1;
+    }
+    
+    input {
+      width: 100%;
+      padding: 0.75rem vars.$spacer 0.75rem 2.5rem;
+      border: vars.$border-width solid vars.$color-border;
+      border-radius: vars.$border-radius;
+      font-size: vars.$font-size-base;
+      background: vars.$color-bg-primary;
+      color: vars.$color-text-primary;
+      transition: vars.$transition-base;
+      
+      &:focus {
+        outline: none;
+        border-color: vars.$color-primary;
+        box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+      }
+      
+      &::placeholder {
+        color: vars.$color-text-light;
+      }
+    }
+  }
+  
+  .date-filter {
+    .date-filter-select {
+      padding: 0.75rem vars.$spacer;
+      border: vars.$border-width solid vars.$color-border;
+      border-radius: vars.$border-radius;
+      font-size: vars.$font-size-base;
+      background: vars.$color-bg-primary;
+      color: vars.$color-text-primary;
+      transition: vars.$transition-base;
+      min-width: 180px;
+      cursor: pointer;
+      
+      &:focus {
+        outline: none;
+        border-color: vars.$color-primary;
+        box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+      }
+      
+      &:hover {
+        border-color: vars.$color-primary;
+      }
+      
+      option {
+        background: vars.$color-bg-primary;
+        color: vars.$color-text-primary;
+        padding: 0.5rem;
+      }
+    }
+  }
+  
+  .results-info {
+    color: vars.$color-text-secondary;
+    font-size: vars.$font-size-sm;
+    white-space: nowrap;
+    
+    strong {
+      color: vars.$color-text-primary;
+      font-weight: vars.$font-weight-semibold;
+    }
+  }
+}
+
+// Estilos específicos para las columnas de proyecciones
+:host ::ng-deep {
+  .data-table {
+    .column-frecuencia_compra_dias {
+      text-align: center;
+      font-weight: vars.$font-weight-semibold;
+      color: vars.$color-info;
+    }
+    
+    .column-proxima_compra_estimada {
+      font-weight: vars.$font-weight-semibold;
+      
+      // Colorear según proximidad de la fecha
+      &.proxima-urgente {
+        color: vars.$color-danger;
+        background-color: rgba(220, 53, 69, 0.1);
+      }
+      
+      &.proxima-media {
+        color: vars.$color-warning;
+        background-color: rgba(255, 193, 7, 0.1);
+      }
+      
+      &.proxima-normal {
+        color: vars.$color-success;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: vars.$breakpoint-md) {
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: vars.$spacer;
+    
+    .search-box {
+      max-width: none;
+    }
+    
+    .results-info {
+      text-align: center;
+    }
+  }
+}

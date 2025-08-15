@@ -18,6 +18,16 @@ export const ADMIN_ROUTES: Routes = [
         data: { title: 'Dashboard' }
       },
       {
+        path: 'proyecciones',
+        loadComponent: () => import('./dashboard/pages/proyecciones-page.component/proyecciones-page.component'),
+        data: { title: 'Proyecciones de Clientes' }
+      },
+      {
+        path: 'proyecciones/:id',
+        loadComponent: () => import('./dashboard/pages/proyecciones-page-detail.component/proyecciones-page-detail.component').then(m => m.ProyeccionesPageDetailComponent),
+        data: { title: 'Detalle de Proyección' }
+      },
+      {
         path: 'products',
         loadChildren: () => import('./productos/productos.routes').then(m => m.PRODUCTOS_ROUTES),
         data: { title: 'Productos' }

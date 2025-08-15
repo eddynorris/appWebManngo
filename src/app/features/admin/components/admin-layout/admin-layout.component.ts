@@ -64,51 +64,43 @@ export default class AdminLayoutComponent {
   faCogs = faCogs;
 
   navigationItems = [
-    { label: 'Dashboard', route: '/admin/dashboard', icon: faChartBar },
     { 
-      label: 'Productos', 
-      icon: faBoxes, 
-      hasSubmenu: true,
-      submenu: [
-        { label: 'Lista de Productos', route: '/admin/products', icon: faBoxes },
-        { label: 'Presentaciones', route: '/admin/presentaciones', icon: faBox },
-        { label: 'Lotes', route: '/admin/lotes', icon: faBox }
-      ]
-    },
-    { 
-      label: 'Personas', 
-      icon: faUsers, 
-      hasSubmenu: true,
-      submenu: [
-        { label: 'Clientes', route: '/admin/clientes', icon: faUsers },
-        { label: 'Proveedores', route: '/admin/proveedores', icon: faTruck }
-      ]
-    },
-    { 
-      label: 'Transacciones', 
+      label: 'Dashboard', 
+      route: '/admin/dashboard', 
       icon: faFileInvoiceDollar, 
       hasSubmenu: true,
       submenu: [
+        { label: 'Deuda de Clientes', route: '/admin/dashboard', icon: faChartBar },
+        { label: 'Proyeccion de Ventas', route: '/admin/proyecciones', icon: faMoneyBillWave },
+      ]
+    },
+    { 
+      label: 'Operaciones', 
+      icon: faFileInvoiceDollar, 
+      hasSubmenu: true,
+      submenu: [
+        { label: 'Pedidos', route: '/admin/pedidos', icon: faTruck },
         { label: 'Ventas', route: '/admin/ventas', icon: faMoneyBillWave },
         { label: 'Pagos', route: '/admin/pagos', icon: faCreditCard },
         { label: 'Gastos', route: '/admin/gastos', icon: faReceipt }
       ]
     },
     { 
-      label: 'Operaciones', 
-      icon: faWarehouse, 
+      label: 'Clientes', 
+      icon: faUsers, 
       hasSubmenu: true,
       submenu: [
-        { label: 'Pedidos', route: '/admin/pedidos', icon: faTruck },
-        { label: 'Inventarios', route: '/admin/inventarios', icon: faClipboardList }
+        { label: 'Clientes', route: '/admin/clientes', icon: faUsers },
+        { label: 'Proyección de Ventas', route: '/admin/proyecciones', icon: faChartBar },
+        { label: 'Proveedores', route: '/admin/proveedores', icon: faTruck }
       ]
     },
     { 
-      label: 'Administración', 
-      icon: faCogs, 
+      label: 'Inventario', 
+      icon: faWarehouse, 
       hasSubmenu: true,
       submenu: [
-        { label: 'Usuarios', route: '/admin/users', icon: faUser }
+        { label: 'Inventarios', route: '/admin/inventarios', icon: faClipboardList }
       ]
     },
     { 
@@ -120,7 +112,18 @@ export default class AdminLayoutComponent {
         { label: 'Reporte Financiero', route: '/admin/reportes/reporte-financiero', icon: faFileInvoiceDollar },
         { label: 'Inventario Total', route: '/admin/reportes/reporte-inventario-global', icon: faWarehouse }
       ]
-    }
+    },
+    { 
+      label: 'Administración', 
+      icon: faCogs, 
+      hasSubmenu: true,
+      submenu: [
+        { label: 'Usuarios', route: '/admin/users', icon: faUser },
+        { label: 'Productos', route: '/admin/products', icon: faBoxes },
+        { label: 'Presentaciones', route: '/admin/presentaciones', icon: faBox },
+        { label: 'Lotes', route: '/admin/lotes', icon: faBox }
+      ]
+    },
   ];
 
   toggleSidebar(): void {

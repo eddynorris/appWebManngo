@@ -275,3 +275,45 @@ export type BatchPagoData = {
   venta_id: number;
   monto: string;
 };
+
+// --- Tipos para Proyecciones de Clientes ---
+
+export type PedidoResumen = {
+  id: number;
+  fecha_creacion: string;
+  estado: string;
+  total: number;
+};
+
+export type Estadisticas = {
+  total_ventas: number;
+  total_pedidos: number;
+  monto_total_comprado: number;
+  saldo_pendiente: number;
+  promedio_compra: number;
+  pedidos_por_estado: {
+    completado: number;
+    pendiente: number;
+  };
+  ultima_actividad: string;
+};
+
+export type ClienteProyeccion = {
+  id: number;
+  nombre: string;
+  email?: string;
+  telefono?: string;
+  direccion?: string;
+  ciudad?: string;
+  pais?: string;
+  codigo_postal?: string;
+  fecha_registro: string;
+  ultima_fecha_compra: string;
+  frecuencia_compra_dias: number;
+  saldo_pendiente: number;
+  pedidos: PedidoResumen[];
+  proxima_compra_estimada: string;
+  estadisticas: Estadisticas;
+};
+
+export type ClienteProyeccionesResponse = PaginatedResponse<ClienteProyeccion>;

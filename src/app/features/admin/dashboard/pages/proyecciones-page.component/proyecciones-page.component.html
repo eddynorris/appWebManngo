@@ -1,0 +1,56 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Proyecciones de Clientes</h1>
+      <p>Análisis predictivo de próximas compras basado en el historial de clientes</p>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="search-box">
+      <span class="search-icon">
+        <fa-icon [icon]="faSearch"></fa-icon>
+      </span>
+      <input
+        type="text"
+        placeholder="Buscar por nombre o email..."
+        [ngModel]="searchTerm()"
+        (input)="onSearchChange($any($event.target).value)">
+    </div>
+    
+    <div class="date-filter">
+      <select 
+        [ngModel]="dateFilter()"
+        (ngModelChange)="onDateFilterChange($event)"
+        class="date-filter-select">
+        @for (option of dateFilterOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+    
+    <div class="results-info">
+      Mostrando <strong>{{ filteredProyecciones().length }}</strong> de <strong>{{ pagination()?.total || 0 }}</strong> resultados.
+    </div>
+  </div>
+
+  <!-- Reusable Data Table -->
+  <app-data-table
+    [data]="filteredProyecciones()"
+    [columns]="columns"
+    [actions]="actions"
+    [isLoading]="isLoading()"
+    (onAction)="handleTableAction($event)"
+  ></app-data-table>
+
+  <!-- Pagination -->
+  @if (pagination()) {
+    <app-pagination
+      [pagination]="pagination()!"
+      (pageChange)="onPageChange($event)"
+      (perPageChange)="onPerPageChange($event)"
+    ></app-pagination>
+  }
+</div>
