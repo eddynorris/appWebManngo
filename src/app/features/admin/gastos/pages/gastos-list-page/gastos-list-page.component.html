@@ -5,7 +5,19 @@
       <h1>Gestión de Gastos</h1>
       <p>Registra y gestiona todos los gastos operativos.</p>
     </div>
-    <a routerLink="/admin/gastos/new" class="btn-primary">➕ Nuevo Gasto</a>
+    <div class="header-actions">
+      <button 
+        class="btn-export"
+        (click)="handleExportExcel()"
+        [disabled]="isLoading()">
+        <fa-icon [icon]="faDownload"></fa-icon>
+        Descargar Excel
+      </button>
+      <a routerLink="/admin/gastos/new" class="btn-primary">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Nuevo Gasto
+      </a>
+    </div>
   </div>
 
   <!-- Reusable Data Table -->

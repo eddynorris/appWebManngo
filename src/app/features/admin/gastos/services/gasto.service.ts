@@ -33,4 +33,11 @@ export class GastoService {
   deleteGasto(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  // Exportar gastos a Excel
+  exportarGastos(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/exportar`, {
+      responseType: 'blob'
+    });
+  }
 }

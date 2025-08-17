@@ -10,7 +10,8 @@ import { ColumnConfig, ActionConfig } from '../../../../../shared/components/dat
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPlus, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-gastos-list-page',
@@ -21,6 +22,7 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
     DataTableComponent,
     PaginationComponent,
     ConfirmationModalComponent,
+    FontAwesomeModule,
   ],
   templateUrl: './gastos-list-page.component.html',
   styleUrl: './gastos-list-page.component.scss',
@@ -30,6 +32,10 @@ export default class GastosListPageComponent implements OnInit {
   private readonly gastoService = inject(GastoService);
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
+
+  // FontAwesome icons
+  faPlus = faPlus;
+  faDownload = faDownload;
 
   gastos = signal<Gasto[]>([]);
   pagination = signal<Pagination | null>(null);
@@ -102,6 +108,27 @@ export default class GastosListPageComponent implements OnInit {
       },
     });
     this.closeDeleteModal();
+  }
+
+  handleExportExcel(): void {
+    this.gastoService.exportarGastos().subscribe({
+      next: (blob) => {
+        // Crear URL del blob y descargar archivo
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `gastos_${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        this.notificationService.showSuccess('Archivo Excel descargado exitosamente.');
+      },
+      error: (err) => {
+        this.notificationService.showError('Error al exportar los gastos.');
+      }
+    });
   }
 
   closeDeleteModal(): void {

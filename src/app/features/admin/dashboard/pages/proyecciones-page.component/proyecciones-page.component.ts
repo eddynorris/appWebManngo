@@ -48,6 +48,7 @@ export default class ProyeccionesPageComponent implements OnInit, OnDestroy {
 
   columns: ColumnConfig<ClienteProyeccion>[] = [
     { key: 'nombre', label: 'Cliente', type: 'text' },
+    { key: 'ciudad', label: 'Ciudad', type: 'text' },
     { key: 'telefono', label: 'Teléfono', type: 'text' },
     { key: 'ultima_fecha_compra', label: 'Última Compra', type: 'date' },
     { key: 'frecuencia_compra_dias', label: 'Frecuencia (días)', type: 'text' },
