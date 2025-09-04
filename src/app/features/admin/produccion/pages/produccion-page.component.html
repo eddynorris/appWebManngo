@@ -1,0 +1,92 @@
+<div class="page-header">
+  <div class="header-content">
+    <h1>Registrar Producción</h1>
+  </div>
+</div>
+
+<div class="data-form">
+  <form [formGroup]="produccionForm" (ngSubmit)="onSubmit()">
+    <!-- Información Principal -->
+    <div class="form-section">
+      <h2 class="section-title">Información de Producción</h2>
+      <div class="form-grid three-cols">
+        <div class="input-group">
+          <label for="almacen">Almacén:</label>
+          <select formControlName="almacen_id" id="almacen">
+            <option value="">Seleccionar almacén</option>
+            @for (almacen of almacenes(); track almacen.id) {
+              <option [value]="almacen.id">{{ almacen.nombre }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="presentacion">Producto a Fabricar:</label>
+          <select formControlName="presentacion_id" id="presentacion">
+            <option value="">Seleccionar producto</option>
+            @for (p of presentaciones(); track p.id) {
+              <option [value]="p.id">{{ p.nombre }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="cantidad_a_producir">Cantidad a Producir:</label>
+          <input type="number" formControlName="cantidad_a_producir" id="cantidad_a_producir" placeholder="Cantidad" min="1" class="form-control">
+        </div>
+      </div>
+      
+      <div class="form-grid two-cols">
+        <div class="input-group">
+          <label for="lote_destino">Lote Destino:</label>
+          <select formControlName="lote_destino_id" id="lote_destino">
+            <option value="">Seleccionar lote destino</option>
+            @for (lote of lotesDestino(); track lote.id) {
+              <option [value]="lote.id">{{ lote.descripcion }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selección de Lotes -->
+    <div class="form-section">
+      <div class="section-header">
+        <h2 class="section-title">Lotes a Consumir</h2>
+      </div>
+      
+      @if (materiasPrimas().length === 0) {
+        <div class="no-materias-primas">
+          <p class="text-muted">Seleccione un producto para ver los componentes requeridos</p>
+        </div>
+      } @else {
+        <div formArrayName="lotes_seleccionados">
+          @for (materiaPrima of materiasPrimas(); track materiaPrima.componente_presentacion_id; let i = $index) {
+            <div [formGroupName]="i" class="materia-prima-item">
+              <div class="materia-prima-info">
+                <h4>{{ getMateriaPrimaNombre(materiaPrima.componente_presentacion_id) }}</h4>
+                <p class="cantidad-requerida">Cantidad requerida: {{ materiaPrima.cantidad_necesaria }} kg</p>
+              </div>
+              
+              <div class="input-group">
+                <label>Lote a consumir:</label>
+                <select formControlName="lote_id" class="form-control">
+                  <option value="">Seleccione un lote</option>
+                  @for (lote of getLotesParaMateriaPrima(materiaPrima.componente_presentacion_id); track lote.id) {
+                    <option [value]="lote.id">
+                      {{ lote.descripcion }} (Disponible: {{ lote.cantidad_disponible_kg }} kg)
+                    </option>
+                  }
+                </select>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="!produccionForm.valid" class="btn-primary">Registrar Producción</button>
+    </div>
+  </form>
+</div>

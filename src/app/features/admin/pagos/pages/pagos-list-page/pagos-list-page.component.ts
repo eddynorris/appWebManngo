@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs';
 
 import { PagoService } from '../../services/pago.service';
 import { Pago, Pagination } from '../../../../../types/contract.types';
@@ -9,6 +10,7 @@ import { DataTableComponent } from '../../../../../shared/components/data-table/
 import { ColumnConfig, ActionConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { NotificationService } from '../../../../../shared/services/notification.service';
+import { LoadingService } from '../../../../../shared/services/loading.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -30,10 +32,11 @@ export default class PagosListPageComponent implements OnInit {
   private readonly pagoService = inject(PagoService);
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
+  private readonly loadingService = inject(LoadingService);
 
   pagos = signal<Pago[]>([]);
   pagination = signal<Pagination | null>(null);
-  isLoading = signal(false);
+  isLoading = this.loadingService.isLoading;
   isDeleteModalVisible = signal(false);
   pagoToDelete = signal<Pago | null>(null);
 
@@ -57,18 +60,18 @@ export default class PagosListPageComponent implements OnInit {
   }
 
   loadPagos(page: number = 1, per_page: number = 10): void {
-    this.isLoading.set(true);
-    this.pagoService.getPagos(page, per_page).subscribe({
-      next: (response) => {
-        this.pagos.set(response.data);
-        this.pagination.set(response.pagination);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.notificationService.showError('Error al cargar los pagos.');
-        this.isLoading.set(false);
-      },
-    });
+    this.loadingService.startLoading();
+    this.pagoService.getPagos(page, per_page)
+      .pipe(finalize(() => this.loadingService.stopLoading()))
+      .subscribe({
+        next: (response) => {
+          this.pagos.set(response.data);
+          this.pagination.set(response.pagination);
+        },
+        error: (err) => {
+          this.notificationService.showError('Error al cargar los pagos.');
+        },
+      });
   }
 
   onPageChange(page: number): void {

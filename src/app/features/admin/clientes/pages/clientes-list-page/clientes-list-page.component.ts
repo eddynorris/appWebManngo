@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed, OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from '../../services/cliente.service';
@@ -8,6 +8,7 @@ import { Cliente, Pagination } from '../../../../../types/contract.types';
 import { DataTableComponent } from '../../../../../shared/components/data-table/data-table.component';
 import { ColumnConfig, ActionConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
+import { LoadingService } from '../../../../../shared/services/loading.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { faEdit, faTrash, faPlus, faSearch, faDownload } from '@fortawesome/free-solid-svg-icons';
@@ -25,6 +26,7 @@ export default class ClientesListPageComponent implements OnDestroy {
   private readonly clienteService = inject(ClienteService);
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
+  private readonly loadingService = inject(LoadingService);
 
   // FontAwesome icons
   faPlus = faPlus;
@@ -35,7 +37,7 @@ export default class ClientesListPageComponent implements OnDestroy {
 
   clientes = signal<Cliente[]>([]);
   pagination = signal<Pagination | null>(null);
-  isLoading = signal(false);
+  isLoading = this.loadingService.isLoading;
   searchTerm = signal('');
   ciudadFilter = signal<string>(''); // Nuevo filtro de ciudad
   private searchSubject = new Subject<string>();
@@ -88,21 +90,21 @@ export default class ClientesListPageComponent implements OnDestroy {
   }
 
   loadClientes(page: number = 1, per_page: number = 10): void {
-    this.isLoading.set(true);
+    this.loadingService.startLoading();
     // Pass search term and ciudad filter to API if exists
     const searchParam = this.searchTerm() || undefined;
     const ciudadParam = this.ciudadFilter() || undefined;
-    this.clienteService.getClientes(page, per_page, searchParam, ciudadParam).subscribe({
-      next: (response) => {
-        this.clientes.set(response.data);
-        this.pagination.set(response.pagination);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.notificationService.showError('Error al cargar los clientes.');
-        this.isLoading.set(false);
-      }
-    });
+    this.clienteService.getClientes(page, per_page, searchParam, ciudadParam)
+      .pipe(finalize(() => this.loadingService.stopLoading()))
+      .subscribe({
+        next: (response) => {
+          this.clientes.set(response.data);
+          this.pagination.set(response.pagination);
+        },
+        error: (err) => {
+          this.notificationService.showError('Error al cargar los clientes.');
+        }
+      });
   }
 
   onSearchChange(value: string): void {

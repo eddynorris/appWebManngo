@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
-import { PresentacionProducto, Producto } from '../../../../types/contract.types';
+import { PresentacionProducto, Producto, Almacen } from '../../../../types/contract.types';
 
 export interface PresentacionesResponse {
   data: PresentacionProducto[];
@@ -17,6 +17,7 @@ export interface PresentacionesResponse {
 
 export interface PresentacionFormData {
   productos: Producto[];
+  almacenes: Almacen[];
 }
 
 @Injectable({
@@ -47,18 +48,21 @@ export class PresentacionService {
     return this.http.get<PresentacionesResponse>(this.apiUrl, { params });
   }
 
-  // Obtener datos necesarios para el formulario (productos)
+  // Obtener datos necesarios para el formulario (productos y almacenes)
   getFormData(): Observable<PresentacionFormData> {
-    // Petición con paginación alta para obtener todos los productos
-    const params = new HttpParams().set('per_page', '1000'); // per_pagee alto para obtener todos
+    // Petición con paginación alta para obtener todos los productos y almacenes
+    const params = new HttpParams().set('per_page', '1000');
     
     const productos$ = this.http.get<{ data: Producto[] }>(`${environment.apiUrl}/productos`, { params });
+    const almacenes$ = this.http.get<{ data: Almacen[] }>(`${environment.apiUrl}/almacenes`, { params });
     
     return forkJoin({
-      productos: productos$
+      productos: productos$,
+      almacenes: almacenes$
     }).pipe(
-      map(({ productos }) => ({
-        productos: productos.data || []
+      map(({ productos, almacenes }) => ({
+        productos: productos.data || [],
+        almacenes: almacenes.data || []
       }))
     );
   }
@@ -69,8 +73,9 @@ export class PresentacionService {
   }
 
   // Crear una nueva presentación
-  createPresentacion(presentacion: Omit<PresentacionProducto, 'id'>): Observable<PresentacionProducto> {
-    return this.http.post<PresentacionProducto>(this.apiUrl, presentacion);
+  createPresentacion(presentacion: Omit<PresentacionProducto, 'id'>, almacen_id?: number): Observable<PresentacionProducto> {
+    const payload = almacen_id ? { ...presentacion, almacen_id } : presentacion;
+    return this.http.post<PresentacionProducto>(this.apiUrl, payload);
   }
 
   // Actualizar una presentación existente

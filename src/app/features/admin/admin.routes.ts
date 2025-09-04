@@ -87,6 +87,11 @@ export const ADMIN_ROUTES: Routes = [
         loadChildren: () => import('./presentaciones/presentaciones.routes').then(m => m.presentacionesRoutes),
         data: { title: 'Presentaciones' }
       },
+      {
+        path: 'produccion',
+        loadChildren: () => import('./produccion/produccion.routes').then(m => m.PRODUCCION_ROUTES),
+        data: { title: 'Producción' }
+      },
 
       {
         path: '',

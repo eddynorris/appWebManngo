@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@ang
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs';
 
 import { PedidoService } from '../../services/pedido.service';
 import { Pedido, Pagination } from '../../../../../types/contract.types';
@@ -11,6 +11,7 @@ import { DataTableComponent } from '../../../../../shared/components/data-table/
 import { ColumnConfig, ActionConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { NotificationService } from '../../../../../shared/services/notification.service';
+import { LoadingService } from '../../../../../shared/services/loading.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -33,11 +34,12 @@ export default class PedidosListPageComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
+  private readonly loadingService = inject(LoadingService);
   private readonly fb = inject(FormBuilder);
 
   pedidos = signal<Pedido[]>([]);
   pagination = signal<Pagination | null>(null);
-  isLoading = signal(false);
+  isLoading = this.loadingService.isLoading;
   isDeleteModalVisible = signal(false);
   pedidoToDelete = signal<Pedido | null>(null);
   filterForm: FormGroup;
@@ -73,19 +75,19 @@ export default class PedidosListPageComponent implements OnInit {
   }
 
   loadPedidos(page: number = 1, per_page: number = 10): void {
-    this.isLoading.set(true);
+    this.loadingService.startLoading();
     const filters = this.filterForm.value;
-    this.pedidoService.getPedidos(page, per_page, filters).subscribe({
-      next: (response) => {
-        this.pedidos.set(response.data);
-        this.pagination.set(response.pagination);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.notificationService.showError('Error al cargar los pedidos.');
-        this.isLoading.set(false);
-      },
-    });
+    this.pedidoService.getPedidos(page, per_page, filters)
+      .pipe(finalize(() => this.loadingService.stopLoading()))
+      .subscribe({
+        next: (response) => {
+          this.pedidos.set(response.data);
+          this.pagination.set(response.pagination);
+        },
+        error: (err) => {
+          this.notificationService.showError('Error al cargar los pedidos.');
+        },
+      });
   }
 
   onPageChange(page: number): void {

@@ -107,6 +107,33 @@
       </div>
     </div>
 
+    <!-- SECCIÓN DE INVENTARIO -->
+    @if (!isEditMode() && !isViewMode()) {
+      <div class="form-section">
+        <h2 class="section-title">Configuración de Inventario</h2>
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="almacen_id">Almacén Específico (opcional)</label>
+            <select id="almacen_id" formControlName="almacen_id">
+              <option value="">Crear inventario en todos los almacenes</option>
+              @if (almacenes().length > 0) {
+                @for (almacen of almacenes(); track almacen.id) {
+                  <option [value]="almacen.id">{{ almacen.nombre }}</option>
+                }
+              }
+            </select>
+            <small class="help-text">
+              Si seleccionas un almacén específico, el inventario se creará solo en ese almacén. 
+              Si no seleccionas ninguno, se creará inventario en todos los almacenes existentes.
+            </small>
+            @if (getFieldError('almacen_id')) {
+              <span class="error-message">{{ getFieldError('almacen_id') }}</span>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
     <!-- SECCIÓN DE ESTADO -->
     <div class="form-section">
       <h2 class="section-title">Estado de la Presentación</h2>

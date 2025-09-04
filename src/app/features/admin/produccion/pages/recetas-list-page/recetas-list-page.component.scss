@@ -1,0 +1,17 @@
+// Usando solo variables globales y clases de componentes
+:host {
+  display: block;
+  height: 100%;
+}
+
+// Estilos específicos del componente que no están en las clases globales
+.filter-group.col-2 {
+  grid-column: span 2;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  padding-top: 1.5rem;
+}

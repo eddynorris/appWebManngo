@@ -10,7 +10,7 @@ import { NotificationService } from '../../../../../shared/services/notification
 import { DataTableComponent } from '../../../../../shared/components/data-table/data-table.component';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { ButtonComponent } from '../../../../../shared/components/button/button.component';
-import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
+
 import { ActionConfig, ColumnConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { faEye, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -23,7 +23,7 @@ import { faEye, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
     DataTableComponent,
     PaginationComponent,
     ButtonComponent,
-    SpinnerComponent
+
   ],
   templateUrl: './proveedores-list-page.component.html',
   styleUrl: './proveedores-list-page.component.scss',

@@ -1,50 +1,32 @@
 
+@use 'src/styles/variables' as vars;
+
+// Products Preview - Estilos específicos
 .products-section {
-  padding: 6rem 0;
-  background: #111;
-  color: #fff;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 4rem;
+  color: vars.$color-text-white;
 }
 
 .section-title {
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: #ff4444;
-  margin-bottom: 0.5rem;
+  color: vars.$color-primary;
   text-transform: uppercase;
 }
 
 .section-subtitle {
-  font-size: 3rem;
-  font-weight: 900;
-  color: #fff;
-  margin-bottom: 1.5rem;
+  color: vars.$color-text-white;
   text-transform: uppercase;
 }
 
 .section-description {
-  font-size: 1.1rem;
-  color: #ccc;
+  color: vars.$color-text-muted;
   max-width: 800px;
   margin: 0 auto;
-  line-height: 1.6;
 }
 
+// Grid específico para productos
 .products-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  margin-bottom: 4rem;
   justify-items: center;
 
   @media (max-width: 1024px) {
@@ -56,7 +38,7 @@
     gap: 1.5rem;
   }
 
-  // Para el caso específico de 7 productos, centra el último elemento
+  // Centrar último elemento en grid de 7 productos
   .product-card:nth-child(7) {
     grid-column: 2 / 3;
     
@@ -73,18 +55,16 @@
   }
 }
 
+// Estilos específicos de tarjeta
 .product-card {
-  background: #222;
-  border-radius: 12px;
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(255, 68, 68, 0.2);
 
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-}
-
-.product-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 40px rgba(255, 68, 68, 0.2);
+    .product-img {
+      transform: scale(1.05);
+    }
+  }
 }
 
 .product-image {
@@ -97,29 +77,25 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: vars.$transition-base;
 }
 
-.product-card:hover .product-img {
-  transform: scale(1.05);
-}
-
+// Placeholder y contenido de producto
 .product-placeholder {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #ff4444, #ff6666);
+  background: linear-gradient(135deg, vars.$color-primary, #ff6666);
 }
 
 .product-icon {
   font-size: 3rem;
-  color: #fff;
+  color: vars.$color-text-white;
 }
 
 .product-info {
-  padding: 1.5rem;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -128,56 +104,30 @@
 }
 
 .product-name {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 0.5rem;
+  color: vars.$color-text-white;
   text-transform: uppercase;
 }
 
 .product-description {
-  color: #ccc;
-  margin-bottom: 1rem;
-  line-height: 1.5;
+  color: vars.$color-text-muted;
 }
 
 .product-price {
-  color: #ff4444;
-  font-weight: 700;
-  font-size: 1.2rem;
-  margin: 0;
+  color: vars.$color-primary;
+  font-weight: vars.$font-weight-bold;
   text-shadow: 0 2px 4px rgba(255, 68, 68, 0.3);
 }
 
-.section-footer {
-  text-align: center;
-}
-
+// Botón específico del componente
 .btn-view-all {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background: #ff4444;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 700;
+  background: vars.$color-primary;
+  color: vars.$color-text-white;
   text-transform: uppercase;
-  border-radius: 6px;
-  transition: all 0.3s ease;
   letter-spacing: 1px;
-}
 
-.btn-view-all:hover {
-  background: #ff6666;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
-}
-
-@media (max-width: 768px) {
-  .section-title {
-    font-size: 2rem;
-  }
-
-  .section-subtitle {
-    font-size: 2.2rem;
+  &:hover {
+    background: #ff6666;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
   }
 }

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs';
 
 import { GastoService } from '../../services/gasto.service';
 import { Gasto, Pagination } from '../../../../../types/contract.types';
@@ -9,6 +10,7 @@ import { DataTableComponent } from '../../../../../shared/components/data-table/
 import { ColumnConfig, ActionConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { NotificationService } from '../../../../../shared/services/notification.service';
+import { LoadingService } from '../../../../../shared/services/loading.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { faEdit, faTrash, faPlus, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -32,6 +34,7 @@ export default class GastosListPageComponent implements OnInit {
   private readonly gastoService = inject(GastoService);
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
+  private readonly loadingService = inject(LoadingService);
 
   // FontAwesome icons
   faPlus = faPlus;
@@ -39,7 +42,7 @@ export default class GastosListPageComponent implements OnInit {
 
   gastos = signal<Gasto[]>([]);
   pagination = signal<Pagination | null>(null);
-  isLoading = signal(false);
+  isLoading = this.loadingService.isLoading;
   isDeleteModalVisible = signal(false);
   gastoToDelete = signal<Gasto | null>(null);
 
@@ -63,18 +66,18 @@ export default class GastosListPageComponent implements OnInit {
   }
 
   loadGastos(page: number = 1, per_page: number = 10): void {
-    this.isLoading.set(true);
-    this.gastoService.getGastos(page, per_page).subscribe({
-      next: (response) => {
-        this.gastos.set(response.data);
-        this.pagination.set(response.pagination);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.notificationService.showError('Error al cargar los gastos.');
-        this.isLoading.set(false);
-      },
-    });
+    this.loadingService.startLoading();
+    this.gastoService.getGastos(page, per_page)
+      .pipe(finalize(() => this.loadingService.stopLoading()))
+      .subscribe({
+        next: (response) => {
+          this.gastos.set(response.data);
+          this.pagination.set(response.pagination);
+        },
+        error: (err) => {
+          this.notificationService.showError('Error al cargar los gastos.');
+        },
+      });
   }
 
   onPageChange(page: number): void {

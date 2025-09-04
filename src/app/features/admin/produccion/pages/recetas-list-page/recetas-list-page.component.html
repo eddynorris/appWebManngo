@@ -1,0 +1,93 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Gestión de Recetas</h1>
+      <p>Administra las recetas de producción</p>
+    </div>
+    <div class="header-actions">
+      <button 
+        type="button" 
+        class="btn-success"
+        (click)="handleExportExcel()"
+        [disabled]="!recetas() || recetas().length === 0">
+        <fa-icon [icon]="faDownload"></fa-icon>
+        Exportar Excel
+      </button>
+      <a 
+        routerLink="/admin/produccion/recetas/new" 
+        class="btn-primary">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Nueva Receta
+      </a>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-container">
+    <form [formGroup]="filterForm" class="filters-grid">
+      <div class="filter-group col-2">
+        <label for="search">Buscar</label>
+        <input 
+          type="text" 
+          id="search"
+          formControlName="search"
+          placeholder="Buscar por nombre o descripción...">
+      </div>
+      <div class="filter-group">
+        <label for="activo">Estado</label>
+        <select 
+          id="activo"
+          formControlName="activo">
+          <option value="">Todos</option>
+          <option value="true">Activo</option>
+          <option value="false">Inactivo</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-actions">
+          <button 
+            type="button" 
+            class="btn-ghost"
+            (click)="clearFilters()">
+            Limpiar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabla de datos -->
+  <div class="table-container">
+    <app-data-table
+      [data]="recetas() || []"
+      [columns]="columns"
+      [actions]="actions"
+      [isLoading]="isLoading()"
+      (onAction)="handleTableAction($event)">
+    </app-data-table>
+
+    <!-- Paginación -->
+    @if (pagination()) {
+      <div style="padding: 1.5rem; border-top: 1px solid var(--color-border); display: flex; justify-content: center;">
+        <app-pagination
+          [pagination]="pagination()!"
+          (pageChange)="onPageChange($event)"
+          (perPageChange)="onPerPageChange($event)">
+        </app-pagination>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Modal de confirmación para eliminación -->
+@if (isDeleteModalVisible()) {
+  <app-confirmation-modal
+    title="Confirmar eliminación"
+    [message]="'¿Está seguro de que desea eliminar la receta \'' + (recetaToDelete()?.nombre || '') + '\'? Esta acción no se puede deshacer.'"
+    confirmText="Eliminar"
+    cancelText="Cancelar"
+    (confirm)="handleDeleteConfirmation()"
+    (cancel)="closeDeleteModal()">
+  </app-confirmation-modal>
+}

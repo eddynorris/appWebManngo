@@ -45,13 +45,13 @@
           </app-button>
         </div>
 
-        @if (presentaciones.controls.length === 0) {
+        @if (presentaciones && presentaciones.controls && presentaciones.controls.length === 0) {
           <div class="empty-state-presentations">
             <p>Este producto aún no tiene presentaciones. ¡Añade la primera!</p>
           </div>
         }
 
-        @for (presentacionGroup of presentaciones.controls; track $index) {
+        @for (presentacionGroup of presentaciones.controls || []; track $index) {
           <div [formGroupName]="$index" class="presentacion-group">
             <div class="presentacion-header">
               <h3>Presentación #{{ $index + 1 }}</h3>

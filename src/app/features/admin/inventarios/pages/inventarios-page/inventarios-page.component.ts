@@ -53,7 +53,7 @@ export default class InventariosPageComponent implements OnInit {
   isConfirmationModalOpen = signal(false);
   pendingAdjustment = signal<{
     inventario: Inventario;
-    adjustment: { cantidad: number; motivo: string; lote_id?: number };
+    adjustment: { cantidad: number; motivo: string; lote_id?: number; adjustmentAmount?: number; adjustmentType?: 'add' | 'subtract' };
   } | null>(null);
 
   columns: ColumnConfig<Inventario>[] = [
@@ -144,11 +144,28 @@ export default class InventariosPageComponent implements OnInit {
     this.selectedInventario.set(null);
   }
 
-  onAdjustmentSave(adjustment: { cantidad: number; motivo: string; lote_id?: number }): void {
+  onAdjustmentSave(adjustment: { cantidad: number; motivo: string; lote_id?: number; adjustmentType?: 'add' | 'subtract' }): void {
     const inventario = this.selectedInventario();
     if (!inventario) return;
 
-    this.pendingAdjustment.set({ inventario, adjustment });
+    // Calculate the final stock based on adjustment type
+    // Handle decimal values that come as strings from the API
+    const currentStock = parseFloat(inventario.cantidad?.toString() || '0') || 0;
+    // Ensure adjustmentAmount is an integer
+    const adjustmentAmount = Math.round(Number(adjustment.cantidad));
+    const adjustmentType = adjustment.adjustmentType || 'add';
+    const finalStock = Math.round(adjustmentType === 'add' ? currentStock + adjustmentAmount : currentStock - adjustmentAmount);
+
+    // Create the adjustment data with final stock for the API
+    const adjustmentData = {
+      cantidad: finalStock,
+      motivo: adjustment.motivo,
+      lote_id: adjustment.lote_id,
+      adjustmentAmount: adjustmentAmount,
+      adjustmentType: adjustmentType
+    };
+
+    this.pendingAdjustment.set({ inventario, adjustment: adjustmentData });
     this.closeAdjustmentModal();
     this.isConfirmationModalOpen.set(true);
   }
@@ -193,11 +210,13 @@ export default class InventariosPageComponent implements OnInit {
     const producto = inventario.presentacion?.nombre || 'producto';
     const currentStock = inventario.cantidad || 0;
     const newStock = adjustment.cantidad;
-    const difference = newStock - currentStock;
-    const action = difference > 0 ? 'agregar' : 'quitar';
-    const absoluteDifference = Math.abs(difference);
+    
+    // Use the adjustment amount and type from the modal
+    const adjustmentAmount = adjustment.adjustmentAmount || 0;
+    const adjustmentType = adjustment.adjustmentType || 'add';
+    const action = adjustmentType === 'add' ? 'agregar' : 'quitar';
 
-    return `¿Está seguro que desea ${action} ${absoluteDifference} unidades de ${producto}? 
+    return `¿Está seguro que desea ${action} ${adjustmentAmount} unidades de ${producto}? 
             El stock pasará de ${currentStock} a ${newStock} unidades.
             
             Motivo: ${adjustment.motivo}`;

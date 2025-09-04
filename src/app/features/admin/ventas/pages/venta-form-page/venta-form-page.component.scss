@@ -1,18 +1,11 @@
 @use 'src/styles/variables' as vars;
 
-:host {
-  display: block;
-}
-
+// Venta Form Page - Estilos específicos
 .details-array {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-top: 1rem;
-  background: vars.$color-bg-secondary;
-  border-radius: vars.$border-radius;
-  padding: 1.5rem;
-  border: 1px solid vars.$color-border;
 }
 
 .details-header,
@@ -24,14 +17,6 @@
 }
 
 .details-header {
-  font-weight: vars.$font-weight-semibold;
-  font-size: vars.$font-size-sm;
-  color: vars.$color-text-secondary;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid vars.$color-border;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-
   .header-item {
     &.quantity, &.price, &.total {
       text-align: right;
@@ -48,41 +33,11 @@
 }
 
 .details-row {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid vars.$color-border-light;
-  background: vars.$color-bg-primary;
-  border-radius: vars.$border-radius-sm;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  box-shadow: vars.$box-shadow-sm;
-
-  &:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-  }
-
-  .input-group {
-    margin: 0;
-
-    input, select {
-      background: vars.$color-bg-primary;
-      border: 1px solid vars.$color-border-light;
-
-      &:focus {
-        border-color: vars.$color-primary;
-        box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
-      }
-    }
-  }
-
   input[type="number"] {
     text-align: right;
   }
 
   .product-select {
-    font-size: vars.$font-size-sm;
-    width: 100%;
-
     .stock-info {
       font-weight: vars.$font-weight-semibold;
       margin-left: 0.5rem;
@@ -103,37 +58,19 @@
   .subtotal {
     text-align: right;
     font-weight: vars.$font-weight-semibold;
-    font-size: 1rem;
     color: vars.$color-primary;
-    padding-right: 0.5rem;
-    background: vars.$color-bg-secondary;
-    border-radius: vars.$border-radius-sm;
-    padding: 0.5rem;
-    border: 1px solid vars.$color-border-light;
   }
-
-  // Remove redundant btn-icon styles - using global classes
-
 }
 
+// Estilos específicos para total
 .total-container {
-  margin-top: 1.5rem;
-  background: vars.$color-primary;
-  border-radius: vars.$border-radius;
-  padding: 0;
-  box-shadow: vars.$box-shadow;
-  
   .total-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 2rem;
   }
 
   .total-label .total-text {
-    font-size: 1.125rem;
-    font-weight: vars.$font-weight-semibold;
-    color: vars.$color-text-white;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
@@ -144,39 +81,21 @@
     gap: 0.25rem;
 
     .currency {
-      font-size: 1rem;
-      font-weight: vars.$font-weight-medium;
       color: rgba(255, 255, 255, 0.8);
     }
-
-    .amount {
-      font-size: 2rem;
-      font-weight: vars.$font-weight-bold;
-      color: vars.$color-text-white;
-    }
   }
 }
 
+// Estilos específicos para botón agregar
 .add-detail-btn {
-  margin-top: 1rem;
   align-self: flex-start;
-  background: vars.$color-success;
-  color: vars.$color-text-white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: vars.$border-radius;
-  font-weight: vars.$font-weight-medium;
-  cursor: pointer;
-  transition: vars.$transition-base;
-  box-shadow: vars.$box-shadow-sm;
 
   &:hover {
-    background: vars.$color-success-dark;
     transform: translateY(-1px);
-    box-shadow: vars.$box-shadow;
   }
 }
 
+// Estilos específicos para sección de formulario
 .form-section {
   &:nth-child(2) {
     .section-title {
@@ -186,10 +105,9 @@
   }
 }
 
+// Estilos para campos requeridos
 .input-group {
   label {
-    position: relative;
-
     &[required]::after,
     &.required::after {
       content: '*';
@@ -200,6 +118,7 @@
   }
 }
 
+// Responsive específico del componente
 @media (max-width: 768px) {
   .details-header,
   .details-row {
@@ -218,57 +137,34 @@
     gap: 1rem;
 
     .input-group {
-      width: 100%; // Asegurar que los inputs ocupen todo el ancho
+      width: 100%;
 
       label {
-        font-weight: vars.$font-weight-semibold;
-        color: vars.$color-text-primary;
-        display: block; // Mostrar labels en móvil
+        display: block;
         margin-bottom: 0.25rem;
       }
     }
 
     .subtotal {
       text-align: center;
-      font-size: 1.1rem;
-      padding: 0.75rem;
-      background: vars.$color-primary;
-      color: vars.$color-text-white;
-      border-radius: vars.$border-radius;
     }
 
     .btn-icon.danger {
       align-self: center;
       margin-top: 0.5rem;
     }
-
   }
 
   .total-container {
-    margin-top: 1rem;
-    
     .total-content {
       flex-direction: column;
       gap: 1rem;
-      padding: 1.25rem 1rem;
       text-align: center;
-    }
-
-    .total-label .total-text {
-      font-size: 1rem;
-    }
-
-    .total-amount .amount {
-      font-size: 1.75rem;
     }
   }
 }
 
 @media (max-width: 576px) {
-  .form-grid.two-cols {
-    grid-template-columns: 1fr;
-  }
-
   .add-detail-btn {
     width: 100%;
     justify-content: center;

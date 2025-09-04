@@ -8,18 +8,9 @@
       </tr>
     </thead>
     <tbody>
-      @if (isLoading()) {
+      @if (data().length === 0 && !isLoading()) {
         <tr>
-          <td [attr.colspan]="columns().length">
-            <div class="loading-state">
-              <div class="spinner"></div>
-              <span>Cargando datos...</span>
-            </div>
-          </td>
-        </tr>
-      } @else if (data().length === 0) {
-        <tr>
-          <td [attr.colspan]="columns().length">
+          <td [attr.colspan]="columns().length || 0">
             <div class="empty-state">
               <p>No se encontraron registros</p>
             </div>

@@ -25,10 +25,7 @@
     </div>
   </div>
 
-  @if (isLoading()) {
-    <app-spinner></app-spinner>
-  } @else {
-    <div class="table-container">
+  <div class="table-container">
       <app-data-table
         [data]="presentaciones()"
         [columns]="columns"
@@ -48,8 +45,7 @@
           (pageChange)="onPageChange($event)">
         </app-pagination>
       }
-    </div>
-  }
+  </div>
 
   @if (!isLoading() && presentaciones().length === 0) {
     <div class="empty-state">

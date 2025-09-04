@@ -51,3 +51,14 @@ export interface StockPorAlmacen {
   almacen_nombre: string;
   productos_bajo_stock: AlertaStockBajo[];
 }
+
+export interface ProduccionEnsamblaje {
+  almacen_id: number;
+  presentacion_id: number;
+  cantidad_unidades: string;
+  seleccion_lotes: {
+    presentacion_id: number;
+    lote_id: number;
+  }[];
+}
+

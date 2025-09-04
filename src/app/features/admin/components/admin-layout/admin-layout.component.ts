@@ -113,6 +113,15 @@ export default class AdminLayoutComponent {
       ]
     },
     { 
+      label: 'Producción', 
+      icon: faCogs, 
+      hasSubmenu: true,
+      submenu: [
+        { label: 'Registro de Producción', route: '/admin/produccion/produccion', icon: faClipboardList },
+        { label: 'Gestión de Recetas', route: '/admin/produccion/recetas', icon: faBox }
+      ]
+    },
+    { 
       label: 'Administración', 
       icon: faCogs, 
       hasSubmenu: true,

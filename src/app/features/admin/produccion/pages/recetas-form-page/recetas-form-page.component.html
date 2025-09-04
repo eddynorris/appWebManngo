@@ -1,0 +1,200 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>{{ isEditMode() ? 'Editar Receta' : 'Nueva Receta' }}</h1>
+    </div>
+    <div class="header-actions">
+      <button 
+        type="button" 
+        class="btn-secondary"
+        (click)="onCancel()"
+        [disabled]="isSaving()">
+        <i class="fas fa-arrow-left"></i>
+        Volver
+      </button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <form [formGroup]="recetaForm" (ngSubmit)="onSubmit()" class="data-form">
+      <!-- Información básica -->
+      <div class="form-section">
+        <h3 class="section-title">Información Básica</h3>
+        
+        <div class="form-grid two-cols">
+          <div class="input-group">
+            <label for="presentacion_id">Producto a Fabricar *</label>
+            <select
+              id="presentacion_id"
+              formControlName="presentacion_id"
+              [class.is-invalid]="isFieldInvalid('presentacion_id')">
+              <option value="">Seleccione el producto a fabricar</option>
+              @for (presentacion of presentaciones(); track presentacion.id) {
+                <option [value]="presentacion.id">
+                  {{ getPresentacionNombre(presentacion) }}
+                </option>
+              }
+            </select>
+            @if (isFieldInvalid('presentacion_id')) {
+              <div class="invalid-feedback">{{ getFieldError('presentacion_id') }}</div>
+            }
+            <small class="form-text text-muted">Solo se muestran productos finales (procesados)</small>
+          </div>
+
+          <div class="input-group">
+            <label for="nombre">Nombre de la Receta *</label>
+            <input
+              type="text"
+              id="nombre"
+              formControlName="nombre"
+              [class.is-invalid]="isFieldInvalid('nombre')"
+              placeholder="Ingrese el nombre de la receta">
+            @if (isFieldInvalid('nombre')) {
+              <div class="invalid-feedback">{{ getFieldError('nombre') }}</div>
+            }
+          </div>
+
+          <div class="input-group" style="grid-column: 1 / -1;">
+            <label for="descripcion">Descripción</label>
+            <textarea
+              id="descripcion"
+              formControlName="descripcion"
+              rows="3"
+              placeholder="Descripción de la receta (opcional)"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Componentes de la receta -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3 class="section-title">Componentes de la Receta</h3>
+          <button 
+            type="button" 
+            class="btn-primary btn-sm"
+            (click)="addComponente()"
+            [disabled]="isSaving()">
+            <i class="fas fa-plus"></i>
+            Agregar Componente
+          </button>
+        </div>
+
+        <div formArrayName="componentes" class="components-list">
+          @for (componente of componentesFormArray.controls; track $index; let i = $index) {
+            <div [formGroupName]="i" class="component-item">
+              <div class="component-header">
+                <h4>Componente {{ i + 1 }}</h4>
+                <button 
+                  type="button" 
+                  class="btn-danger btn-sm"
+                  (click)="removeComponente(i)"
+                  [disabled]="isSaving() || componentesFormArray.length <= 1">
+                  ×
+                </button>
+              </div>
+
+              <div class="form-grid three-cols">
+                <!-- Paso 1: Tipo de Componente -->
+                <div class="input-group">
+                  <label>Tipo *</label>
+                  <select
+                    formControlName="tipo_consumo"
+                    [class.is-invalid]="isComponenteFieldInvalid(i, 'tipo_consumo')"
+                    (change)="onTipoConsumoChange(i, $any($event.target).value)">
+                    <option value="">Seleccione el tipo</option>
+                    @for (tipo of tiposConsumo(); track tipo.value) {
+                      <option [value]="tipo.value">{{ tipo.label }}</option>
+                    }
+                  </select>
+                  @if (isComponenteFieldInvalid(i, 'tipo_consumo')) {
+                    <div class="invalid-feedback">{{ getComponenteFieldError(i, 'tipo_consumo') }}</div>
+                  }
+                </div>
+
+                <!-- Paso 2: Selección del Componente -->
+                <div class="input-group">
+                  <label>Componente *</label>
+                  <select
+                    formControlName="componente_presentacion_id"
+                    [class.is-invalid]="isComponenteFieldInvalid(i, 'componente_presentacion_id')"
+                    [disabled]="!componente.get('tipo_consumo')?.value">
+                    <option value="">{{ !componente.get('tipo_consumo')?.value ? 'Primero seleccione el tipo' : 'Seleccione un componente' }}</option>
+                    @for (presentacion of getPresentacionesParaComponente(i); track presentacion.id) {
+                      <option [value]="presentacion.id">
+                        {{ getPresentacionNombre(presentacion) }}
+                      </option>
+                    }
+                  </select>
+                  @if (isComponenteFieldInvalid(i, 'componente_presentacion_id')) {
+                    <div class="invalid-feedback">{{ getComponenteFieldError(i, 'componente_presentacion_id') }}</div>
+                  }
+                </div>
+
+                <!-- Paso 3: Cantidad Necesaria -->
+                <div class="input-group">
+                  <label>Cantidad *</label>
+                  <input
+                    type="number"
+                    formControlName="cantidad_necesaria"
+                    [class.is-invalid]="isComponenteFieldInvalid(i, 'cantidad_necesaria')"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="Cantidad necesaria">
+                  @if (isComponenteFieldInvalid(i, 'cantidad_necesaria')) {
+                    <div class="invalid-feedback">{{ getComponenteFieldError(i, 'cantidad_necesaria') }}</div>
+                  }
+                </div>
+              </div>
+
+              <!-- Información del componente seleccionado -->
+              @if (componente.get('componente_presentacion_id')?.value) {
+                <div class="presentation-info">
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <span class="info-label">Componente:</span>
+                      <span class="info-value">{{ getPresentacionNombreById(componente.get('componente_presentacion_id')?.value) }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Tipo:</span>
+                      <span class="info-value">{{ componente.get('tipo_consumo')?.value || 'No seleccionado' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        @if (componentesFormArray.length === 0) {
+          <div class="empty-state">
+            <p>No hay componentes agregados. Haga clic en "Agregar Componente" para comenzar.</p>
+          </div>
+        }
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn-secondary"
+          (click)="onCancel()"
+          [disabled]="isSaving()">
+          Cancelar
+        </button>
+        
+        <button 
+          type="submit" 
+          class="btn-primary"
+          [disabled]="recetaForm.invalid || isSaving()">
+          @if (isSaving()) {
+            <i class="fas fa-spinner fa-spin"></i>
+            {{ isEditMode() ? 'Actualizando...' : 'Guardando...' }}
+          } @else {
+            <i class="fas fa-save"></i>
+            {{ isEditMode() ? 'Actualizar Receta' : 'Guardar Receta' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

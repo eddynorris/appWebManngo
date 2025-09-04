@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 
 import { PresentacionService } from '../../services/presentacion.service';
-import { PresentacionProducto, Producto } from '../../../../../types/contract.types';
+import { PresentacionProducto, Producto, Almacen } from '../../../../../types/contract.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 
 @Component({
@@ -30,13 +30,16 @@ export default class PresentacionFormPageComponent implements OnInit {
   presentacionId = signal<number | null>(null);
 
   productos = signal<Producto[]>([]);
+  almacenes = signal<Almacen[]>([]);
 
   // Opciones para tipos de presentación
   tiposDisponibles = [
-    { value: 'saco', label: 'Saco' },
-    { value: 'granel', label: 'Granel' },
-    { value: 'bolsa', label: 'Bolsa' },
-    { value: 'contenedor', label: 'Contenedor' }
+    { value: 'bruto', label: 'Bruto' },
+    { value: 'procesado', label: 'Procesado' },
+    { value: 'merma', label: 'Merma' },
+    { value: 'briqueta', label: 'Briqueta' },
+    { value: 'detalle', label: 'Detalle' },
+    { value: 'insumo', label: 'Insumo' }
   ];
 
   constructor() {
@@ -47,7 +50,8 @@ export default class PresentacionFormPageComponent implements OnInit {
       tipo: ['', Validators.required],
       precio_venta: ['', [Validators.required, Validators.min(0.01)]],
       activo: [true],
-      url_foto: ['', Validators.maxLength(255)]
+      url_foto: ['', Validators.maxLength(255)],
+      almacen_id: [''] // Campo opcional para almacén específico
     });
   }
 
@@ -79,6 +83,7 @@ export default class PresentacionFormPageComponent implements OnInit {
       .subscribe({
         next: (formData) => {
           this.productos.set(formData.productos);
+          this.almacenes.set(formData.almacenes);
         },
         error: (error) => {
           console.error('Error loading form data:', error);
@@ -100,7 +105,8 @@ export default class PresentacionFormPageComponent implements OnInit {
             tipo: presentacion.tipo,
             precio_venta: presentacion.precio_venta,
             activo: presentacion.activo,
-            url_foto: presentacion.url_foto
+            url_foto: presentacion.url_foto,
+            almacen_id: '' // No se incluye almacen_id en edición
           });
         },
         error: (error) => {
@@ -134,9 +140,11 @@ export default class PresentacionFormPageComponent implements OnInit {
       url_foto: formValue.url_foto || null
     };
 
+    const almacenId = formValue.almacen_id ? Number(formValue.almacen_id) : undefined;
+
     const operation$ = id
       ? this.presentacionService.updatePresentacion(id, payload)
-      : this.presentacionService.createPresentacion(payload as PresentacionProducto);
+      : this.presentacionService.createPresentacion(payload as PresentacionProducto, almacenId);
 
     operation$
       .pipe(finalize(() => this.isLoading.set(false)))

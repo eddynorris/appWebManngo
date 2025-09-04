@@ -34,15 +34,17 @@ export class InventoryAdjustmentModalComponent {
     cantidad: number;
     motivo: string;
     lote_id?: number;
+    adjustmentType?: 'add' | 'subtract';
   }>();
 
   // State
   lotes = signal<Lote[]>([]);
   adjustmentType = signal<'add' | 'subtract'>('add');
+  cantidadValue = signal<number>(1);
 
   // Form
   form = this.fb.group({
-    cantidad: [1, [Validators.required, Validators.min(1)]],
+    cantidad: [1, [Validators.required, Validators.min(1), Validators.pattern(/^[1-9]\d*$/)]],
     motivo: ['', [Validators.required, Validators.minLength(3)]],
     lote_id: [null as number | null]
   });
@@ -60,14 +62,21 @@ export class InventoryAdjustmentModalComponent {
 
   finalQuantity = computed(() => {
     const current = this.currentStock();
-    const adjustment = this.form.get('cantidad')?.value || 0;
+    const adjustment = this.cantidadValue();
     const type = this.adjustmentType();
     
-    return type === 'add' ? current + adjustment : current - adjustment;
+    const result = type === 'add' ? current + adjustment : current - adjustment;
+    return Math.round(result); // Ensure integer result
   });
 
   ngOnInit(): void {
     this.loadLotes();
+    
+    // Subscribe to cantidad changes to update the signal
+    this.form.get('cantidad')?.valueChanges.subscribe(value => {
+      const numValue = parseInt(value?.toString() || '1', 10);
+      this.cantidadValue.set(isNaN(numValue) ? 1 : numValue);
+    });
   }
 
   loadLotes(): void {
@@ -92,6 +101,9 @@ export class InventoryAdjustmentModalComponent {
       lote_id: null
     });
     
+    // Reset cantidad signal
+    this.cantidadValue.set(1);
+    
     // Always set lote_id to null when subtracting since the field is hidden
     if (type === 'subtract') {
       this.form.get('lote_id')?.setValue(null);
@@ -106,8 +118,15 @@ export class InventoryAdjustmentModalComponent {
 
     const formValue = this.form.value;
     const current = this.currentStock();
-    const adjustment = formValue.cantidad!;
+    // Ensure adjustment is parsed as integer
+    const adjustment = parseInt(formValue.cantidad!.toString(), 10);
     const type = this.adjustmentType();
+
+    // Validate that adjustment is a valid positive integer
+    if (isNaN(adjustment) || adjustment <= 0) {
+      this.notificationService.showError('La cantidad debe ser un número entero positivo.');
+      return;
+    }
 
     // Calculate final quantity based on adjustment type
     const finalQuantity = type === 'add' ? current + adjustment : current - adjustment;
@@ -118,14 +137,16 @@ export class InventoryAdjustmentModalComponent {
       return;
     }
 
-    // Prepare the save data
+    // Prepare the save data - send adjustment amount, not final quantity
     const saveData: {
       cantidad: number;
       motivo: string;
       lote_id?: number;
+      adjustmentType?: 'add' | 'subtract';
     } = {
-      cantidad: finalQuantity,
-      motivo: formValue.motivo!
+      cantidad: adjustment, // Send the adjustment amount
+      motivo: formValue.motivo!,
+      adjustmentType: type // Include the adjustment type
     };
 
     // Only include lote_id when adding inventory
@@ -139,6 +160,7 @@ export class InventoryAdjustmentModalComponent {
   onClose(): void {
     this.form.reset();
     this.adjustmentType.set('add');
+    this.cantidadValue.set(1);
     this.close.emit();
   }
 
@@ -154,6 +176,9 @@ export class InventoryAdjustmentModalComponent {
     }
     if (field?.errors?.['min']) {
       return 'La cantidad debe ser mayor a 0';
+    }
+    if (field?.errors?.['pattern']) {
+      return 'La cantidad debe ser un número entero positivo';
     }
     if (field?.errors?.['minlength']) {
       return 'Mínimo 3 caracteres';
