@@ -5,7 +5,18 @@
       <h1>Gestión de Pagos</h1>
       <p>Registra y gestiona todos los pagos de ventas.</p>
     </div>
-    <a routerLink="/admin/pagos/new" class="btn-primary">➕ Nuevo Pago</a>
+    <div class="header-actions">
+      <button 
+        class="btn btn-success" 
+        (click)="handleExportExcel()" 
+        [disabled]="isLoading()"
+        type="button">
+        Descargar Excel
+      </button>
+      <a routerLink="/admin/pagos/new" class="btn btn-primary">
+        Nuevo Pago
+      </a>
+    </div>
   </div>
 
   <!-- Reusable Data Table -->

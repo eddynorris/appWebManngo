@@ -3,17 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
-import { Lote, Producto, Proveedor } from '../../../../types/contract.types';
-
-export interface LotesResponse {
-  data: Lote[];
-  pagination: {
-    total: number;
-    page: number;
-    per_page: number;
-    pages: number;
-  };
-}
+import { Lote, Producto, Proveedor, LotesResponse } from '../../../../types/contract.types';
 
 export interface LoteFormData {
   productos: Producto[];
@@ -27,24 +17,10 @@ export class LoteService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/lotes`;
 
-  // Obtener todos los lotes con paginación y filtros opcionales
-  getLotes(
-    page: number = 1,
-    per_page: number = 10,
-    filtros?: { [key: string]: string | number | boolean }
-  ): Observable<LotesResponse> {
-    let params = new HttpParams()
+  getLotes(page: number = 1, per_page: number = 10): Observable<LotesResponse> {
+    const params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', per_page.toString());
-
-    if (filtros) {
-      Object.keys(filtros).forEach(key => {
-        const value = filtros[key];
-        if (value !== null && value !== undefined) {
-          params = params.append(key, String(value));
-        }
-      });
-    }
     return this.http.get<LotesResponse>(this.apiUrl, { params });
   }
 

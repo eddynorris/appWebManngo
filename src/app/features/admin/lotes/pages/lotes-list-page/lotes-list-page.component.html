@@ -1,22 +1,43 @@
-<div class="page-header">
-  <div class="header-content">
-    <h1>Gestión de Lotes</h1>
-    <p>Administra los lotes de productos y su información de stock</p>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Gestión de Lotes</h1>
+      <p>Administra los lotes de productos y su trazabilidad.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/admin/lotes/new" class="btn-primary">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Nuevo Lote
+      </a>
+    </div>
   </div>
-  <div class="header-actions">
-    <button (click)="createLote()" class="btn-primary">
-      <fa-icon [icon]="faPlus"></fa-icon>
-      Nuevo Lote
-    </button>
-  </div>
-</div>
 
-<div class="table-container">
+  <!-- Reusable Data Table -->
   <app-data-table
     [data]="lotes()"
     [columns]="columns"
     [actions]="actions"
-    [isLoading]="isLoading()"
-    (onAction)="onAction($event)">
-  </app-data-table>
+    (onAction)="handleTableAction($event)"
+  ></app-data-table>
+
+  <!-- Pagination -->
+  @if (pagination()) {
+    <app-pagination
+      [pagination]="pagination()!"
+      (pageChange)="onPageChange($event)"
+      (perPageChange)="onPerPageChange($event)"
+    ></app-pagination>
+  }
 </div>
+
+<!-- Modal de Confirmación -->
+@if (isDeleteModalVisible()) {
+  <app-confirmation-modal
+    [title]="'Confirmar Eliminación'"
+    [message]="'¿Estás seguro de que quieres eliminar el lote: ' + loteToDelete()?.descripcion + '?'"
+    confirmText="Sí, Eliminar"
+    (confirm)="handleDeleteConfirmation()"
+    (cancel)="closeDeleteModal()"
+  ></app-confirmation-modal>
+}

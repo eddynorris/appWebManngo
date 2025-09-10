@@ -1,0 +1,89 @@
+<div class="client-select-container">
+  @if (label()) {
+    <label class="client-select-label" [for]="componentId">
+      {{ label() }}
+      @if (required()) {
+        <span class="required-asterisk">*</span>
+      }
+    </label>
+  }
+  
+  <div class="client-select-wrapper" [class.disabled]="disabled()">
+    <div class="client-select-input-container">
+      <input
+        type="text"
+        class="client-select-input"
+        [id]="componentId"
+        [formControl]="searchControl"
+        [placeholder]="placeholder()"
+        [disabled]="disabled()"
+        [value]="displayText()"
+        (focus)="onInputFocus()"
+        (blur)="onInputBlur()"
+        (input)="onInputChange($event)"
+        autocomplete="off"
+        role="combobox"
+        [attr.aria-expanded]="isDropdownOpen()"
+        [attr.aria-haspopup]="true"
+        [attr.aria-label]="label() || 'Seleccionar cliente'"
+      />
+      
+      <div class="client-select-icons">
+        @if (selectedClient()) {
+          <button
+            type="button"
+            class="clear-button"
+            (click)="clearSelection()"
+            [disabled]="disabled()"
+            aria-label="Limpiar selección"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        } @else {
+          <i class="fas fa-chevron-down dropdown-arrow" [class.rotated]="isDropdownOpen()"></i>
+        }
+      </div>
+    </div>
+    
+    @if (isDropdownOpen() && !disabled()) {
+      <div class="client-select-dropdown" role="listbox">
+        @if (filteredClients().length === 0) {
+          <div class="dropdown-empty">
+            @if (searchTerm()) {
+              <i class="fas fa-search"></i>
+              <span>No se encontraron clientes que coincidan con "{{ searchTerm() }}"</span>
+            } @else {
+              <i class="fas fa-users"></i>
+              <span>No hay clientes disponibles</span>
+            }
+          </div>
+        } @else {
+          @for (client of filteredClients(); track client.id) {
+            <div
+              class="client-option"
+              [class.selected]="selectedClient()?.id === client.id"
+              (mousedown)="selectClient(client)"
+              role="option"
+              [attr.aria-selected]="selectedClient()?.id === client.id"
+            >
+              <div class="client-info">
+                <div class="client-name">{{ client.nombre }}</div>
+                @if (client.email) {
+                  <div class="client-email">{{ client.email }}</div>
+                }
+                @if (client.telefono) {
+                  <div class="client-phone">{{ client.telefono }}</div>
+                }
+              </div>
+              @if (selectedClient()?.id === client.id) {
+                <i class="fas fa-check selected-icon"></i>
+              }
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+  
+
+</div>

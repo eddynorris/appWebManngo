@@ -1,0 +1,54 @@
+// =============================================================================
+// TABLE FILTERS COMPONENT - Siguiendo principio Global-First
+// =============================================================================
+
+// Este componente utiliza principalmente clases globales de _components.scss
+// Solo se definen estilos específicos cuando es absolutamente necesario
+
+@use '../../../../styles/variables' as vars;
+
+// Estilos específicos del componente (mínimos)
+:host {
+  display: block;
+  width: 100%;
+}
+
+// Ajustes específicos para mejorar la alineación de los filtros
+.filters-container {
+  // Heredamos todos los estilos de la clase global
+  // Solo agregamos ajustes específicos si son necesarios
+  
+  .filter-actions {
+    // Mejoramos la alineación de los botones de acción
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    
+    @media (max-width: 576px) {
+      justify-content: stretch;
+      
+      .btn {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+  }
+  
+  // Aseguramos que los inputs y selects tengan el mismo height
+  .filter-group {
+    input, select {
+      height: 44px; // Altura consistente para todos los controles
+      box-sizing: border-box;
+    }
+  }
+}
+
+// Animación sutil para mejorar la experiencia de usuario
+.filters-grid {
+  .filter-group {
+    transition: vars.$transition-fast;
+    
+    &:focus-within {
+      transform: translateY(-1px);
+    }
+  }
+}

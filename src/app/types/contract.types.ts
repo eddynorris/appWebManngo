@@ -298,6 +298,13 @@ export type Estadisticas = {
   ultima_actividad: string;
 };
 
+export type VentaResumen = {
+  id: number;
+  fecha: string;
+  total: number;
+  estado_pago: string;
+};
+
 export type ClienteProyeccion = {
   id: number;
   nombre: string;
@@ -307,11 +314,12 @@ export type ClienteProyeccion = {
   ciudad?: string;
   pais?: string;
   codigo_postal?: string;
-  fecha_registro: string;
+  fecha_registro?: string;
   ultima_fecha_compra: string;
   frecuencia_compra_dias: number;
   saldo_pendiente: number;
-  pedidos: PedidoResumen[];
+  pedidos?: PedidoResumen[];
+  ventas?: VentaResumen[];
   proxima_compra_estimada: string;
   estadisticas: Estadisticas;
 };

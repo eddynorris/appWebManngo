@@ -5,10 +5,24 @@
       <h1>Gestión de Ventas</h1>
       <p>Busca, crea y gestiona todas las ventas</p>
     </div>
-    <a routerLink="/admin/ventas/new" class="btn-primary">➕ Nueva Venta</a>
+    <div class="header-actions">
+      <a routerLink="/admin/ventas/new" class="btn-primary">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Nueva Venta
+      </a>
+    </div>
   </div>
 
-  <!-- TODO: Add filters for date range, client, etc. -->
+  <!-- Filtros Compartidos -->
+  <app-table-filters
+    [filters]="filterConfigs()"
+    [initialValues]="currentFilterValues()"
+    [clients]="clientes()"
+    (filtersChange)="onFiltersChange($event)"
+    (search)="onSearch($event)"
+    (export)="onExport($event)"
+    (clear)="onClearFilters()"
+  ></app-table-filters>
 
   <!-- Reusable Data Table -->
   <app-data-table

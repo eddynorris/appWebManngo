@@ -9,7 +9,7 @@ import { DataTableComponent } from '../../../../../shared/components/data-table/
 import { ColumnConfig, ActionConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
-import { faSearch, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faEye, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
@@ -27,12 +27,14 @@ export default class ProyeccionesPageComponent implements OnInit, OnDestroy {
   // FontAwesome icons
   faSearch = faSearch;
   faEye = faEye;
+  faFileExcel = faFileExcel;
 
 
 
   proyecciones = signal<ClienteProyeccion[]>([]);
   pagination = signal<Pagination | null>(null);
-  isLoading = signal(false);
+  isLoading = signal(true);
+  isExporting = signal(false);
   searchTerm = signal('');
   dateFilter = signal<string>(''); // Nuevo filtro de fecha
   private searchSubject = new Subject<string>();
@@ -124,6 +126,33 @@ export default class ProyeccionesPageComponent implements OnInit, OnDestroy {
     if (event.action === 'view') {
       this.router.navigate(['/admin/proyecciones', event.item.id]);
     }
+  }
+
+  handleExportExcel(): void {
+    const searchParam = this.searchTerm() || undefined;
+    const dateParam = this.dateFilter() || undefined;
+    
+    this.isExporting.set(true);
+    
+    this.clienteService.exportarProyecciones(searchParam, dateParam).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `proyecciones-clientes-${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        this.notificationService.showSuccess('Archivo Excel descargado exitosamente.');
+        this.isExporting.set(false);
+      },
+      error: (err) => {
+        console.error('Error al exportar:', err);
+        this.notificationService.showError('Error al exportar el archivo Excel.');
+        this.isExporting.set(false);
+      }
+    });
   }
 
   ngOnDestroy(): void {

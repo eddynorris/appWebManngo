@@ -1,0 +1,82 @@
+<div class="filters-container">
+  <span class="filters-title">{{ title() }}</span>
+  
+  <form [formGroup]="filterForm" class="filters-grid">
+    @for (filter of filters(); track filter.key) {
+      <div class="filter-group" [class]="getColSpanClass(filter.colSpan)">
+        <label [for]="filter.key">{{ filter.label }}</label>
+        
+        @switch (filter.type) {
+          @case ('text') {
+            <input
+              [id]="filter.key"
+              [formControlName]="filter.key"
+              type="text"
+              [placeholder]="filter.placeholder || ''"
+            />
+          }
+          
+          @case ('select') {
+            <select [id]="filter.key" [formControlName]="filter.key">
+              <option value="">{{ filter.placeholder || 'Seleccionar...' }}</option>
+              @for (option of filter.options; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          }
+          
+          @case ('date') {
+            <input
+              [id]="filter.key"
+              [formControlName]="filter.key"
+              type="date"
+              [placeholder]="filter.placeholder || ''"
+            />
+          }
+          
+          @case ('client-select') {
+            <app-client-select
+              [placeholder]="filter.placeholder || 'Buscar cliente...'"
+              [selectedClientId]="filterForm.get(filter.key)?.value"
+              [clients]="clients()"
+              (clientSelected)="onClientSelected(filter.key, $event)"
+            ></app-client-select>
+          }
+        }
+      </div>
+    }
+    
+    @if (showActions()) {
+      <div class="filter-group col-full">
+        <div class="filter-actions">
+          <button 
+            type="button" 
+            class="btn btn-primary"
+            (click)="onSearch()"
+          >
+            <i class="fas fa-search"></i>
+            Buscar
+          </button>
+          
+          <button 
+            type="button" 
+            class="btn btn-success"
+            (click)="onExport()"
+          >
+            <i class="fas fa-file-excel"></i>
+            Exportar Excel
+          </button>
+          
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="onClear()"
+          >
+            <i class="fas fa-times"></i>
+            Limpiar
+          </button>
+        </div>
+      </div>
+    }
+  </form>
+</div>

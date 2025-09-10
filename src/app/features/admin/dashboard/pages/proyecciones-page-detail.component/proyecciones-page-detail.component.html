@@ -1,4 +1,12 @@
 <div class="detail-container">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Cargando información del cliente...</p>
+    </div>
+  }
+  
   <!-- Content -->
   @if (clienteProyeccion(); as cliente) {
     <!-- Header -->
@@ -107,10 +115,6 @@
             <div class="stat-value">{{ formatDate(cliente.ultima_fecha_compra) }}</div>
             <div class="stat-label">Última compra</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ formatDate(cliente.fecha_registro) }}</div>
-            <div class="stat-label">Cliente desde</div>
-          </div>
           <div class="stat-card" [class.warning]="cliente.saldo_pendiente > 0">
             <div class="stat-value">{{ formatCurrency(cliente.saldo_pendiente) }}</div>
             <div class="stat-label">Saldo pendiente</div>
@@ -130,10 +134,6 @@
             <div class="stat-label">Total de ventas</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">{{ cliente.estadisticas.total_pedidos }}</div>
-            <div class="stat-label">Total de pedidos</div>
-          </div>
-          <div class="stat-card">
             <div class="stat-value">{{ formatCurrency(cliente.estadisticas.monto_total_comprado) }}</div>
             <div class="stat-label">Monto total comprado</div>
           </div>
@@ -142,35 +142,46 @@
             <div class="stat-label">Promedio por compra</div>
           </div>
         </div>
-        
-        <div class="order-status-grid">
-          <div class="status-card">
-            <div class="status-value success">{{ cliente.estadisticas.pedidos_por_estado.completado }}</div>
-            <div class="status-label">Pedidos completados</div>
-          </div>
-          <div class="status-card">
-            <div class="status-value warning">{{ cliente.estadisticas.pedidos_por_estado.pendiente }}</div>
-            <div class="status-label">Pedidos pendientes</div>
-          </div>
-        </div>
+      
       </div>
 
-      <!-- Recent Orders -->
-      @if (cliente.pedidos && cliente.pedidos.length > 0) {
+      <!-- Recent Sales -->
+      @if (cliente.ventas && cliente.ventas.length > 0) {
         <div class="info-section">
           <h2>
             <fa-icon [icon]="faShoppingCart"></fa-icon>
-            Pedidos Recientes
+            Historial de Ventas
           </h2>
           <div class="table-container">
             <app-data-table
-              [data]="cliente.pedidos"
-              [columns]="pedidosColumns"
-              [isLoading]="false">
+              [data]="cliente.ventas"
+              [columns]="ventasColumns"
+              [actions]="ventasActions"
+              [isLoading]="isLoading()"
+              (onAction)="handleVentasTableAction($event)">
             </app-data-table>
+          </div>
+        </div>
+      } @else if (!isLoading()) {
+        <div class="info-section">
+          <h2>
+            <fa-icon [icon]="faShoppingCart"></fa-icon>
+            Ventas Recientes
+          </h2>
+          <div class="no-data">
+            <p>No hay ventas registradas para este cliente.</p>
           </div>
         </div>
       }
     </div>
   }
 </div>
+
+<!-- Modal de Detalle de Venta -->
+@if (selectedVenta() && ventaDetalleVisible()) {
+  <app-venta-detalle-modal
+    [venta]="selectedVenta()!"
+    [visible]="ventaDetalleVisible"
+    (close)="closeVentaDetail()">
+  </app-venta-detalle-modal>
+}

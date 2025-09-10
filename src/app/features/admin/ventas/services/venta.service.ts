@@ -77,5 +77,46 @@ export class VentaService {
     );
   }
 
+  // Obtener datos para filtros
+  getFiltrosData(): Observable<{
+    clientes: { id: number; nombre: string }[];
+    almacenes: { id: number; nombre: string }[];
+    vendedores: { id: number; username: string }[];
+    estados_pago: { value: string; label: string }[];
+  }> {
+    return this.http.get<{
+      clientes: { id: number; nombre: string }[];
+      almacenes: { id: number; nombre: string }[];
+      vendedores: { id: number; username: string }[];
+      estados_pago: { value: string; label: string }[];
+    }>(`${this.apiUrl}/filtros`);
+  }
+
+  // Exportar ventas a Excel con filtros
+  exportarVentas(filtros?: {
+    cliente_id?: number;
+    almacen_id?: number;
+    vendedor_id?: number;
+    estado_pago?: string;
+    fecha_inicio?: string;
+    fecha_fin?: string;
+  }): Observable<Blob> {
+    let params = new HttpParams();
+    
+    if (filtros) {
+      Object.keys(filtros).forEach(key => {
+        const value = filtros[key as keyof typeof filtros];
+        if (value !== null && value !== undefined) {
+          params = params.append(key, String(value));
+        }
+      });
+    }
+    
+    return this.http.get(`${this.apiUrl}/exportar`, {
+      params,
+      responseType: 'blob'
+    });
+  }
+
 // ... existing code ...
 }

@@ -1,7 +1,7 @@
 <div class="dashboard-page">
   <div class="page-header">
     <h1>Dashboard - Sistema Manngo</h1>
-    <p>Monitoreo de alertas y estado general del sistema</p>
+    <p>Monitoreo de saldos pendientes de clientes</p>
     <button (click)="refresh()" class="refresh-btn" [disabled]="isLoading()">
       <fa-icon [icon]="faSync"></fa-icon>
       Actualizar
@@ -25,26 +25,6 @@
   } @else {
     <!-- Métricas Resumen -->
     <section class="metrics-summary">
-      <div class="metric-card stock-alerts">
-        <div class="metric-header">
-          <span class="metric-icon">
-            <fa-icon [icon]="faBoxes"></fa-icon>
-          </span>
-          <span class="metric-value">{{ totalAlertasStock() }}</span>
-        </div>
-        <div class="metric-title">Productos con Stock Bajo</div>
-      </div>
-
-      <div class="metric-card batch-alerts">
-        <div class="metric-header">
-          <span class="metric-icon">
-            <fa-icon [icon]="faTag"></fa-icon>
-          </span>
-          <span class="metric-value">{{ totalLotesBajos() }}</span>
-        </div>
-        <div class="metric-title">Lotes con Cantidad Baja</div>
-      </div>
-
       <div class="metric-card pending-clients">
         <div class="metric-header">
           <span class="metric-icon">
@@ -95,103 +75,7 @@
         </div>
       }
     </section>
-    <!-- Alertas de Stock Bajo por Almacén -->
-    <section class="stock-alerts-section">
-      <div class="section-header">
-        <h2>
-          <fa-icon [icon]="faStore"></fa-icon>
-          Alertas de Stock Bajo por Almacén
-        </h2>
-      </div>
 
-      @if (stockPorAlmacenes().length === 0) {
-        <div class="empty-state">
-          <div class="empty-icon">
-            <fa-icon [icon]="faCheckCircle"></fa-icon>
-          </div>
-          <h3>¡Excelente!</h3>
-          <p>No hay productos con stock bajo en ningún almacén.</p>
-        </div>
-      } @else {
-        <div class="almacenes-grid">
-          @for (almacen of stockPorAlmacenes(); track almacen.almacen_id) {
-            <div class="almacen-card">
-              <div class="almacen-header">
-                <h3>{{ almacen.almacen_nombre }}</h3>
-                <span class="products-count">{{ almacen.productos_bajo_stock.length }} productos</span>
-              </div>
-
-              <div class="productos-list">
-                @for (producto of almacen.productos_bajo_stock; track producto.presentacion_id) {
-                  <div class="producto-item">
-                    <div class="producto-info">
-                      <div class="producto-nombre">{{ producto.nombre }}</div>
-                      <div class="stock-info">
-                        <span class="cantidad-actual">{{ producto.cantidad }} unidades</span>
-                        <span class="stock-minimo">Mínimo: {{ producto.stock_minimo }}</span>
-                      </div>
-                    </div>
-                    <div class="urgencia-badge"
-                         [class.critica]="producto.cantidad <= (producto.stock_minimo * 0.5)"
-                         [class.media]="producto.cantidad > (producto.stock_minimo * 0.5) && producto.cantidad < producto.stock_minimo">
-                      @if (producto.cantidad <= (producto.stock_minimo * 0.5)) {
-                        <fa-icon [icon]="faExclamationCircle" style="color: #e74c3c;"></fa-icon>
-                        Crítico
-                      } @else {
-                        <fa-icon [icon]="faExclamationTriangle" style="color: #f39c12;"></fa-icon>
-                        Bajo
-                      }
-                    </div>
-                  </div>
-                }
-              </div>
-            </div>
-          }
-        </div>
-      }
-    </section>
-
-    <!-- Alertas de Lotes Bajos -->
-    <section class="lotes-alerts-section">
-      <div class="section-header">
-        <h2>
-          <fa-icon [icon]="faTag"></fa-icon>
-          Lotes con Cantidad Baja
-        </h2>
-      </div>
-
-      @if (alertasLotes().length === 0) {
-        <div class="empty-state">
-          <div class="empty-icon">
-            <fa-icon [icon]="faCheckCircle"></fa-icon>
-          </div>
-          <h3>¡Perfecto!</h3>
-          <p>Todos los lotes tienen cantidades adecuadas.</p>
-        </div>
-      } @else {
-        <div class="lotes-grid">
-          @for (lote of alertasLotes(); track lote.lote_id) {
-            <div class="lote-card">
-              <div class="lote-header">
-                <h4>{{ lote.descripcion }}</h4>
-                <span class="lote-id">ID: {{ lote.lote_id }}</span>
-              </div>
-
-              <div class="lote-info">
-                <div class="cantidad-disponible">
-                  <span class="label">Cantidad disponible:</span>
-                  <span class="value">{{ lote.cantidad_disponible_kg }} kg</span>
-                </div>
-                <div class="producto-ref">
-                  <span class="label">Producto ID:</span>
-                  <span class="value">#{{ lote.producto_id }}</span>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      }
-    </section>
 
 
   }

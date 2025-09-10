@@ -94,4 +94,22 @@ export class ClienteService {
       responseType: 'blob'
     });
   }
+
+  // Exportar proyecciones de clientes a Excel
+  exportarProyecciones(search?: string, dateFilter?: string): Observable<Blob> {
+    const params: any = {};
+
+    if (search) {
+      params.search = search;
+    }
+
+    if (dateFilter) {
+      params.filtro_fecha = dateFilter;
+    }
+
+    return this.http.get(`${this.apiUrl}/proyecciones/exportar`, {
+      params,
+      responseType: 'blob'
+    });
+  }
 }

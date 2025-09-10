@@ -34,6 +34,22 @@
     <div class="results-info">
       Mostrando <strong>{{ filteredProyecciones().length }}</strong> de <strong>{{ pagination()?.total || 0 }}</strong> resultados.
     </div>
+    
+    <div class="export-section">
+      <button 
+        type="button" 
+        class="btn btn-success btn-export"
+        (click)="handleExportExcel()"
+        [disabled]="isExporting()">
+        @if (isExporting()) {
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Exportando...
+        } @else {
+          <fa-icon [icon]="faFileExcel"></fa-icon>
+          Exportar a Excel
+        }
+      </button>
+    </div>
   </div>
 
   <!-- Reusable Data Table -->

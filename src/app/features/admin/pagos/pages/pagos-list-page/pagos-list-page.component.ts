@@ -91,6 +91,27 @@ export default class PagosListPageComponent implements OnInit {
     }
   }
 
+  handleExportExcel(): void {
+    this.pagoService.exportarPagos().subscribe({
+      next: (blob) => {
+        // Crear URL del blob y descargar archivo
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `pagos_${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        this.notificationService.showSuccess('Archivo Excel descargado exitosamente.');
+      },
+      error: (err) => {
+        this.notificationService.showError('Error al exportar los pagos.');
+      }
+    });
+  }
+
   handleDeleteConfirmation(): void {
     const pago = this.pagoToDelete();
     if (!pago || !pago.id) return;

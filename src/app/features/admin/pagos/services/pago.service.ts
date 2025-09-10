@@ -43,4 +43,11 @@ export class PagoService {
   createBatchPagos(formData: FormData): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/batch`, formData);
   }
+
+  // Exportar pagos a Excel
+  exportarPagos(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/exportar`, {
+      responseType: 'blob'
+    });
+  }
 }

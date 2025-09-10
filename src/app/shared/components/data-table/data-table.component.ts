@@ -12,7 +12,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   styleUrl: './data-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DataTableComponent<T extends { id?: number; activo?: boolean }> {
+export class DataTableComponent<T extends { id?: number }> {
   // --- Inputs ---
   data = input.required<T[]>();
   columns = input.required<ColumnConfig<T>[]>();
@@ -42,5 +42,20 @@ export class DataTableComponent<T extends { id?: number; activo?: boolean }> {
   trackByFn(index: number, item: T): any {
     // Priorizar ID si existe, sino usar index como fallback
     return item.id !== undefined ? item.id : index;
+  }
+
+  // Método auxiliar para verificar si un item está activo
+  isItemActive(item: T): boolean {
+    return (item as any)?.activo === true;
+  }
+
+  // Método auxiliar para verificar si un item está inactivo
+  isItemInactive(item: T): boolean {
+    return (item as any)?.activo === false;
+  }
+
+  // Método auxiliar para obtener el texto del estado
+  getStatusText(item: T): string {
+    return (item as any)?.activo ? 'Activo' : 'Inactivo';
   }
 }

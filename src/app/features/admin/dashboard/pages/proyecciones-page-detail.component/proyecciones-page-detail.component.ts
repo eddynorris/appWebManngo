@@ -1,25 +1,29 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowLeft, faUser, faEnvelope, faPhone, faMapMarkerAlt, faCalendarAlt, faChartLine, faShoppingCart, faDollarSign, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faUser, faEnvelope, faPhone, faMapMarkerAlt, faCalendarAlt, faChartLine, faShoppingCart, faDollarSign, faExclamationTriangle, faEye } from '@fortawesome/free-solid-svg-icons';
 import { ClienteService } from '../../../clientes/services/cliente.service';
 import { NotificationService } from '../../../../../shared/services/notification.service';
-import { ClienteProyeccion } from '../../../../../types/contract.types';
+import { ClienteProyeccion, VentaResumen, Venta } from '../../../../../types/contract.types';
 import { DataTableComponent } from '../../../../../shared/components/data-table/data-table.component';
 import { ColumnConfig } from '../../../../../shared/components/data-table/data-table.types';
+import { VentaDetalleModalComponent } from '../../../ventas/components/venta-detalle-modal/venta-detalle-modal.component';
+import { VentaService } from '../../../ventas/services/venta.service';
 
 @Component({
   selector: 'app-proyecciones-page-detail',
-  imports: [CommonModule, FontAwesomeModule, DataTableComponent],
+  imports: [CommonModule, FontAwesomeModule, DataTableComponent, VentaDetalleModalComponent],
   templateUrl: './proyecciones-page-detail.component.html',
-  styleUrl: './proyecciones-page-detail.component.scss'
+  styleUrl: './proyecciones-page-detail.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProyeccionesPageDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly clienteService = inject(ClienteService);
   private readonly notificationService = inject(NotificationService);
+  private readonly ventaService = inject(VentaService);
 
   // FontAwesome icons
   faArrowLeft = faArrowLeft;
@@ -32,11 +36,17 @@ export class ProyeccionesPageDetailComponent implements OnInit {
   faShoppingCart = faShoppingCart;
   faDollarSign = faDollarSign;
   faExclamationTriangle = faExclamationTriangle;
+  faEye = faEye;
 
   // Estado del componente
   clienteProyeccion = signal<ClienteProyeccion | null>(null);
   isLoading = signal(true);
   clienteId = signal<number | null>(null);
+
+  // Estado para el modal de detalle de venta
+  ventaDetalleVisible = signal(false);
+  selectedVenta = signal<Venta | null>(null);
+  isLoadingVentaDetail = signal(false);
 
   // Computed properties
   diasHastaProximaCompra = computed(() => {
@@ -60,28 +70,43 @@ export class ProyeccionesPageDetailComponent implements OnInit {
     return 'normal';
   });
 
-  // Configuración de columnas para la tabla de pedidos
-  readonly pedidosColumns: ColumnConfig<any>[] = [
+  // Configuración de columnas para la tabla de ventas
+  readonly ventasColumns: ColumnConfig<VentaResumen>[] = [
     {
       key: 'id',
-      label: 'ID Pedido',
+      label: 'ID Venta',
       type: 'text',
-      customRender: (pedido: any) => `#${pedido.id}`
+      customRender: (venta: VentaResumen) => `#${venta.id}`
     },
     {
-      key: 'fecha_creacion',
+      key: 'fecha',
       label: 'Fecha',
       type: 'date'
     },
     {
-      key: 'estado',
-      label: 'Estado',
-      type: 'status'
+      key: 'estado_pago',
+      label: 'Estado de Pago',
+      type: 'text'
     },
     {
       key: 'total',
       label: 'Total',
       type: 'currency'
+    },
+    {
+      key: 'actions',
+      label: 'Acciones',
+      type: 'actions'
+    }
+  ];
+
+  // Configuración de acciones para la tabla de ventas
+  readonly ventasActions = [
+    {
+      action: 'ver-detalle',
+      label: 'Ver Detalle',
+      icon: this.faEye,
+      class: 'btn-detail'
     }
   ];
 
@@ -128,9 +153,9 @@ export class ProyeccionesPageDetailComponent implements OnInit {
   }
 
   formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat('es-PE', {
       style: 'currency',
-      currency: 'EUR'
+      currency: 'PEN'
     }).format(amount);
   }
 
@@ -155,5 +180,34 @@ export class ProyeccionesPageDetailComponent implements OnInit {
       default:
         return `En ${dias} día${dias !== 1 ? 's' : ''}`;
     }
+  }
+
+  // Manejo de acciones de la tabla de ventas
+  handleVentasTableAction(event: { action: string; item: VentaResumen }): void {
+    if (event.action === 'ver-detalle') {
+      this.showVentaDetail(event.item.id);
+    }
+  }
+
+  // Mostrar detalle de venta
+  showVentaDetail(ventaId: number): void {
+    this.isLoadingVentaDetail.set(true);
+    this.ventaService.getVentaById(ventaId).subscribe({
+      next: (venta) => {
+        this.selectedVenta.set(venta);
+        this.ventaDetalleVisible.set(true);
+        this.isLoadingVentaDetail.set(false);
+      },
+      error: (err) => {
+        this.notificationService.showError('Error al cargar el detalle de la venta.');
+        this.isLoadingVentaDetail.set(false);
+      }
+    });
+  }
+
+  // Cerrar modal de detalle de venta
+  closeVentaDetail(): void {
+    this.ventaDetalleVisible.set(false);
+    this.selectedVenta.set(null);
   }
 }

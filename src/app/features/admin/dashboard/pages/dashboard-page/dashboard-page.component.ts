@@ -8,19 +8,12 @@ import {
   faCheckCircle,
   faEye,
   faMoneyBillWave,
-  faStore,
-  faTag,
-  faCircle,
-  faExclamationCircle,
-  faBoxes,
   faUsers,
   faHandHoldingDollar
 } from '@fortawesome/free-solid-svg-icons';
 import { DashboardService } from '../../services/dashboard.service';
 import {
   DashboardResponse,
-  StockPorAlmacen,
-  AlertaLoteBajo,
   ClienteSaldoPendiente
 } from '../../../../../types/dashboard.types';
 import { ClienteDeudaModalComponent } from '../../components/cliente-deuda-modal/cliente-deuda-modal.component';
@@ -51,11 +44,6 @@ export default class DashboardPageComponent {
   faCheckCircle = faCheckCircle;
   faEye = faEye;
   faMoneyBillWave = faMoneyBillWave;
-  faStore = faStore;
-  faTag = faTag;
-  faCircle = faCircle;
-  faExclamationCircle = faExclamationCircle;
-  faBoxes = faBoxes;
   faUsers = faUsers;
   faHandHoldingDollar = faHandHoldingDollar;
 
@@ -67,31 +55,6 @@ export default class DashboardPageComponent {
   selectedCliente = signal<ClienteSaldoPendiente | null>(null);
 
   // Computed values para organizar los datos
-  stockPorAlmacenes = computed(() => {
-    const data = this.dashboardData();
-    if (!data) return [];
-
-    // Agrupar alertas de stock por almacén
-    const almacenesMap = new Map<number, StockPorAlmacen>();
-
-    data.alertas_stock_bajo.forEach(alerta => {
-      if (!almacenesMap.has(alerta.almacen_id)) {
-        almacenesMap.set(alerta.almacen_id, {
-          almacen_id: alerta.almacen_id,
-          almacen_nombre: alerta.almacen_nombre,
-          productos_bajo_stock: []
-        });
-      }
-      almacenesMap.get(alerta.almacen_id)!.productos_bajo_stock.push(alerta);
-    });
-
-    return Array.from(almacenesMap.values());
-  });
-
-  alertasLotes = computed(() => {
-    return this.dashboardData()?.alertas_lotes_bajos || [];
-  });
-
   clientesSaldoPendiente = computed(() => {
     return this.dashboardData()?.clientes_con_saldo_pendiente || [];
   });
@@ -106,14 +69,6 @@ export default class DashboardPageComponent {
   });
 
   // Métricas resumidas
-  totalAlertasStock = computed(() => {
-    return this.dashboardData()?.alertas_stock_bajo.length || 0;
-  });
-
-  totalLotesBajos = computed(() => {
-    return this.dashboardData()?.alertas_lotes_bajos.length || 0;
-  });
-
   totalClientesPendientes = computed(() => {
     return this.dashboardData()?.clientes_con_saldo_pendiente.length || 0;
   });
