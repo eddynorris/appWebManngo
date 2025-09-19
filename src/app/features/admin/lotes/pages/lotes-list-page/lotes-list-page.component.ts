@@ -56,6 +56,7 @@ export default class LotesListPageComponent implements OnInit {
     { key: 'peso_humedo_kg', label: 'Peso Húmedo (kg)', type: 'text' },
     { key: 'peso_seco_kg', label: 'Peso Seco (kg)', type: 'text' },
     { key: 'cantidad_disponible_kg', label: 'Disponible (kg)', type: 'text' },
+    { key: 'is_active', label: 'Estado', type: 'status' },
     { key: 'actions', label: 'Acciones', type: 'actions' },
   ];
 

@@ -114,6 +114,18 @@
             <span class="error-message">{{ getFieldError('cantidad_disponible_kg') }}</span>
           }
         </div>
+
+        <div class="input-group">
+          <label for="is_active">Estado</label>
+          <div class="checkbox-wrapper">
+            <input 
+              id="is_active" 
+              type="checkbox" 
+              formControlName="is_active">
+            <label for="is_active" class="checkbox-label">Lote activo</label>
+          </div>
+          <small class="field-help">Los lotes inactivos no aparecerán en los selectores de producción</small>
+        </div>
       </div>
     </div>
 

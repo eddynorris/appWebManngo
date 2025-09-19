@@ -11,10 +11,11 @@ import { DataTableComponent } from '../../../../../shared/components/data-table/
 import { ColumnConfig, ActionConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { NotificationService } from '../../../../../shared/services/notification.service';
+import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { LoadingService } from '../../../../../shared/services/loading.service';
 import { VentaDetalleModalComponent } from '../../components/venta-detalle-modal/venta-detalle-modal.component';
 import { TableFiltersComponent, FilterConfig, FilterValues } from '../../../../../shared/components/table-filters/table-filters.component';
-import { faEdit, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEye, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
@@ -30,6 +31,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     VentaDetalleModalComponent,
     TableFiltersComponent,
     FontAwesomeModule,
+    ConfirmationModalComponent,
   ],
   templateUrl: './ventas-list-page.component.html',
   styleUrl: './ventas-list-page.component.scss',
@@ -96,6 +98,10 @@ export default class VentasListPageComponent implements OnInit {
   isModalVisible = signal(false);
   selectedVenta = signal<Venta | null>(null);
 
+  // Signals para modal de eliminación
+  isDeleteModalVisible = signal(false);
+  ventaToDelete = signal<Venta | null>(null);
+
   // Signals para datos de filtros
   clientes = signal<{ id: number; nombre: string }[]>([]);
   almacenes = signal<{ id: number; nombre: string }[]>([]);
@@ -117,6 +123,7 @@ export default class VentasListPageComponent implements OnInit {
   actions: ActionConfig[] = [
     { icon: faEye, label: '', action: 'view' },
     { icon: faEdit, label: '', action: 'edit' },
+    { icon: faTrash, label: '', action: 'delete' },
   ];
 
   ngOnInit(): void {
@@ -211,12 +218,37 @@ export default class VentasListPageComponent implements OnInit {
     } else if (action === 'view') {
       this.selectedVenta.set(item);
       this.isModalVisible.set(true);
+    } else if (action === 'delete') {
+      this.ventaToDelete.set(item);
+      this.isDeleteModalVisible.set(true);
     }
   }
 
   handleCloseModal(): void {
     this.isModalVisible.set(false);
     this.selectedVenta.set(null);
+  }
+
+  handleDeleteConfirmation(): void {
+    const venta = this.ventaToDelete();
+    if (!venta || !venta.id) return;
+
+    this.ventaService.deleteVenta(venta.id).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Venta eliminada correctamente.');
+        const currentPage = this.pagination()?.page || 1;
+        this.loadVentas(currentPage);
+      },
+      error: (err) => {
+        this.notificationService.showError('Error al eliminar la venta.');
+      }
+    });
+    this.closeDeleteModal();
+  }
+
+  closeDeleteModal(): void {
+    this.isDeleteModalVisible.set(false);
+    this.ventaToDelete.set(null);
   }
 
 

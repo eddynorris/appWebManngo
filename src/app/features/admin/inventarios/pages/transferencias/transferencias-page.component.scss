@@ -1,0 +1,45 @@
+// Estilos específicos para transferencias usando clases globales
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+}
+
+.transferencias-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.transferencia-item {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  transition: var(--transition-base);
+
+  &:hover {
+    box-shadow: var(--box-shadow-sm);
+  }
+
+  .transferencia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .transferencia-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 0;
+    }
+  }
+}

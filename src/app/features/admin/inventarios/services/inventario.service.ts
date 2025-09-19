@@ -19,6 +19,51 @@ export interface ReporteInventarioGlobalItem {
   }[];
 }
 
+// Interfaces for transfers
+export interface Almacen {
+  id: number;
+  nombre: string;
+  descripcion: string;
+}
+
+export interface LoteInfo {
+  id: number;
+  codigo_lote: string;
+  descripcion: string;
+}
+
+export interface InventarioTransferencia {
+  almacen_id: number;
+  almacen_nombre: string;
+  stock_disponible: number;
+  lote_id: number;
+  lote_info: LoteInfo;
+}
+
+export interface PresentacionDisponible {
+  id: number;
+  nombre: string;
+  url_foto: string;
+  inventarios: InventarioTransferencia[];
+}
+
+export interface TransferenciasData {
+  almacenes: Almacen[];
+  presentaciones_disponibles: PresentacionDisponible[];
+}
+
+export interface TransferenciaItem {
+  presentacion_id: number;
+  lote_id: number;
+  cantidad: string;
+}
+
+export interface TransferenciaRequest {
+  almacen_origen_id: number;
+  almacen_destino_id: number;
+  transferencias: TransferenciaItem[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -50,5 +95,15 @@ export class InventarioService {
   // Obtener reporte global de inventario
   getReporteGlobal(): Observable<ReporteInventarioGlobalItem[]> {
     return this.http.get<ReporteInventarioGlobalItem[]>(`${environment.apiUrl}/inventario/reporte-global`);
+  }
+
+  // Obtener datos para transferencias (almacenes y presentaciones disponibles)
+  getTransferenciasData(): Observable<TransferenciasData> {
+    return this.http.get<TransferenciasData>(`${environment.apiUrl}/inventario/transferir`);
+  }
+
+  // Realizar transferencia de inventario
+  realizarTransferencia(transferencia: TransferenciaRequest): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/inventario/transferir`, transferencia);
   }
 }

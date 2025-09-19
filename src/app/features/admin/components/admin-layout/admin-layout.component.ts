@@ -22,7 +22,8 @@ import {
   faShoppingCart,
   faWarehouse,
   faFileInvoiceDollar,
-  faCogs
+  faCogs,
+  faExchangeAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../../core/services/auth.service';
 import { FloatingChatComponent } from '../../chat/components/floating-chat/floating-chat.component';
@@ -62,6 +63,7 @@ export default class AdminLayoutComponent {
   faWarehouse = faWarehouse;
   faFileInvoiceDollar = faFileInvoiceDollar;
   faCogs = faCogs;
+  faExchangeAlt = faExchangeAlt;
 
   navigationItems = [
     { 
@@ -101,7 +103,8 @@ export default class AdminLayoutComponent {
       icon: faWarehouse, 
       hasSubmenu: true,
       submenu: [
-        { label: 'Inventarios', route: '/admin/inventarios', icon: faClipboardList }
+        { label: 'Inventarios', route: '/admin/inventarios', icon: faClipboardList },
+        { label: 'Transferencias', route: '/admin/inventarios/transferencias', icon: faExchangeAlt }
       ]
     },
     { 

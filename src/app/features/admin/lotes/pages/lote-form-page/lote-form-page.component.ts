@@ -39,7 +39,8 @@ export default class LoteFormPageComponent implements OnInit {
       descripcion: ['', [Validators.required, Validators.maxLength(255)]],
       peso_humedo_kg: ['', [Validators.required, Validators.min(0.01)]],
       peso_seco_kg: ['', [Validators.required, Validators.min(0.01)]],
-      cantidad_disponible_kg: ['', [Validators.required, Validators.min(0)]]
+      cantidad_disponible_kg: ['', [Validators.required, Validators.min(0)]],
+      is_active: [true] // Por defecto los lotes se crean activos
     });
   }
 
@@ -92,7 +93,8 @@ export default class LoteFormPageComponent implements OnInit {
             descripcion: lote.descripcion,
             peso_humedo_kg: lote.peso_humedo_kg,
             peso_seco_kg: lote.peso_seco_kg,
-            cantidad_disponible_kg: lote.cantidad_disponible_kg
+            cantidad_disponible_kg: lote.cantidad_disponible_kg,
+            is_active: lote.is_active
           });
         },
         error: (error) => {
@@ -122,7 +124,8 @@ export default class LoteFormPageComponent implements OnInit {
       descripcion: formValue.descripcion,
       peso_humedo_kg: String(formValue.peso_humedo_kg),
       peso_seco_kg: String(formValue.peso_seco_kg),
-      cantidad_disponible_kg: String(formValue.cantidad_disponible_kg)
+      cantidad_disponible_kg: String(formValue.cantidad_disponible_kg),
+      is_active: Boolean(formValue.is_active)
     };
 
     const operation$ = id

@@ -80,7 +80,7 @@ export default class ProduccionPageComponent implements OnInit {
         this.almacenService.getAlmacenes().toPromise(),
         this.presentacionService.getPresentaciones(1, 1000, { activo: true, tipo: 'procesado' }).toPromise(),
         this.presentacionService.getPresentaciones(1, 1000, { activo: true, tipo: 'briqueta' }).toPromise(),
-        this.loteService.getLotes(1, 10000).toPromise() // Cargar todos los lotes de una vez
+        this.loteService.getLotes(1, 10000, { is_active: true }).toPromise() // Cargar solo lotes activos
       ]);
       
       // Establecer almacenes

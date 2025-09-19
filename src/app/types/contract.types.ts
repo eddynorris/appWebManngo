@@ -66,6 +66,7 @@ export type Lote = {
   peso_humedo_kg?: string;
   peso_seco_kg?: string;
   cantidad_disponible_kg?: string;
+  is_active?: boolean;
   producto?: Producto;
   proveedor?: Proveedor;
 };

@@ -1,0 +1,166 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>
+        <fa-icon [icon]="faExchangeAlt"></fa-icon>
+        Transferencias de Inventario
+      </h1>
+      <p>Transfiere productos entre almacenes de manera eficiente</p>
+    </div>
+  </div>
+
+  <div class="data-form">
+    <form [formGroup]="transferenciasForm" (ngSubmit)="onSubmit()" class="transferencias-form">
+      
+      <!-- Selección de Almacenes -->
+      <div class="form-section">
+        <h2 class="section-title">Seleccionar Almacenes</h2>
+        
+        <div class="form-grid two-cols">
+          <div class="input-group">
+            <label class="form-label">Almacén Origen</label>
+            <select formControlName="almacen_origen_id" (change)="onAlmacenOrigenChange()">
+              <option value="">Seleccionar almacén origen</option>
+              <option *ngFor="let almacen of almacenes()" [value]="almacen.id">
+                {{ almacen.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="almacen_destino">Almacén Destino *</label>
+            <select 
+              id="almacen_destino"
+              formControlName="almacen_destino_id" 
+              (change)="onAlmacenDestinoChange()">
+              <option value="">Seleccionar almacén destino</option>
+              <option 
+                *ngFor="let almacen of getAlmacenesDestino()" 
+                [value]="almacen.id">
+                {{ almacen.nombre }} - {{ almacen.descripcion }}
+              </option>
+            </select>
+            <div 
+              *ngIf="transferenciasForm.get('almacen_destino_id')?.invalid && transferenciasForm.get('almacen_destino_id')?.touched" 
+              class="error-message">
+              El almacén destino es requerido
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Productos a Transferir -->
+      <div class="form-section" *ngIf="transferenciasForm.get('almacen_origen_id')?.value && transferenciasForm.get('almacen_destino_id')?.value">
+        <div class="section-header">
+          <h2 class="section-title">Productos a Transferir</h2>
+          <button 
+            type="button" 
+            class="btn-primary btn-sm"
+            (click)="addTransferencia()"
+            [disabled]="getAvailablePresentaciones().length === 0">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            Agregar Producto
+          </button>
+        </div>
+
+        <div *ngIf="getAvailablePresentaciones().length === 0" class="empty-state">
+          <p>No hay productos disponibles para transferir desde el almacén seleccionado.</p>
+        </div>
+
+        <div formArrayName="transferencias" class="transferencias-list">
+          <div 
+            *ngFor="let transferencia of transferenciasArray.controls; let i = index" 
+            [formGroupName]="i" 
+            class="transferencia-item">
+            
+            <div class="transferencia-header">
+              <h3 class="transferencia-title">Producto {{ i + 1 }}</h3>
+              <button 
+                type="button" 
+                class="btn-danger btn-sm"
+                (click)="removeTransferencia(i)">
+                <fa-icon [icon]="faTrash"></fa-icon>
+              </button>
+            </div>
+
+            <div class="form-grid four-cols">
+              <div class="input-group">
+                <label [for]="'presentacion_' + i">Producto *</label>
+                <select 
+                  [id]="'presentacion_' + i"
+                  formControlName="presentacion_id" 
+                  (change)="onPresentacionChange(i)">
+                  <option value="">Seleccionar producto</option>
+                  <option 
+                    *ngFor="let presentacion of getAvailablePresentaciones()" 
+                    [value]="presentacion.id">
+                    {{ presentacion.nombre }}
+                  </option>
+                </select>
+                <div 
+                  *ngIf="transferencia.get('presentacion_id')?.invalid && transferencia.get('presentacion_id')?.touched" 
+                  class="error-message">
+                  El producto es requerido
+                </div>
+              </div>
+
+              <div class="input-group" *ngIf="transferencia.get('presentacion_id')?.value">
+                <label>Lote</label>
+                <input 
+                  type="text" 
+                  [value]="getLoteInfo(+transferencia.get('presentacion_id')?.value)"
+                  readonly>
+              </div>
+
+              <div class="input-group" *ngIf="transferencia.get('presentacion_id')?.value">
+                <label>Stock Disponible</label>
+                <input 
+                  type="number" 
+                  [value]="getStockDisponible(+transferencia.get('presentacion_id')?.value)"
+                  readonly>
+              </div>
+
+              <div class="input-group">
+                <label [for]="'cantidad_' + i">Cantidad a Transferir *</label>
+                <input 
+                  [id]="'cantidad_' + i"
+                  type="number" 
+                  formControlName="cantidad" 
+                  placeholder="0.00"
+                  step="0.01"
+                  min="0.01"
+                  [max]="getStockDisponible(+transferencia.get('presentacion_id')?.value)">
+                <div 
+                  *ngIf="transferencia.get('cantidad')?.invalid && transferencia.get('cantidad')?.touched" 
+                  class="error-message">
+                  <span *ngIf="transferencia.get('cantidad')?.errors?.['required']">La cantidad es requerida</span>
+                  <span *ngIf="transferencia.get('cantidad')?.errors?.['min']">La cantidad debe ser mayor a 0</span>
+                  <span *ngIf="transferencia.get('cantidad')?.value > getStockDisponible(+transferencia.get('presentacion_id')?.value)">
+                    La cantidad no puede ser mayor al stock disponible
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="form-actions" *ngIf="transferenciasArray.length > 0">
+        <button 
+          type="button" 
+          class="btn-secondary"
+          (click)="resetForm()">
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="btn-primary"
+          [disabled]="!isFormValid() || loadingService.isLoading()">
+          <span *ngIf="loadingService.isLoading()">Procesando...</span>
+          <span *ngIf="!loadingService.isLoading()">Realizar Transferencia</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

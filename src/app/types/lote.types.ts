@@ -7,6 +7,7 @@ export interface Lote {
   peso_seco_kg: string;
   cantidad_disponible_kg: string;
   fecha_ingreso: string;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
   producto: {

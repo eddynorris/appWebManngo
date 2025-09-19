@@ -61,6 +61,11 @@ export class VentaService {
     return this.http.patch<Venta>(`${this.apiUrl}/${id}/cancelar`, {});
   }
 
+  // Eliminar una venta completamente usando DELETE
+  deleteVenta(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
   // Actualizar el estado de pago de una venta
   updateEstadoPago(id: number, estado: string): Observable<Venta> {
     return this.http.patch<Venta>(`${this.apiUrl}/${id}/estado-pago`, { estado_pago: estado });

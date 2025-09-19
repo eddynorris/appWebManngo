@@ -84,7 +84,7 @@ export default class PagosListPageComponent implements OnInit {
 
   handleTableAction(event: { action: string; item: Pago }): void {
     if (event.action === 'edit') {
-      this.router.navigate(['/admin/pagos/edit', event.item.id]);
+      this.router.navigate(['/admin/pagos/editar', event.item.id]);
     } else if (event.action === 'delete') {
       this.pagoToDelete.set(event.item);
       this.isDeleteModalVisible.set(true);

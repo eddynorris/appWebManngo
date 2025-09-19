@@ -49,3 +49,14 @@
     (close)="handleCloseModal()"
   ></app-venta-detalle-modal>
 }
+
+@if (isDeleteModalVisible()) {
+  <app-confirmation-modal
+    [title]="'Confirmar Eliminación'"
+    [message]="'¿Está seguro que desea eliminar esta venta? Esta acción no se puede deshacer.'"
+    [confirmText]="'Eliminar Venta'"
+    [cancelText]="'Cancelar'"
+    (confirm)="handleDeleteConfirmation()"
+    (cancel)="closeDeleteModal()"
+  ></app-confirmation-modal>
+}

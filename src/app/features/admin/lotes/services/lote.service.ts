@@ -17,10 +17,21 @@ export class LoteService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/lotes`;
 
-  getLotes(page: number = 1, per_page: number = 10): Observable<LotesResponse> {
-    const params = new HttpParams()
+  getLotes(page: number = 1, per_page: number = 10, filtros?: { [key: string]: string | number | boolean }): Observable<LotesResponse> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', per_page.toString());
+    
+    // Agregar filtros adicionales si se proporcionan
+    if (filtros) {
+      Object.keys(filtros).forEach(key => {
+        const value = filtros[key];
+        if (value !== null && value !== undefined) {
+          params = params.set(key, String(value));
+        }
+      });
+    }
+    
     return this.http.get<LotesResponse>(this.apiUrl, { params });
   }
 
