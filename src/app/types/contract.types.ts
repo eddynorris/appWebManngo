@@ -325,3 +325,100 @@ export type ClienteProyeccion = {
 };
 
 export type ClienteProyeccionesResponse = PaginatedResponse<ClienteProyeccion>;
+
+// --- Tipos para Cierre de Caja ---
+
+export type PagoPendienteDeposito = {
+  id: number;
+  monto: string;
+  monto_depositado: string | null;
+  monto_en_gerencia: string;
+  fecha: string;
+  metodo_pago: string;
+  referencia: string;
+  url_comprobante: string | null;
+  depositado: boolean;
+  fecha_deposito: string | null;
+  venta_id: number;
+  usuario_id: number;
+  created_at: string;
+  updated_at: string;
+  venta: {
+    id: number;
+    total: string;
+    cliente: {
+      id: number;
+      nombre: string;
+    };
+  };
+  usuario: {
+    id: number;
+    username: string;
+  };
+  cliente?: Cliente; // Mantener compatibilidad con código existente
+};
+
+export type GastoCaja = {
+  id: number;
+  monto: string;
+  fecha: string;
+  descripcion: string;
+  categoria: string;
+  almacen_id: number;
+  usuario_id: number;
+  almacen?: Almacen;
+  usuario?: User;
+};
+
+export type ResumenCierreCaja = {
+  total_cobrado_pendiente: string;
+  total_gastado: string;
+  efectivo_esperado: string;
+};
+
+export type DetallesCierreCaja = {
+  pagos_pendientes: PagoPendienteDeposito[];
+  gastos: GastoCaja[];
+};
+
+export type CierreCajaResponse = {
+  resumen: ResumenCierreCaja;
+  detalles: DetallesCierreCaja;
+};
+
+export type CierreCajaFilters = {
+  fecha_inicio: string;
+  fecha_fin: string;
+  almacen_id?: number;
+  usuario_id?: number;
+};
+
+// --- Tipos para Depósitos Bancarios ---
+
+export type DepositoItem = {
+  pago_id: number;
+  monto_depositado: string;
+};
+
+export type RegistroDepositoRequest = {
+  depositos: DepositoItem[];
+  fecha_deposito: string;
+  referencia_bancaria?: string;
+};
+
+export type PagoDepositado = {
+  id: number;
+  monto: string;
+  monto_depositado: string;
+  depositado: boolean;
+  fecha_deposito: string;
+  venta_id: number;
+  usuario_id: number;
+};
+
+export type RegistroDepositoResponse = {
+  message: string;
+  pagos_actualizados: number;
+  monto_total_depositado: string;
+  pagos: PagoDepositado[];
+};

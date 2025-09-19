@@ -1,0 +1,516 @@
+@use '../../../../../../styles/variables' as vars;
+
+:host {
+  display: block;
+}
+
+// Acciones de selección
+.selection-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: vars.$color-bg-secondary;
+  border-radius: vars.$border-radius;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+}
+
+.selection-controls {
+  display: flex;
+  gap: 0.75rem;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+}
+
+.selection-summary {
+  .summary-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+
+    @media (max-width: 768px) {
+      align-items: center;
+    }
+
+    .selected-count {
+      font-size: vars.$font-size-sm;
+      color: vars.$color-text-secondary;
+    }
+
+    .selected-total {
+      font-size: vars.$font-size-lg;
+      font-weight: vars.$font-weight-semibold;
+      color: vars.$color-primary;
+    }
+  }
+}
+
+// Tabla personalizada
+.custom-table {
+  overflow-x: auto;
+  border-radius: vars.$border-radius;
+  border: 1px solid vars.$color-border;
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: vars.$color-bg-primary;
+
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid vars.$color-border;
+    }
+
+    th {
+      background: vars.$color-bg-secondary;
+      font-weight: vars.$font-weight-semibold;
+      color: vars.$color-text-primary;
+      font-size: vars.$font-size-sm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      color: vars.$color-text-primary;
+
+      &.currency {
+        font-weight: vars.$font-weight-medium;
+        text-align: right;
+      }
+
+      &.currency-input {
+        text-align: center;
+        
+        .monto-input {
+          width: 100px;
+          padding: 0.375rem 0.5rem;
+          border: 1px solid vars.$color-border;
+          border-radius: vars.$border-radius-sm;
+          font-size: vars.$font-size-sm;
+          text-align: right;
+          background: vars.$color-bg-primary;
+          color: vars.$color-text-primary;
+          
+          &:focus {
+             outline: none;
+             border-color: vars.$color-primary;
+             box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+           }
+          
+          &:invalid {
+            border-color: vars.$color-danger;
+          }
+        }
+        
+        .monto-disabled {
+          color: vars.$color-text-muted;
+          font-style: italic;
+        }
+      }
+    }
+
+    .checkbox-column {
+      width: 50px;
+      text-align: center;
+
+      input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+    }
+
+    tbody tr {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background: vars.$color-bg-secondary;
+      }
+
+      &.selected {
+        background: rgba(255, 68, 68, 0.1);
+        border-left: 3px solid vars.$color-primary;
+      }
+    }
+  }
+}
+
+// Badges de método de pago
+.method-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: vars.$border-radius-sm;
+  font-size: vars.$font-size-sm;
+  font-weight: vars.$font-weight-medium;
+  text-transform: uppercase;
+
+  &.method-efectivo {
+    background: rgba(40, 167, 69, 0.1);
+    color: vars.$color-success;
+  }
+
+  &.method-tarjeta {
+    background: rgba(23, 162, 184, 0.1);
+    color: vars.$color-info;
+  }
+
+  &.method-transferencia {
+    background: rgba(255, 193, 7, 0.1);
+    color: vars.$color-warning;
+  }
+}
+
+// Botón de acción principal
+.main-action {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid vars.$color-border;
+
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: vars.$font-size-lg;
+    min-width: 280px;
+
+    .action-summary {
+      display: block;
+      font-size: vars.$font-size-sm;
+      opacity: 0.9;
+      margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+}
+
+// Modal content
+.modal-content {
+  .deposit-summary {
+    background: vars.$color-bg-secondary;
+    padding: 1rem;
+    border-radius: vars.$border-radius;
+    margin-bottom: 1.5rem;
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+        padding-top: 0.5rem;
+        border-top: 1px solid vars.$color-border;
+      }
+
+      label {
+        font-weight: vars.$font-weight-medium;
+        color: vars.$color-text-secondary;
+      }
+
+      .value {
+        font-weight: vars.$font-weight-semibold;
+        color: vars.$color-text-primary;
+
+        &.total {
+          color: vars.$color-primary;
+          font-size: vars.$font-size-lg;
+        }
+      }
+    }
+  }
+
+  .form-section {
+    .form-group {
+      margin-bottom: 1.5rem;
+
+      .form-help {
+        color: vars.$color-text-secondary;
+        font-size: vars.$font-size-sm;
+        margin-top: 0.25rem;
+        display: block;
+      }
+    }
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid vars.$color-border;
+
+    @media (max-width: 768px) {
+      flex-direction: column-reverse;
+    }
+  }
+}
+
+// Header de tabla
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-primary;
+    margin: 0;
+  }
+
+  .table-count {
+    background: vars.$color-bg-secondary;
+    color: vars.$color-text-secondary;
+    padding: 0.25rem 0.75rem;
+    border-radius: vars.$border-radius;
+    font-size: vars.$font-size-sm;
+    font-weight: vars.$font-weight-medium;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+// Contenedor de tabla con spinner
+.table-container {
+  position: relative;
+  
+  // Cuando hay spinner activo, reducir opacidad pero mantener interactividad
+  &:has(app-spinner[ng-reflect-force-show="true"]) {
+    app-data-table {
+      opacity: 0.6;
+      // NO bloquear pointer-events para mantener funcionalidad de checkbox
+    }
+  }
+}
+
+// Estilos mejorados para el modal
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  backdrop-filter: blur(2px);
+  
+  .modal-content {
+    background: white;
+    border-radius: vars.$border-radius-lg;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+    
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid vars.$color-border;
+      
+      h2 {
+        margin: 0;
+        color: vars.$color-text-primary;
+        font-size: vars.$font-size-xl;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        fa-icon {
+          color: vars.$color-primary;
+        }
+      }
+      
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: vars.$font-size-lg;
+        color: vars.$color-text-secondary;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: vars.$border-radius;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: vars.$color-bg-secondary;
+          color: vars.$color-text-primary;
+        }
+      }
+    }
+    
+    .modal-body {
+      padding: 1.5rem;
+    }
+  }
+}
+
+// Estilos para la sección de pagos seleccionados
+.selected-payments-section {
+  margin: 1.5rem 0;
+  
+  .selected-payments-summary {
+    background: vars.$color-bg-secondary;
+    padding: 1rem;
+    border-radius: vars.$border-radius;
+    margin-bottom: 1rem;
+    
+    h4 {
+      margin: 0 0 0.75rem 0;
+      color: vars.$color-text-primary;
+      font-size: vars.$font-size-lg;
+    }
+    
+    .summary-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .selected-count {
+        color: vars.$color-text-secondary;
+        font-size: vars.$font-size-sm;
+      }
+      
+      .selected-total {
+        color: vars.$color-primary;
+        font-weight: vars.$font-weight-semibold;
+        font-size: vars.$font-size-lg;
+      }
+    }
+  }
+  
+  .selected-payments-detail {
+    .payments-list {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid vars.$color-border;
+      border-radius: vars.$border-radius;
+      
+      .payment-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        border-bottom: 1px solid vars.$color-border;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        &:hover {
+          background: vars.$color-bg-secondary;
+        }
+        
+        .payment-info {
+          flex: 1;
+          
+          .payment-main {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.25rem;
+            
+            .payment-date {
+              color: vars.$color-text-secondary;
+              font-size: vars.$font-size-sm;
+            }
+            
+            .payment-client {
+              color: vars.$color-text-primary;
+              font-weight: vars.$font-weight-medium;
+            }
+          }
+          
+          .payment-method {
+            color: vars.$color-text-secondary;
+            font-size: vars.$font-size-sm;
+            text-transform: capitalize;
+          }
+        }
+        
+        .payment-amounts {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 0.25rem;
+          
+          .original-amount {
+            color: vars.$color-text-secondary;
+            font-size: vars.$font-size-sm;
+          }
+          
+          .deposited-amount {
+            color: vars.$color-primary;
+            font-weight: vars.$font-weight-semibold;
+          }
+        }
+      }
+      
+      .no-payments {
+        padding: 2rem;
+        text-align: center;
+        color: vars.$color-text-secondary;
+      }
+    }
+  }
+}
+
+// Estilos para el spinner pequeño en botones
+.spinner-small {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}

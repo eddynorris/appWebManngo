@@ -1,0 +1,158 @@
+<div class="page-header">
+  <div class="header-content">
+    <h1>Cierre de Caja</h1>
+    <p>Vista de verificación para revisar pagos pendientes y gastos realizados</p>
+  </div>
+</div>
+
+<!-- Filtros -->
+<div class="filters-container">
+  <span class="filters-title">
+    <fa-icon [icon]="icons.calendar"></fa-icon>
+    Filtros de Búsqueda
+  </span>
+  
+  <form [formGroup]="filtersForm" (ngSubmit)="aplicarFiltros(filtersForm.value)">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="fecha_inicio">Fecha Inicio *</label>
+        <input 
+          type="date" 
+          id="fecha_inicio"
+          formControlName="fecha_inicio"
+          required>
+      </div>
+
+      <div class="filter-group">
+        <label for="fecha_fin">Fecha Fin *</label>
+        <input 
+          type="date" 
+          id="fecha_fin"
+          formControlName="fecha_fin"
+          required>
+      </div>
+
+      <div class="filter-group">
+        <label for="almacen_id">Almacén</label>
+        <select 
+          id="almacen_id"
+          formControlName="almacen_id">
+          <option value="">Todos los almacenes</option>
+          @for (almacen of almacenes(); track almacen.id) {
+            <option [value]="almacen.id">{{ almacen.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="usuario_id">Usuario/Vendedor</label>
+        <select 
+          id="usuario_id"
+          formControlName="usuario_id">
+          <option value="">Todos los usuarios</option>
+          @for (usuario of usuarios(); track usuario.id) {
+            <option [value]="usuario.id">{{ usuario.username }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-actions">
+          <button type="submit" class="btn-primary" [disabled]="isLoading()">
+            <fa-icon [icon]="icons.cashRegister"></fa-icon>
+            Consultar Cierre
+          </button>
+          
+          <button type="button" class="btn-secondary" (click)="limpiarFiltros()">
+            Limpiar Filtros
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Dashboard de Resumen -->
+@if (resumen(); as resumenData) {
+  <div class="dashboard-cards">
+    <div class="metric-card total-cobrado">
+      <div class="metric-header">
+        <fa-icon [icon]="icons.money" class="metric-icon text-success"></fa-icon>
+        <div class="metric-value">{{ formatCurrency(resumenData.total_cobrado_pendiente) }}</div>
+      </div>
+      <div class="metric-title">Total Cobrado (Pendiente)</div>
+    </div>
+
+    <div class="metric-card total-gastado">
+      <div class="metric-header">
+        <fa-icon [icon]="icons.receipt" class="metric-icon text-danger"></fa-icon>
+        <div class="metric-value">{{ formatCurrency(resumenData.total_gastado) }}</div>
+      </div>
+      <div class="metric-title">Total Gastado</div>
+    </div>
+
+    <div class="metric-card efectivo-esperado">
+      <div class="metric-header">
+        <fa-icon [icon]="icons.cashRegister" class="metric-icon text-primary"></fa-icon>
+        <div class="metric-value destacado">{{ formatCurrency(resumenData.efectivo_esperado) }}</div>
+      </div>
+      <div class="metric-title">Efectivo Esperado a Depositar</div>
+    </div>
+  </div>
+}
+
+<!-- Tablas de Detalle -->
+@if (detalles(); as detallesData) {
+  <div class="tables-section">
+    <!-- Tabla de Pagos Pendientes -->
+    <div class="table-container">
+      <div class="table-header">
+        <h3>
+          <fa-icon [icon]="icons.money"></fa-icon>
+          Pagos Recibidos Pendientes de Depósito
+        </h3>
+        <span class="table-count">{{ detallesData.pagos_pendientes.length }} registros</span>
+      </div>
+      
+      <app-data-table
+        [data]="detallesData.pagos_pendientes"
+        [columns]="pagosColumns"
+        [isLoading]="false">
+      </app-data-table>
+    </div>
+
+    <!-- Tabla de Gastos -->
+    <div class="table-container">
+      <div class="table-header">
+        <h3>
+          <fa-icon [icon]="icons.receipt"></fa-icon>
+          Gastos Realizados con Dinero de Caja
+        </h3>
+        <span class="table-count">{{ detallesData.gastos.length }} registros</span>
+      </div>
+      
+      <app-data-table
+        [data]="detallesData.gastos"
+        [columns]="gastosColumns"
+        [isLoading]="false">
+      </app-data-table>
+    </div>
+  </div>
+}
+
+<!-- Estado de carga inicial -->
+@if (isLoading() && !cierreCajaData()) {
+  <div class="loading-state">
+    <app-spinner></app-spinner>
+    <p>Cargando datos del cierre de caja...</p>
+  </div>
+}
+
+<!-- Estado vacío -->
+@if (!isLoading() && !cierreCajaData()) {
+  <div class="empty-state">
+    <fa-icon [icon]="icons.cashRegister" class="empty-icon"></fa-icon>
+    <h3>Seleccione los filtros</h3>
+    <p>Configure las fechas y filtros para consultar el cierre de caja</p>
+  </div>
+}

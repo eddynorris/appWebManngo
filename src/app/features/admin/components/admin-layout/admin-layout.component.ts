@@ -82,6 +82,8 @@ export default class AdminLayoutComponent {
         { label: 'Pedidos', route: '/admin/pedidos', icon: faTruck },
         { label: 'Ventas', route: '/admin/ventas', icon: faMoneyBillWave },
         { label: 'Pagos', route: '/admin/pagos', icon: faCreditCard },
+        { label: 'Cuadrar egresos', route: '/admin/pagos/cierre-caja', icon: faReceipt },
+        { label: 'Depósitos', route: '/admin/pagos/depositos', icon: faMoneyBillWave },
         { label: 'Gastos', route: '/admin/gastos', icon: faReceipt }
       ]
     },

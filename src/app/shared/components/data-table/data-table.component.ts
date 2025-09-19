@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, ContentChild, TemplateRef } from '@angular/core';
+import { Component, input, output, ContentChild, TemplateRef } from '@angular/core';
 import { CurrencyPipe, DatePipe, NgTemplateOutlet } from '@angular/common';
 import { ColumnConfig, ActionConfig } from './data-table.types';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -10,7 +10,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [CurrencyPipe, DatePipe, NgTemplateOutlet, FontAwesomeModule],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataTableComponent<T extends { id?: number }> {
   // --- Inputs ---

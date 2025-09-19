@@ -49,7 +49,7 @@ export const ADMIN_ROUTES: Routes = [
       },
       {
         path: 'pagos',
-        loadChildren: () => import('./pagos/pagos.routes').then(m => m.PAGOS_ROUTES),
+        loadChildren: () => import('./pagos/pagos.routes').then(m => m.pagosRoutes),
         data: { title: 'Pagos' }
       },
       {

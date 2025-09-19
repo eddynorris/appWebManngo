@@ -1,24 +1,28 @@
 import { Routes } from '@angular/router';
 
-export const PAGOS_ROUTES: Routes = [
+export const pagosRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./pages/pagos-list-page/pagos-list-page.component'),
-    title: 'Gestión de Pagos'
+    loadComponent: () => import('./pages/pagos-list-page/pagos-list-page.component')
   },
   {
-    path: 'new',
-    loadComponent: () => import('./pages/pago-form-page/pago-form-page.component'),
-    title: 'Registrar Pago'
+    path: 'nuevo',
+    loadComponent: () => import('./pages/pago-form-page/pago-form-page.component')
   },
   {
-    path: 'edit/:id',
-    loadComponent: () => import('./pages/pago-form-page/pago-form-page.component'),
-    title: 'Editar Pago'
+    path: 'editar/:id',
+    loadComponent: () => import('./pages/pago-form-page/pago-form-page.component')
+  },
+  {
+    path: 'cierre-caja',
+    loadComponent: () => import('./pages/cierre-caja-page/cierre-caja-page.component')
+  },
+  {
+    path: 'depositos',
+    loadComponent: () => import('./pages/deposito-page/deposito-page.component')
   },
   {
     path: '**',
-    redirectTo: '',
-    pathMatch: 'full'
+    redirectTo: ''
   }
 ];

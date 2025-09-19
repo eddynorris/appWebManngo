@@ -1,0 +1,85 @@
+@use '../../../../../../styles/variables' as vars;
+
+:host {
+  display: block;
+}
+
+// Dashboard de métricas
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  .metric-card {
+    &.efectivo-esperado {
+      border-left-color: vars.$color-primary;
+      
+      .metric-value.destacado {
+        font-size: 1.5rem;
+        font-weight: vars.$font-weight-bold;
+        color: vars.$color-primary;
+      }
+    }
+
+    &.total-cobrado {
+      border-left-color: vars.$color-success;
+    }
+
+    &.total-gastado {
+      border-left-color: vars.$color-danger;
+    }
+  }
+}
+
+// Sección de tablas
+.tables-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-primary;
+    margin: 0;
+  }
+
+  .table-count {
+    background: vars.$color-bg-secondary;
+    color: vars.$color-text-secondary;
+    padding: 0.25rem 0.75rem;
+    border-radius: vars.$border-radius;
+    font-size: vars.$font-size-sm;
+    font-weight: vars.$font-weight-medium;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+// Iconos con colores
+.text-success {
+  color: vars.$color-success;
+}
+
+.text-danger {
+  color: vars.$color-danger;
+}
+
+.text-primary {
+  color: vars.$color-primary;
+}
