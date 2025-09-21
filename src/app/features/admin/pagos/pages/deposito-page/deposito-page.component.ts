@@ -173,11 +173,9 @@ export default class DepositoPageComponent implements OnInit {
 
   constructor() {
     this.depositoForm = this.fb.group({
-      fecha: [new Date().toISOString().split('T')[0], Validators.required],
-      monto: ['', [Validators.required, Validators.min(0.01)]],
-      banco: ['', Validators.required],
-      numero_operacion: ['', Validators.required],
-      observaciones: ['']
+      fecha_deposito: [new Date().toISOString().split('T')[0], Validators.required],
+      referencia_bancaria: [''],
+      comprobante: [null]
     });
 
     this.filtersForm = this.fb.group({
@@ -332,6 +330,12 @@ export default class DepositoPageComponent implements OnInit {
       referencia_bancaria: '',
       comprobante: null
     });
+    
+    // Limpiar el input file
+    const fileInput = document.getElementById('comprobante') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 
   async confirmarDeposito(): Promise<void> {
@@ -363,21 +367,46 @@ export default class DepositoPageComponent implements OnInit {
         monto_depositado: montosDepositados.get(pagoId) || '0'
       }));
       
-      const request: RegistroDepositoRequest = {
-        depositos: depositos,
-        fecha_deposito: new Date(formValue.fecha_deposito).toISOString()
-      };
+      const fechaDeposito = new Date(formValue.fecha_deposito).toISOString();
+      const referenciaBancaria = formValue.referencia_bancaria;
+      const comprobante = formValue.comprobante;
 
-      if (formValue.referencia_bancaria) {
-        request.referencia_bancaria = formValue.referencia_bancaria;
+      let response: RegistroDepositoResponse;
+
+      // Si hay comprobante, usar FormData (multipart/form-data)
+      if (comprobante) {
+        const formData = new FormData();
+        formData.append('depositos', JSON.stringify(depositos));
+        formData.append('fecha_deposito', fechaDeposito);
+        if (referenciaBancaria) {
+          formData.append('referencia_bancaria', referenciaBancaria);
+        }
+        formData.append('comprobante_deposito', comprobante);
+
+        response = await firstValueFrom(this.cierreCajaService.registrarDepositoConComprobante(formData));
+        
+        this.notificationService.showSuccess(
+          'Depósito registrado exitosamente con comprobante',
+          `Se registró el depósito por ${this.formatCurrency(this.totalSeleccionado())}`
+        );
+      } else {
+        // Si no hay comprobante, usar JSON
+        const request: RegistroDepositoRequest = {
+          depositos: depositos,
+          fecha_deposito: fechaDeposito
+        };
+
+        if (referenciaBancaria) {
+          request.referencia_bancaria = referenciaBancaria;
+        }
+
+        response = await firstValueFrom(this.cierreCajaService.registrarDeposito(request));
+        
+        this.notificationService.showSuccess(
+          'Depósito registrado exitosamente',
+          `Se registró el depósito por ${this.formatCurrency(this.totalSeleccionado())}`
+        );
       }
-
-      const response: RegistroDepositoResponse = await firstValueFrom(this.cierreCajaService.registrarDeposito(request));
-      
-      this.notificationService.showSuccess(
-        'Depósito registrado exitosamente',
-        `Se registró el depósito por ${this.formatCurrency(this.totalSeleccionado())}`
-      );
 
       // Actualizar la tabla eliminando los pagos procesados
       const pagosActuales = this.pagosPendientes();
@@ -411,6 +440,7 @@ export default class DepositoPageComponent implements OnInit {
       if (!allowedTypes.includes(file.type)) {
         this.notificationService.showWarning('Solo se permiten archivos JPG, PNG o PDF');
         target.value = '';
+        this.depositoForm.patchValue({ comprobante: null });
         return;
       }
 
@@ -418,10 +448,16 @@ export default class DepositoPageComponent implements OnInit {
       if (file.size > 5 * 1024 * 1024) {
         this.notificationService.showWarning('El archivo no debe superar los 5MB');
         target.value = '';
+        this.depositoForm.patchValue({ comprobante: null });
         return;
       }
 
+      // Asignar archivo al formulario
       this.depositoForm.patchValue({ comprobante: file });
+      this.notificationService.showSuccess(`Archivo seleccionado: ${file.name}`);
+    } else {
+      // Si no hay archivo, limpiar el campo
+      this.depositoForm.patchValue({ comprobante: null });
     }
   }
 

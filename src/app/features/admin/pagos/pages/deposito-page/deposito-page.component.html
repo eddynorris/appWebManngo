@@ -208,6 +208,22 @@
             </div>
           </div>
           
+          <div class="form-grid one-col">
+            <div class="input-group">
+              <label for="comprobante">Comprobante de Depósito</label>
+              <input 
+                type="file" 
+                id="comprobante"
+                accept="image/jpeg,image/png,application/pdf"
+                (change)="onFileSelected($event)"
+                class="form-control-file">
+              <small class="form-text text-muted">
+                <fa-icon [icon]="icons.upload"></fa-icon>
+                Formatos permitidos: JPG, PNG, PDF (máx. 5MB)
+              </small>
+            </div>
+          </div>
+          
           <!-- Resumen y detalle de pagos seleccionados -->
           <div class="selected-payments-section">
             <div class="selected-payments-summary">

@@ -70,4 +70,11 @@ export class CierreCajaService {
   registrarDeposito(deposito: RegistroDepositoRequest): Observable<RegistroDepositoResponse> {
     return this.http.post<RegistroDepositoResponse>(`${environment.apiUrl}/pagos/depositos`, deposito);
   }
+
+  /**
+   * Registra un depósito bancario con comprobante (FormData)
+   */
+  registrarDepositoConComprobante(formData: FormData): Observable<RegistroDepositoResponse> {
+    return this.http.post<RegistroDepositoResponse>(`${environment.apiUrl}/pagos/depositos`, formData);
+  }
 }
