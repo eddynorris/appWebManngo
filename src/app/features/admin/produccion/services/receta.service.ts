@@ -7,9 +7,19 @@ import { PaginatedResponse } from '../../../../types/contract.types';
 
 // Interfaces para las recetas según stepsnew.md
 export interface ComponenteReceta {
+  id?: number;
+  receta_id?: number;
   componente_presentacion_id: number;
-  cantidad_necesaria: number;
+  cantidad_necesaria: string | number;
   tipo_consumo: 'materia_prima' | 'insumo';
+  componente_presentacion?: {
+    id: number;
+    nombre: string;
+    producto?: {
+      nombre: string;
+    };
+  };
+  // Mantener compatibilidad con estructura anterior
   presentacion?: {
     id: number;
     nombre: string;

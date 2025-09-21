@@ -63,9 +63,15 @@
         <div formArrayName="lotes_seleccionados">
           @for (materiaPrima of materiasPrimas(); track materiaPrima.componente_presentacion_id; let i = $index) {
             <div [formGroupName]="i" class="materia-prima-item">
-              <div class="materia-prima-info">
-                <h4>{{ getMateriaPrimaNombre(materiaPrima.componente_presentacion_id) }}</h4>
-                <p class="cantidad-requerida">Cantidad requerida: {{ materiaPrima.cantidad_necesaria }} kg</p>
+              <div class="materia-prima-header">
+                <div class="producto-info">
+                  <h3 class="producto-nombre">{{ getProductoNombre(materiaPrima.componente_presentacion_id) }}</h3>
+                  <p class="presentacion-nombre">{{ getPresentacionNombre(materiaPrima.componente_presentacion_id) }}</p>
+                </div>
+                <div class="consumo-info">
+                  <span class="cantidad-badge">{{ getCantidadFormateada(materiaPrima.componente_presentacion_id) }}</span>
+                  <span class="tipo-consumo-badge">{{ getTipoConsumo(materiaPrima.componente_presentacion_id) }}</span>
+                </div>
               </div>
               
               <div class="input-group">

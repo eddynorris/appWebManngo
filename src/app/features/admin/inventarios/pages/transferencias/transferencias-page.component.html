@@ -74,7 +74,7 @@
             class="transferencia-item">
             
             <div class="transferencia-header">
-              <h3 class="transferencia-title">Producto {{ i + 1 }}</h3>
+              <h3 class="transferencia-title">Producto con Stock {{ i + 1 }}</h3>
               <button 
                 type="button" 
                 class="btn-danger btn-sm"
@@ -104,13 +104,7 @@
                 </div>
               </div>
 
-              <div class="input-group" *ngIf="transferencia.get('presentacion_id')?.value">
-                <label>Lote</label>
-                <input 
-                  type="text" 
-                  [value]="getLoteInfo(+transferencia.get('presentacion_id')?.value)"
-                  readonly>
-              </div>
+
 
               <div class="input-group" *ngIf="transferencia.get('presentacion_id')?.value">
                 <label>Stock Disponible</label>

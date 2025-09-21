@@ -45,16 +45,23 @@ export class DataTableComponent<T extends { id?: number }> {
 
   // Método auxiliar para verificar si un item está activo
   isItemActive(item: T): boolean {
-    return (item as any)?.activo === true;
+    const itemAny = item as any;
+    // Verificar primero is_active, luego activo para compatibilidad
+    return itemAny?.is_active === true || itemAny?.activo === true;
   }
 
   // Método auxiliar para verificar si un item está inactivo
   isItemInactive(item: T): boolean {
-    return (item as any)?.activo === false;
+    const itemAny = item as any;
+    // Verificar primero is_active, luego activo para compatibilidad
+    return itemAny?.is_active === false || (itemAny?.is_active === undefined && itemAny?.activo === false);
   }
 
   // Método auxiliar para obtener el texto del estado
   getStatusText(item: T): string {
-    return (item as any)?.activo ? 'Activo' : 'Inactivo';
+    const itemAny = item as any;
+    // Verificar primero is_active, luego activo para compatibilidad
+    const isActive = itemAny?.is_active !== undefined ? itemAny.is_active : itemAny?.activo;
+    return isActive ? 'Activo' : 'Inactivo';
   }
 }

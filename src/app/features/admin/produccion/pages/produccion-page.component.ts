@@ -208,6 +208,41 @@ export default class ProduccionPageComponent implements OnInit {
     return mp?.presentacion?.nombre || 'Materia Prima';
   }
 
+  getProductoNombre(presentacionId: number): string {
+    const mp = this.materiasPrimas().find(m => m.componente_presentacion_id === presentacionId);
+    // Priorizar la nueva estructura de datos
+    if (mp?.componente_presentacion?.producto?.nombre) {
+      return mp.componente_presentacion.producto.nombre;
+    }
+    // Fallback a la estructura anterior para compatibilidad
+    return mp?.presentacion?.producto?.nombre || 'Producto';
+  }
+
+  getPresentacionNombre(presentacionId: number): string {
+    const mp = this.materiasPrimas().find(m => m.componente_presentacion_id === presentacionId);
+    // Priorizar la nueva estructura de datos
+    if (mp?.componente_presentacion?.nombre) {
+      return mp.componente_presentacion.nombre;
+    }
+    // Fallback a la estructura anterior para compatibilidad
+    return mp?.presentacion?.nombre || 'Presentación';
+  }
+
+  getCantidadFormateada(presentacionId: number): string {
+    const mp = this.materiasPrimas().find(m => m.componente_presentacion_id === presentacionId);
+    if (mp?.cantidad_necesaria) {
+      const cantidad = parseFloat(mp.cantidad_necesaria.toString());
+      return isNaN(cantidad) ? '0 kg' : `${cantidad} kg`;
+    }
+    return '0 kg';
+  }
+
+  getTipoConsumo(presentacionId: number): string {
+    const mp = this.materiasPrimas().find(m => m.componente_presentacion_id === presentacionId);
+    if (!mp?.tipo_consumo) return 'No definido';
+    return mp.tipo_consumo === 'materia_prima' ? 'Materia Prima' : 'Insumo';
+  }
+
 
 
   onSubmit() {

@@ -107,7 +107,6 @@ export default class TransferenciasPageComponent implements OnInit {
   addTransferencia(): void {
     const transferenciaGroup = this.fb.group({
       presentacion_id: ['', Validators.required],
-      lote_id: ['', Validators.required],
       cantidad: ['', [Validators.required, Validators.min(0.01)]],
       stock_disponible: [{ value: 0, disabled: true }]
     });
@@ -129,8 +128,6 @@ export default class TransferenciasPageComponent implements OnInit {
       if (presentacion) {
         const inventarioOrigen = presentacion.inventarios.find(inv => inv.almacen_id === +almacenOrigenId);
         if (inventarioOrigen) {
-          // Usar lote_info.id en lugar de lote_id directamente
-          transferenciaGroup.get('lote_id')?.setValue(inventarioOrigen.lote_info?.id || inventarioOrigen.lote_id);
           transferenciaGroup.get('stock_disponible')?.setValue(inventarioOrigen.stock_disponible);
         }
       }
@@ -160,17 +157,7 @@ export default class TransferenciasPageComponent implements OnInit {
     return inventarioOrigen?.stock_disponible || 0;
   }
 
-  getLoteInfo(presentacionId: number): string {
-    const almacenOrigenId = this.transferenciasForm.get('almacen_origen_id')?.value;
-    if (!presentacionId || !almacenOrigenId) return '';
 
-    const presentacion = this.presentacionesDisponibles().find(p => p.id === presentacionId);
-    if (!presentacion) return '';
-
-    const inventarioOrigen = presentacion.inventarios.find(inv => inv.almacen_id === +almacenOrigenId);
-    // Usar lote_info.descripcion en lugar de lote_id.descripcion
-    return inventarioOrigen?.lote_info?.descripcion || 'Sin descripción';
-  }
 
   isFormValid(): boolean {
     return this.transferenciasForm.valid && this.transferenciasArray.length > 0;
@@ -188,7 +175,6 @@ export default class TransferenciasPageComponent implements OnInit {
       almacen_destino_id: +formValue.almacen_destino_id,
       transferencias: formValue.transferencias.map((t: any) => ({
         presentacion_id: +t.presentacion_id,
-        lote_id: +t.lote_id,
         cantidad: t.cantidad.toString()
       }))
     };
