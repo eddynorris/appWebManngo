@@ -3,23 +3,62 @@
 
 // Products Preview - Estilos específicos
 .products-section {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #111, #000);
   color: vars.$color-text-white;
+  position: relative;
+  overflow: hidden;
+
+  // Efecto de partículas de fondo
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 20% 50%, rgba(255, 68, 68, 0.1) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(255, 68, 68, 0.05) 0%, transparent 50%),
+                      radial-gradient(circle at 40% 80%, rgba(255, 68, 68, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+}
+
+// Header section - centrado y espaciado
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
 }
 
 .section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
   color: vars.$color-primary;
   text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1rem;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 10px rgba(255, 68, 68, 0.3);
 }
 
 .section-subtitle {
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 700;
   color: vars.$color-text-white;
   text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
 }
 
 .section-description {
-  color: vars.$color-text-muted;
+  font-size: 1.1rem;
+  color: #ccc;
   max-width: 800px;
   margin: 0 auto;
+  text-align: center;
+  line-height: 1.6;
+  font-style: italic;
 }
 
 // Grid específico para productos
@@ -57,20 +96,50 @@
 
 // Estilos específicos de tarjeta
 .product-card {
+  background: linear-gradient(135deg, #222, #111);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #333;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 40px rgba(255, 68, 68, 0.2);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 60px rgba(255, 68, 68, 0.25),
+                0 0 0 1px rgba(255, 68, 68, 0.3);
+    border-color: vars.$color-primary;
+
+    &::before {
+      opacity: 1;
+    }
 
     .product-img {
-      transform: scale(1.05);
+      transform: scale(1.1);
+    }
+
+    .product-name {
+      color: vars.$color-primary;
     }
   }
 }
 
 .product-image {
-  height: 200px;
+  height: 250px;
   overflow: hidden;
   position: relative;
+  background: linear-gradient(135deg, #333, #222);
 }
 
 .product-img {
@@ -96,38 +165,85 @@
 }
 
 .product-info {
+  padding: 2rem 1.5rem;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .product-name {
+  font-size: 1.2rem;
+  font-weight: 700;
   color: vars.$color-text-white;
   text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
 }
 
 .product-description {
-  color: vars.$color-text-muted;
+  color: #ccc;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
 }
 
 .product-price {
+  font-size: 1.3rem;
+  font-weight: 900;
   color: vars.$color-primary;
-  font-weight: vars.$font-weight-bold;
-  text-shadow: 0 2px 4px rgba(255, 68, 68, 0.3);
+  text-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+  letter-spacing: 1px;
+}
+
+// Footer section - centrado
+.section-footer {
+  text-align: center;
+  margin-top: 4rem;
 }
 
 // Botón específico del componente
 .btn-view-all {
-  background: vars.$color-primary;
+  background: linear-gradient(135deg, vars.$color-primary, #ff6666);
   color: vars.$color-text-white;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  display: inline-block;
+  padding: 1.2rem 3rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: 1.1rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 25px rgba(255, 68, 68, 0.3);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+  }
 
   &:hover {
-    background: #ff6666;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
+    background: linear-gradient(135deg, #ff6666, #ff8888);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 68, 68, 0.5);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(-2px) scale(1.02);
   }
 }

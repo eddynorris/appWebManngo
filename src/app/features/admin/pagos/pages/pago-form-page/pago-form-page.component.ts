@@ -33,7 +33,7 @@ export default class PagoFormPageComponent implements OnInit {
   
   // Ventas pendientes de pago
   ventasPendientes = signal<VentaPendientePago[]>([]);
-  metodos_pago = signal(['efectivo', 'transferencia', 'Deposito', 'yape/plin', 'tarjeta']);
+  metodos_pago = signal(['efectivo', 'transferencia', 'Deposito', 'yape_plin', 'tarjeta']);
   selectedFile = signal<File | null>(null);
   
   // Computed para mostrar total a pagar

@@ -46,9 +46,9 @@ export class LandingProductsPreviewComponent {
       imageHeight: 300
     },
     {
-      name: 'Carbón Selecto 5KG',
+      name: 'Carbón de 5KG',
       description: 'Versátil y de alta calidad para todas tus necesidades de carbón',
-      price: 'S/ 16.00',
+      price: 'S/ 16.50',
       icon: this.faFire,
       color: 'linear-gradient(135deg, #ff4444, #ff6666)',
       imageSrc: 'assets/images/Carbon5.webp',
@@ -58,7 +58,7 @@ export class LandingProductsPreviewComponent {
     {
       name: 'Carbon Parrillero 10KG',
       description: 'Ideal para tus reuniones, larga duración y máximo sabor',
-      price: 'S/ 32.00',
+      price: 'S/ 35.00',
       icon: this.faFire,
       color: 'linear-gradient(135deg, #ff6666, #ff8888)',
       imageSrc: 'assets/images/Carbon10.webp',
@@ -68,7 +68,7 @@ export class LandingProductsPreviewComponent {
     {
       name: 'Carbon Selecto 20KG',
       description: 'El tamaño perfecto para tu negocio, rentabilidad asegurada!',
-      price: 'S/ 64.00',
+      price: 'S/ 70.00',
       icon: this.faFire,
       color: 'linear-gradient(135deg, #ff8888, #ffaaaa)',
       imageSrc: 'assets/images/Carbon20.webp',
@@ -78,7 +78,7 @@ export class LandingProductsPreviewComponent {
     {
       name: 'Carbon Selecto 30KG',
       description: 'Saco de carbón de gran volumen para una producción imparable',
-      price: 'S/ 96.00',
+      price: 'S/ 105.00',
       icon: this.faFire,
       color: 'linear-gradient(135deg, #ff8888, #ffaaaa)',
       imageSrc: 'assets/images/Carbon30.webp',
