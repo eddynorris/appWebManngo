@@ -72,6 +72,8 @@ export default class CierreCajaPageComponent implements OnInit {
     { key: 'fecha', label: 'Fecha', type: 'date' },
     { key: 'venta.cliente.nombre', label: 'Cliente', type: 'text' },
     { key: 'monto', label: 'Monto', type: 'currency' },
+    { key: 'monto_depositado', label: 'Depositado', type: 'currency' },
+    { key: 'monto_en_gerencia', label: 'En Gerencia', type: 'currency' },
     { key: 'metodo_pago', label: 'Método', type: 'text' },
     { key: 'usuario.username', label: 'Usuario', type: 'text' }
   ];
