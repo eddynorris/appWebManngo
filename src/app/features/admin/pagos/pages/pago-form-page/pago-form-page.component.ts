@@ -65,8 +65,8 @@ export default class PagoFormPageComponent implements OnInit {
           // Transformar las ventas a VentaPendientePago
           const ventasPendientes: VentaPendientePago[] = ventas.map(venta => {
             const total = parseFloat(venta.total || '0');
-            const pagado = venta.pagos?.reduce((sum, pago) => sum + parseFloat(pago.monto || '0'), 0) || 0;
-            const pendiente = total - pagado;
+            const saldoPendiente = parseFloat(venta.saldo_pendiente || '0');
+            const pagado = total - saldoPendiente; // Calcular pagado usando los datos del backend
             
             return {
               venta_id: venta.id!,
@@ -74,7 +74,8 @@ export default class PagoFormPageComponent implements OnInit {
               fecha_venta: venta.fecha || '',
               total: venta.total || '0',
               pagado: pagado.toFixed(2),
-              pendiente: pendiente.toFixed(2),
+              pendiente: venta.saldo_pendiente || '0',
+              saldo_pendiente: venta.saldo_pendiente || '0',
               estado_pago: venta.estado_pago || 'pendiente',
               monto_pago: '' // Inicialmente vacío para que el usuario ingrese
             };

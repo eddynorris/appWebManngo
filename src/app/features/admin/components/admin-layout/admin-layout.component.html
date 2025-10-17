@@ -32,6 +32,7 @@
                   <a
                     [routerLink]="subitem.route"
                     routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: false }"
                     class="nav-item nav-subitem">
                     <span class="nav-icon">
                       <fa-icon [icon]="subitem.icon"></fa-icon>
@@ -46,6 +47,7 @@
           <a
             [routerLink]="item.route"
             routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: false }"
             class="nav-item">
             <span class="nav-icon">
               <fa-icon [icon]="item.icon"></fa-icon>

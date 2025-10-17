@@ -80,6 +80,8 @@ export type Venta = {
   total?: string;
   tipo_pago?: string;
   estado_pago?: string;
+  saldo_pendiente?: string;
+  consumo_diario_kg?: string;
   detalles?: VentaDetalle[];
   pagos?: Pago[];
   cliente?: Cliente;
@@ -268,6 +270,7 @@ export type VentaPendientePago = {
   total: string;
   pagado: string;
   pendiente: string;
+  saldo_pendiente?: string; // Saldo pendiente del backend
   estado_pago: string;
   monto_pago?: string; // Monto que se va a pagar (editable)
 };

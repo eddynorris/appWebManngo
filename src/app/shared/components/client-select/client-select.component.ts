@@ -5,8 +5,8 @@ import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface Cliente {
-  id: number;
-  nombre: string;
+  id?: number;
+  nombre?: string;
   email?: string;
   telefono?: string;
 }
@@ -53,7 +53,7 @@ export class ClientSelectComponent {
     }
     
     return clients.filter(client => 
-      client.nombre.toLowerCase().includes(term) ||
+      (client.nombre && client.nombre.toLowerCase().includes(term)) ||
       (client.email && client.email.toLowerCase().includes(term))
     );
   });
@@ -62,7 +62,7 @@ export class ClientSelectComponent {
   displayText = computed(() => {
     const selected = this.selectedClient();
     if (selected) {
-      return selected.nombre;
+      return selected.nombre || '';
     }
     return this.searchTerm();
   });
@@ -85,7 +85,7 @@ export class ClientSelectComponent {
         const client = this.clients().find(c => c.id === clientId);
         if (client) {
           this.selectedClient.set(client);
-          this.searchControl.setValue(client.nombre, { emitEvent: false });
+          this.searchControl.setValue(client.nombre || '', { emitEvent: false });
         }
       } else {
         this.selectedClient.set(null);
@@ -112,7 +112,7 @@ export class ClientSelectComponent {
     const value = target.value;
     
     // Si el usuario está escribiendo, limpiar la selección
-    if (this.selectedClient() && value !== this.selectedClient()?.nombre) {
+    if (this.selectedClient() && value !== (this.selectedClient()?.nombre || '')) {
       this.selectedClient.set(null);
       this.clientSelected.emit(null);
       this.clientIdChange.emit(null);
@@ -123,13 +123,13 @@ export class ClientSelectComponent {
 
   selectClient(client: Cliente): void {
     this.selectedClient.set(client);
-    this.searchControl.setValue(client.nombre, { emitEvent: false });
+    this.searchControl.setValue(client.nombre || '', { emitEvent: false });
     this.searchTerm.set('');
     this.isDropdownOpen.set(false);
     
     // Emitir eventos
     this.clientSelected.emit(client);
-    this.clientIdChange.emit(client.id);
+    this.clientIdChange.emit(client.id || null);
   }
 
   clearSelection(): void {

@@ -10,6 +10,7 @@ import { VentaService } from '../../services/venta.service';
 import { Venta, Cliente, Almacen, PresentacionConStockLocal, PresentacionConStockGlobal, PresentacionDisponible } from '../../../../../types/contract.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { ClientSelectComponent } from '../../../../../shared/components/client-select/client-select.component';
 
 // Tipo unificado para las presentaciones en el formulario
 type PresentacionParaVenta = PresentacionDisponible | (PresentacionConStockLocal & { stock_por_almacen?: never }) | (PresentacionConStockGlobal & { stock_disponible?: never });
@@ -17,7 +18,7 @@ type PresentacionParaVenta = PresentacionDisponible | (PresentacionConStockLocal
 @Component({
   selector: 'app-venta-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule],
+  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, ClientSelectComponent],
   templateUrl: './venta-form-page.component.html',
   styleUrl: './venta-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,7 +66,7 @@ export default class VentaFormPageComponent implements OnInit {
     this.ventaForm = this.fb.group({
       cliente_id: ['', Validators.required],
       almacen_id: [{ value: '', disabled: !this.authService.isAdmin() }, Validators.required],
-      fecha: [new Date().toISOString().substring(0, 16), Validators.required],
+      fecha: [new Date().toISOString().slice(0, 16), Validators.required],
       tipo_pago: ['contado', Validators.required],
       estado_pago: ['pendiente', Validators.required],
       consumo_diario_kg: ['0.00', Validators.required],
@@ -135,7 +136,7 @@ export default class VentaFormPageComponent implements OnInit {
         this.ventaService.getVentaById(id).subscribe(venta => {
           this.ventaForm.patchValue({
             ...venta,
-            fecha: new Date(venta.fecha!).toISOString().substring(0, 10)
+            fecha: new Date(venta.fecha!).toISOString().slice(0, 16)
           });
 
           const detallesFormGroups = venta.detalles?.map(detalle => this.createDetalleGroup(detalle)) || [];
@@ -230,5 +231,13 @@ export default class VentaFormPageComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/admin/ventas']);
+  }
+
+  onClientSelected(client: Cliente | null): void {
+    if (client) {
+      this.ventaForm.get('cliente_id')?.setValue(client.id);
+    } else {
+      this.ventaForm.get('cliente_id')?.setValue('');
+    }
   }
 }

@@ -10,13 +10,14 @@
       <h2 class="section-title">Datos de la Venta</h2>
       <div class="form-grid two-cols">
         <div class="input-group">
-          <label for="cliente_id">Cliente</label>
-          <select id="cliente_id" formControlName="cliente_id">
-            <option value="" disabled>Selecciona un cliente</option>
-            @for (cliente of clientes(); track cliente.id) {
-              <option [value]="cliente.id">{{ cliente.nombre }}</option>
-            }
-          </select>
+          <app-client-select
+            [label]="'Cliente'"
+            [placeholder]="'Buscar cliente...'"
+            [required]="true"
+            [clients]="clientes()"
+            [selectedClientId]="ventaForm.get('cliente_id')?.value"
+            (clientSelected)="onClientSelected($event)"
+          ></app-client-select>
         </div>
 
         <!-- Selector de Almacén (solo para admin) -->
@@ -34,7 +35,7 @@
 
         <div class="input-group">
           <label for="fecha">Fecha de Venta</label>
-          <input id="fecha" type="datetime" formControlName="fecha">
+          <input id="fecha" type="datetime-local" formControlName="fecha">
         </div>
         <div class="input-group">
           <label for="tipo_pago">Tipo de Pago</label>
