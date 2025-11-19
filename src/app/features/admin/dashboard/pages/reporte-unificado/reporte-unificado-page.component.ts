@@ -19,6 +19,7 @@ import { AlmacenService } from '../../../almacenes/services/almacen.service';
 import { LoteService } from '../../../lotes/services/lote.service';
 import { Almacen, Lote } from '../../../../../types/contract.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
     selector: 'app-reporte-unificado-page',
@@ -68,6 +69,36 @@ export default class ReporteUnificadoPageComponent implements OnInit {
     readonly financiero = computed(() => this.data()?.resumen_financiero);
     readonly ventas = computed(() => this.data()?.ventas_por_presentacion || []);
     readonly inventario = computed(() => this.data()?.inventario_actual || []);
+    readonly historialDepositos = computed(() => this.data()?.historial_depositos || []);
+
+    readonly isImageModalVisible = signal(false);
+    readonly comprobanteUrl = signal<string | null>(null);
+
+    openComprobante(url?: string | null): void {
+        if (!url) return;
+        this.comprobanteUrl.set(url);
+        this.isImageModalVisible.set(true);
+    }
+
+    closeImageModal(): void {
+        this.isImageModalVisible.set(false);
+        this.comprobanteUrl.set(null);
+    }
+
+    isPdf(url: string): boolean {
+        return /\.pdf(\?|$)/i.test(url);
+    }
+
+    resolveComprobanteUrl(url?: string | null): string | null {
+        if (!url) return null;
+        if (/^https?:\/\//i.test(url)) return url;
+        return `${environment.apiUrl}/${url}`;
+    }
+
+    openExternal(url?: string | null): void {
+        if (!url) return;
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
 
     ngOnInit(): void {
         this.loadInitialData();

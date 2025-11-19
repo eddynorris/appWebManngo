@@ -201,7 +201,46 @@
                                 <span>Total Cobrado</span>
                                 <span class="amount success">{{ formatCurrency(financiero()?.total_pagado) }}</span>
                             </div>
+                            <div class="summary-row">
+                                <span>Total Depositado</span>
+                                <span class="amount success">{{ formatCurrency(financiero()?.depositado_total) }}</span>
+                            </div>
                         </div>
+                    </div>
+                    <div class="section-title">
+                        <h3>Historial de Depósitos</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Referencia</th>
+                                    <th class="text-right">Monto Total</th>
+                                    <th class="text-right">Cant. Pagos</th>
+                                    <th>Comprobante</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (dep of historialDepositos(); track dep.fecha_deposito) {
+                                <tr>
+                                    <td>{{ dep.fecha_deposito }}</td>
+                                    <td>{{ dep.referencia || '-' }}</td>
+                                    <td class="text-right">{{ formatCurrency(dep.monto_total) }}</td>
+                                    <td class="text-right">{{ dep.cantidad_pagos }}</td>
+                                    <td>
+                                        @if (dep.comprobante_url) {
+                                            <button type="button" class="btn-ghost" (click)="openComprobante(dep.comprobante_url)">Ver</button>
+                                        } @else { - }
+                                    </td>
+                                </tr>
+                                } @if (historialDepositos().length === 0) {
+                                <tr class="empty-row">
+                                    <td colspan="5" class="empty-state">No hay depósitos registrados</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 }
@@ -251,6 +290,27 @@
                 </div>
                 }
             </div>
+
+            @if (isImageModalVisible()) {
+                <div class="modal-overlay" (click)="closeImageModal()">
+                    <div class="modal-content" style="max-width: 900px; width: 90%;" (click)="$event.stopPropagation()">
+                        <div class="modal-header">
+                            <h2>Comprobante</h2>
+                            <button type="button" class="close-btn" (click)="closeImageModal()">×</button>
+                        </div>
+                        <div class="modal-body">
+                            @if (comprobanteUrl() && !isPdf(comprobanteUrl()!)) {
+                                <img [src]="comprobanteUrl()!" alt="Comprobante de depósito" style="max-width: 100%; height: auto;" />
+                            } @else if (comprobanteUrl() && isPdf(comprobanteUrl()!)) {
+                                <iframe [src]="comprobanteUrl()!" style="width: 100%; height: 70vh; border: none;"></iframe>
+                            }
+                            <div class="form-actions">
+                                <button type="button" class="btn-ghost" (click)="closeImageModal()">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
     }

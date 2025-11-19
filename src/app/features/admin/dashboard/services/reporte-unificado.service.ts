@@ -17,6 +17,7 @@ export interface ResumenFinanciero {
     margen_ganancia: string;
     total_deuda: string;
     total_pagado: string;
+    depositado_total: string;
     numero_ventas: number;
     numero_gastos: number;
 }
@@ -57,6 +58,15 @@ export interface ReporteUnificadoResponse {
     kpis: KPI;
     ventas_por_presentacion: VentaPresentacion[];
     inventario_actual: InventarioActual[];
+    historial_depositos: DepositoHistorial[];
+}
+
+export interface DepositoHistorial {
+    fecha_deposito: string;
+    referencia: string;
+    monto_total: string;
+    comprobante_url: string;
+    cantidad_pagos: number;
 }
 
 @Injectable({
