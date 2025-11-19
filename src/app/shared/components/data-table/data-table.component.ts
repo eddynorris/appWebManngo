@@ -11,7 +11,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
 })
-export class DataTableComponent<T extends { id?: number }> {
+export class DataTableComponent<T extends { id?: number; codigo?: string } | Record<string, any>> {
   // --- Inputs ---
   data = input.required<T[]>();
   columns = input.required<ColumnConfig<T>[]>();
@@ -39,8 +39,10 @@ export class DataTableComponent<T extends { id?: number }> {
 
   // Track function mejorada para evitar problemas de renderizado infinito
   trackByFn(index: number, item: T): any {
-    // Priorizar ID si existe, sino usar index como fallback
-    return item.id !== undefined ? item.id : index;
+    const itemAny = item as any;
+    // Priorizar codigo, luego ID si existe, sino usar index como fallback
+    return itemAny.codigo !== undefined ? itemAny.codigo :
+      (itemAny.id !== undefined ? itemAny.id : index);
   }
 
   // Método auxiliar para verificar si un item está activo

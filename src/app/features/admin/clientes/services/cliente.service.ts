@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { Cliente, ClientesResponse, ClienteProyeccion, ClienteProyeccionesResponse } from '../../../../types/contract.types';
+import { Cliente, ClientesResponse, ClienteProyeccion, ClienteProyeccionesResponse, ClienteProyeccionDetalle } from '../../../../types/contract.types';
 
 @Injectable({
   providedIn: 'root',
@@ -59,26 +59,34 @@ export class ClienteService {
   // --- Métodos para Proyecciones de Clientes ---
 
   // Obtener lista paginada de proyecciones de clientes
-  getClientesProyecciones(page: number = 1, per_page: number = 10, search?: string, dateFilter?: string): Observable<ClienteProyeccionesResponse> {
+  getClientesProyecciones(
+    page: number = 1,
+    per_page: number = 10,
+    search?: string,
+    ciudad?: string,
+    solo_con_proyeccion?: boolean,
+    fecha_desde?: string,
+    fecha_hasta?: string,
+    order_by?: 'ultima_compra' | 'saldo' | 'nombre' | 'frecuencia'
+  ): Observable<ClienteProyeccionesResponse> {
     const params: any = {
       page: page.toString(),
       per_page: per_page.toString(),
     };
 
-    if (search) {
-      params.search = search;
-    }
-
-    if (dateFilter) {
-      params.filtro_fecha = dateFilter;
-    }
+    if (search) params.search = search;
+    if (ciudad) params.ciudad = ciudad;
+    if (solo_con_proyeccion !== undefined) params.solo_con_proyeccion = solo_con_proyeccion;
+    if (fecha_desde) params.fecha_desde = fecha_desde;
+    if (fecha_hasta) params.fecha_hasta = fecha_hasta;
+    if (order_by) params.order_by = order_by;
 
     return this.http.get<ClienteProyeccionesResponse>(`${this.apiUrl}/proyecciones`, { params });
   }
 
-  // Obtener proyección detallada de un cliente específico
-  getClienteProyeccion(id: number): Observable<ClienteProyeccion> {
-    return this.http.get<ClienteProyeccion>(`${this.apiUrl}/proyecciones/${id}`);
+  // Obtener proyección detallada de un cliente específico por código
+  getClienteProyeccionDetalle(codigo: string): Observable<ClienteProyeccionDetalle> {
+    return this.http.get<ClienteProyeccionDetalle>(`${this.apiUrl}/proyecciones/${codigo}`);
   }
 
   // Exportar clientes a Excel
@@ -96,16 +104,22 @@ export class ClienteService {
   }
 
   // Exportar proyecciones de clientes a Excel
-  exportarProyecciones(search?: string, dateFilter?: string): Observable<Blob> {
+  exportarProyecciones(
+    search?: string,
+    ciudad?: string,
+    solo_con_proyeccion?: boolean,
+    fecha_desde?: string,
+    fecha_hasta?: string,
+    order_by?: 'ultima_compra' | 'saldo' | 'nombre' | 'frecuencia'
+  ): Observable<Blob> {
     const params: any = {};
 
-    if (search) {
-      params.search = search;
-    }
-
-    if (dateFilter) {
-      params.filtro_fecha = dateFilter;
-    }
+    if (search) params.search = search;
+    if (ciudad) params.ciudad = ciudad;
+    if (solo_con_proyeccion !== undefined) params.solo_con_proyeccion = solo_con_proyeccion;
+    if (fecha_desde) params.fecha_desde = fecha_desde;
+    if (fecha_hasta) params.fecha_hasta = fecha_hasta;
+    if (order_by) params.order_by = order_by;
 
     return this.http.get(`${this.apiUrl}/proyecciones/exportar`, {
       params,

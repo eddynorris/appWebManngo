@@ -1,5 +1,6 @@
 export type AuthResponse = {
   access_token: string;
+  user: User;
 };
 
 export type DecodedToken = {

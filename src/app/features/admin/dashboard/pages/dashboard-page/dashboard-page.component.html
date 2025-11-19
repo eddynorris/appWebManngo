@@ -1,80 +1,70 @@
 <div class="dashboard-page">
   <div class="page-header">
     <h1>Dashboard - Sistema Manngo</h1>
-    <p>Monitoreo de saldos pendientes de clientes</p>
-    <button (click)="refresh()" class="refresh-btn" [disabled]="isLoading()">
-      <fa-icon [icon]="faSync"></fa-icon>
-      Actualizar
-    </button>
   </div>
 
   @if (isLoading()) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <span>Cargando datos del dashboard...</span>
-    </div>
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <span>Cargando datos del dashboard...</span>
+  </div>
   } @else if (error()) {
-    <div class="error-state">
-      <div class="error-icon">
-        <fa-icon [icon]="faExclamationTriangle"></fa-icon>
-      </div>
-      <h3>Error al cargar los datos</h3>
-      <p>{{ error() }}</p>
-      <button (click)="refresh()" class="btn-primary">Reintentar</button>
+  <div class="error-state">
+    <div class="error-icon">
+      <fa-icon [icon]="faExclamationTriangle"></fa-icon>
     </div>
+    <h3>Error al cargar los datos</h3>
+    <p>{{ error() }}</p>
+    <button (click)="refresh()" class="btn-primary">Reintentar</button>
+  </div>
   } @else {
-    <!-- Métricas Resumen -->
-    <section class="metrics-summary">
-      <div class="metric-card pending-clients">
-        <div class="metric-header">
-          <span class="metric-icon">
-            <fa-icon [icon]="faMoneyBillWave"></fa-icon>
-          </span>
-          <span class="metric-value">{{ totalClientesPendientes() }}</span>
-        </div>
-        <div class="metric-title">Clientes con Saldo Pendiente</div>
+  <!-- Métricas Resumen -->
+  <section class="metrics-summary">
+    <div class="metric-card pending-clients">
+      <div class="metric-header">
+        <span class="metric-icon">
+          <fa-icon [icon]="faMoneyBillWave"></fa-icon>
+        </span>
+        <span class="metric-value">{{ totalClientesPendientes() }}</span>
       </div>
+      <div class="metric-title">Clientes con Saldo Pendiente</div>
+    </div>
 
-      <div class="metric-card total-debt">
-        <div class="metric-header">
-          <span class="metric-icon">
-            <fa-icon [icon]="faHandHoldingDollar"></fa-icon>
-          </span>
-          <span class="metric-value">{{ totalDeudaClientes() | currency:'PEN':'symbol-narrow':'1.2-2' }}</span>
-        </div>
-        <div class="metric-title">Total Deuda Clientes</div>
+    <div class="metric-card total-debt">
+      <div class="metric-header">
+        <span class="metric-icon">
+          <fa-icon [icon]="faHandHoldingDollar"></fa-icon>
+        </span>
+        <span class="metric-value">{{ totalDeudaClientes() | currency:'PEN':'symbol-narrow':'1.2-2' }}</span>
       </div>
-    </section>
+      <div class="metric-title">Total Deuda Clientes</div>
+    </div>
+  </section>
 
-    <!-- Clientes con Saldo Pendiente -->
-    <section class="clientes-pendientes-section">
-      <div class="section-header">
-        <h2>
-          <fa-icon [icon]="faUsers"></fa-icon>
-          Clientes con Saldo Pendiente
-        </h2>
+  <!-- Clientes con Saldo Pendiente -->
+  <section class="clientes-pendientes-section">
+    <div class="section-header">
+      <h2>
+        <fa-icon [icon]="faUsers"></fa-icon>
+        Clientes con Saldo Pendiente
+      </h2>
+    </div>
+
+    @if (clientesParaTabla().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <fa-icon [icon]="faCheckCircle"></fa-icon>
       </div>
-
-      @if (clientesParaTabla().length === 0) {
-        <div class="empty-state">
-          <div class="empty-icon">
-            <fa-icon [icon]="faCheckCircle"></fa-icon>
-          </div>
-          <h3>¡Al día!</h3>
-          <p>No hay clientes con saldos pendientes.</p>
-        </div>
-      } @else {
-        <div class="table-container">
-          <app-data-table
-            [data]="clientesParaTabla()"
-            [columns]="columnasClientes"
-            [actions]="accionesClientes"
-            [isLoading]="isLoading()"
-            (onAction)="handleTableAction($event)"
-          />
-        </div>
-      }
-    </section>
+      <h3>¡Al día!</h3>
+      <p>No hay clientes con saldos pendientes.</p>
+    </div>
+    } @else {
+    <div class="table-container">
+      <app-data-table [data]="clientesParaTabla()" [columns]="columnasClientes" [actions]="accionesClientes"
+        [isLoading]="isLoading()" (onAction)="handleTableAction($event)" />
+    </div>
+    }
+  </section>
 
 
 
@@ -82,10 +72,6 @@
 </div>
 
 @if (isDeudaModalVisible() && selectedCliente()) {
-  <app-cliente-deuda-modal
-    [clienteId]="selectedCliente()!.cliente_id"
-    [deudas]="selectedCliente()!.ventas_pendientes"
-    [visible]="isDeudaModalVisible"
-    (close)="handleCloseModal()"
-  ></app-cliente-deuda-modal>
+<app-cliente-deuda-modal [clienteId]="selectedCliente()!.cliente_id" [deudas]="selectedCliente()!.ventas_pendientes"
+  [visible]="isDeudaModalVisible" (close)="handleCloseModal()"></app-cliente-deuda-modal>
 }

@@ -1,76 +1,170 @@
+@use '../../../../styles/variables' as vars;
+
+// ============================================================================
+// BUTTON BASE
+// ============================================================================
+
 .btn {
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
+  padding: vars.$spacer-sm vars.$spacer-xl;
+  border-radius: vars.$border-radius-md;
+  font-weight: vars.$font-weight-semibold;
+  font-family: vars.$font-family-base;
   cursor: pointer;
-  border: 1px solid transparent;
-  transition: all 0.2s;
+  border: none;
+  transition: all vars.$transition-fast;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: vars.$spacer-sm;
+  font-size: vars.$font-size-base;
+  line-height: vars.$line-height-normal;
 
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.65;
+    opacity: 0.6;
+  }
+
+  &:focus-visible {
+    outline: 2px solid vars.$color-primary;
+    outline-offset: 2px;
   }
 }
 
+// ============================================================================
+// BUTTON VARIANTS
+// ============================================================================
+
 .btn-primary {
-  background: #ff4444;
+  background: vars.$color-primary;
   color: white;
+  box-shadow: var(--shadow-sm);
+
   &:hover:not(:disabled) {
-    background: #e03434;
+    background: vars.$color-primary-700;
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+  }
+
   &:disabled {
-    background: #ff9999;
+    background: vars.$color-primary-300;
   }
 }
 
 .btn-secondary {
-  background: #6c757d;
+  background: vars.$color-secondary-600;
   color: white;
+  box-shadow: var(--shadow-sm);
+
   &:hover:not(:disabled) {
-    background: #5a6268;
+    background: vars.$color-secondary-700;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:disabled {
+    background: vars.$color-secondary-300;
+  }
+}
+
+.btn-success {
+  background: vars.$color-success;
+  color: white;
+  box-shadow: var(--shadow-sm);
+
+  &:hover:not(:disabled) {
+    background: vars.$color-success-700;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
   }
 }
 
 .btn-danger {
-  background: #dc3545;
+  background: vars.$color-danger;
   color: white;
+  box-shadow: var(--shadow-sm);
+
   &:hover:not(:disabled) {
-    background: #c82333;
+    background: vars.$color-danger-700;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.btn-warning {
+  background: vars.$color-warning;
+  color: vars.$color-warning-dark;
+  box-shadow: var(--shadow-sm);
+
+  &:hover:not(:disabled) {
+    background: vars.$color-warning-600;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
   }
 }
 
 .btn-ghost {
   background: transparent;
-  color: #495057;
-  border-color: #ced4da;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+
   &:hover:not(:disabled) {
-    background: #f8f9fa;
-    border-color: #adb5bd;
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+  }
+
+  &:disabled {
+    color: var(--text-muted);
   }
 }
+
+// ============================================================================
+// BUTTON SIZES
+// ============================================================================
+
+.btn-sm {
+  padding: vars.$spacer-xs vars.$spacer-md;
+  font-size: vars.$font-size-sm;
+  gap: vars.$spacer-xs;
+}
+
+.btn-lg {
+  padding: vars.$spacer-md vars.$spacer-2xl;
+  font-size: vars.$font-size-lg;
+  gap: vars.$spacer-md;
+}
+
+.btn-xs {
+  padding: vars.$spacer-xs vars.$spacer-sm;
+  font-size: vars.$font-size-xs;
+  gap: vars.$spacer-xs;
+}
+
+// ============================================================================
+// SPINNER
+// ============================================================================
 
 .spinner-small {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  border-top-color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
-// Para botones oscuros, el spinner claro funciona.
-// Para botones claros (ghost), necesitamos un spinner oscuro.
 .btn-ghost .spinner-small {
   border-color: rgba(0, 0, 0, 0.2);
-  border-top-color: #495057;
+  border-top-color: var(--text-secondary);
 }
 
-
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }

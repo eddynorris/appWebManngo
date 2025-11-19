@@ -1,5 +1,14 @@
+// =============================================================================
+// GLOBAL STYLES - App Manngo Web
+// =============================================================================
+
 @use './styles/variables' as vars;
+@use './styles/theme-tokens';
 @use './styles/components';
+
+// =============================================================================
+// RESET & BASE STYLES
+// =============================================================================
 
 * {
   margin: 0;
@@ -7,37 +16,149 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   font-family: vars.$font-family-base;
   line-height: vars.$line-height-base;
-  color: vars.$color-text-primary;
-  background: vars.$color-bg-black;
+  color: var(--color-on-surface, #{vars.$color-text-primary});
+  background: var(--color-surface, #{vars.$color-bg-primary});
   overflow-x: hidden;
+  min-height: 100vh;
+  transition: background-color vars.$transition-base, color vars.$transition-base;
 }
 
-html {
-  scroll-behavior: smooth;
+// =============================================================================
+// TYPOGRAPHY
+// =============================================================================
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: vars.$font-family-heading;
+  font-weight: vars.$font-weight-semibold;
+  line-height: vars.$line-height-tight;
+  color: var(--color-on-surface);
 }
+
+h1 {
+  font-size: vars.$font-size-4xl;
+}
+
+h2 {
+  font-size: vars.$font-size-3xl;
+}
+
+h3 {
+  font-size: vars.$font-size-2xl;
+}
+
+h4 {
+  font-size: vars.$font-size-xl;
+}
+
+h5 {
+  font-size: vars.$font-size-lg;
+}
+
+h6 {
+  font-size: vars.$font-size-base;
+}
+
+p {
+  margin-bottom: vars.$spacer;
+}
+
+// =============================================================================
+// LINKS & BUTTONS
+// =============================================================================
 
 a {
-  color: inherit;
+  color: var(--color-primary);
   text-decoration: none;
+  transition: color vars.$transition-fast;
+
+  &:hover {
+    color: var(--color-primary-hover);
+  }
 }
 
 button {
   cursor: pointer;
   border: none;
   outline: none;
+  font-family: inherit;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
+// =============================================================================
+// FORMS
+// =============================================================================
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
 }
 
+// =============================================================================
+// MEDIA
+// =============================================================================
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+// =============================================================================
+// SCROLLBAR STYLING
+// =============================================================================
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-variant);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline);
+  border-radius: vars.$border-radius-pill;
+
+  &:hover {
+    background: var(--color-primary);
+  }
+}
+
+// Firefox
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-outline) var(--color-surface-variant);
+}
+
+// =============================================================================
+// ACCESSIBILITY
+// =============================================================================
+
+// Reduce motion for users who prefer it
 @media (prefers-reduced-motion: reduce) {
-  * {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -48,29 +169,44 @@ button {
   }
 }
 
-input, textarea, select {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #111;
-}
-
-::-webkit-scrollbar-thumb {
-  background: vars.$color-primary;
+// Focus visible styles
+:focus-visible {
+  outline: vars.$border-width-thick solid var(--color-primary);
+  outline-offset: vars.$focus-ring-offset;
   border-radius: vars.$border-radius-sm;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: vars.$color-primary-light;
+// =============================================================================
+// UTILITY CLASSES
+// =============================================================================
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 vars.$spacer-lg;
+
+  @media (max-width: vars.$breakpoint-md) {
+    padding: 0 vars.$spacer;
+  }
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 vars.$spacer-lg;
+}
+
+.visually-hidden {
+  @include vars.visually-hidden;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
 }

@@ -1,0 +1,351 @@
+@use 'src/styles/variables' as vars;
+
+// Specific styles for Unified Report that are not covered by global classes
+
+.report-content {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$spacer-lg;
+}
+
+// KPI Grid - Custom layout for this page
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: vars.$spacer;
+    margin-bottom: vars.$spacer-lg;
+}
+
+// Custom Metric Card styles if needed beyond global .metric-card
+.metric-card {
+    // The global .metric-card handles the base style.
+    // We can add specific overrides here if necessary.
+
+    .metric-header {
+        display: flex;
+        align-items: flex-start;
+        gap: vars.$spacer;
+    }
+
+    .metric-icon {
+        padding: vars.$spacer;
+        border-radius: vars.$border-radius-lg;
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .metric-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0; // For truncation to work
+
+    }
+
+    .metric-title {
+        font-size: vars.$font-size-sm;
+        opacity: 0.9;
+        margin-bottom: vars.$spacer-xs;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: white;
+    }
+
+    .metric-value {
+        font-size: vars.$font-size-2xl;
+        font-weight: vars.$font-weight-bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: white;
+    }
+
+    .sub-value {
+        font-size: vars.$font-size-xs;
+        opacity: 0.8;
+        margin-top: vars.$spacer-xs;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    // Variants
+    &.primary {
+        background: linear-gradient(135deg, vars.$color-primary, vars.darken-color(vars.$color-primary, 10%));
+        color: white;
+    }
+
+    &.success {
+        background: linear-gradient(135deg, vars.$color-success, vars.darken-color(vars.$color-success, 10%));
+        color: white;
+    }
+
+    &.info {
+        background: linear-gradient(135deg, vars.$color-info, vars.darken-color(vars.$color-info, 10%));
+        color: white;
+    }
+
+    &.warning {
+        background: linear-gradient(135deg, vars.$color-warning, vars.darken-color(vars.$color-warning, 10%));
+        color: white;
+    }
+}
+
+// Tabs
+.tabs-container {
+    background-color: var(--color-surface);
+    border-radius: vars.$border-radius-lg;
+    box-shadow: vars.$box-shadow-sm;
+    overflow: hidden;
+}
+
+.tabs-header {
+    display: flex;
+    border-bottom: 1px solid var(--color-outline);
+    background-color: var(--color-surface-variant);
+}
+
+.tab-btn {
+    padding: vars.$spacer vars.$spacer-lg;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--color-text-secondary);
+    font-weight: vars.$font-weight-medium;
+    cursor: pointer;
+    transition: all vars.$transition-fast;
+
+    &:hover {
+        color: var(--color-primary);
+        background-color: rgba(vars.$color-primary, 0.05);
+    }
+
+    &.active {
+        color: var(--color-primary);
+        border-bottom-color: var(--color-primary);
+        background-color: var(--color-surface);
+    }
+}
+
+.tab-content {
+    padding: vars.$spacer-lg;
+}
+
+.section-title {
+    margin-bottom: vars.$spacer;
+
+    h3 {
+        font-size: vars.$font-size-lg;
+        color: var(--color-text-primary);
+    }
+}
+
+// Financial Summary Grid
+.financial-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: vars.$spacer;
+    margin-top: vars.$spacer-lg;
+}
+
+.summary-card {
+    background-color: var(--color-surface-variant);
+    padding: vars.$spacer;
+    border-radius: vars.$border-radius-md;
+
+    h4 {
+        font-size: vars.$font-size-base;
+        margin-bottom: vars.$spacer;
+        color: var(--color-text-secondary);
+    }
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: vars.$spacer-sm;
+    font-size: vars.$font-size-sm;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    .amount {
+        font-weight: vars.$font-weight-bold;
+
+        &.negative {
+            color: vars.$color-danger;
+        }
+
+        &.success {
+            color: vars.$color-success;
+        }
+
+        &.warning {
+            color: vars.$color-warning;
+        }
+    }
+}
+
+// Inventory Grid
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: vars.$spacer;
+}
+
+.inventory-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-outline);
+    border-radius: vars.$border-radius-md;
+    padding: vars.$spacer;
+    transition: transform vars.$transition-fast, box-shadow vars.$transition-fast;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: vars.$box-shadow-md;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: vars.$spacer;
+        padding-bottom: vars.$spacer-sm;
+        border-bottom: 1px solid var(--color-outline);
+
+        h4 {
+            font-size: vars.$font-size-base;
+            font-weight: vars.$font-weight-bold;
+            color: var(--color-primary);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .badge-stock {
+        background-color: rgba(vars.$color-primary, 0.1);
+        color: var(--color-primary);
+        padding: 2px 8px;
+        border-radius: vars.$border-radius-pill;
+        font-size: vars.$font-size-xs;
+        font-weight: vars.$font-weight-bold;
+    }
+
+    .metric {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: vars.$spacer-xs;
+        font-size: vars.$font-size-sm;
+
+        .label {
+            color: var(--color-text-secondary);
+        }
+
+        .value {
+            font-weight: vars.$font-weight-medium;
+        }
+    }
+
+    .warehouse-breakdown {
+        margin-top: vars.$spacer;
+        padding-top: vars.$spacer-sm;
+        border-top: 1px dashed var(--color-outline);
+    }
+
+    .warehouse-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: vars.$font-size-xs;
+        color: var(--color-text-secondary);
+        margin-bottom: 2px;
+    }
+}
+
+// Empty State
+.empty-state {
+    text-align: center;
+    padding: vars.$spacer-xl;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+// Loading State
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: vars.$spacer-xl;
+    gap: vars.$spacer;
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(vars.$color-primary, 0.3);
+        border-radius: 50%;
+        border-top-color: vars.$color-primary;
+        animation: spin 1s ease-in-out infinite;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Fade In Animation
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Filter Input Wrapper
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: vars.$spacer-sm;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: vars.$border-radius;
+    padding: 0 vars.$spacer-sm;
+    transition: border-color vars.$transition-fast;
+
+    &:focus-within {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(vars.$color-primary, 0.1);
+    }
+
+    .input-icon {
+        color: var(--color-text-secondary);
+        font-size: vars.$font-size-sm;
+    }
+
+    .form-control {
+        border: none;
+        padding: 0.75rem 0;
+        width: 100%;
+        background: transparent;
+        color: var(--color-text-primary);
+
+        &:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    }
+}

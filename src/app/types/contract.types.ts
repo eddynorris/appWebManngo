@@ -310,22 +310,52 @@ export type VentaResumen = {
 };
 
 export type ClienteProyeccion = {
-  id: number;
+  codigo: string;
   nombre: string;
-  email?: string;
-  telefono?: string;
-  direccion?: string;
+  telefono?: string | null;
   ciudad?: string;
-  pais?: string;
-  codigo_postal?: string;
-  fecha_registro?: string;
   ultima_fecha_compra: string;
+  proxima_fecha_estimada: string;
+  estado_proyeccion: 'proximo' | 'retrasado' | 'normal';
+};
+
+export type ProductoMasComprado = {
+  presentacion: string;
+  cantidad_total: number;
+  veces_comprado: number;
+};
+
+export type ProyeccionDetallada = {
+  fecha_estimada: string;
+  productos_probables: string[];
+  valor_estimado: number;
+};
+
+export type EstadisticasCliente = {
+  total_ventas: number;
+  monto_total_comprado: number;
+  promedio_compra: number;
   frecuencia_compra_dias: number;
-  saldo_pendiente: number;
-  pedidos?: PedidoResumen[];
-  ventas?: VentaResumen[];
-  proxima_compra_estimada: string;
-  estadisticas: Estadisticas;
+  productos_mas_comprados: ProductoMasComprado[];
+};
+
+export type VentaDetallada = {
+  id: number;
+  fecha: string;
+  total: number;
+  estado_pago: string;
+  detalles: {
+    presentacion: string;
+    cantidad: number;
+    precio_unitario: number;
+  }[];
+};
+
+export type ClienteProyeccionDetalle = {
+  codigo: string;
+  historial_ventas: VentaDetallada[];
+  estadisticas: EstadisticasCliente;
+  proyeccion_detallada: ProyeccionDetallada;
 };
 
 export type ClienteProyeccionesResponse = PaginatedResponse<ClienteProyeccion>;

@@ -7,6 +7,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTrash, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { VentaService } from '../../services/venta.service';
+import { GastoService } from '../../../gastos/services/gasto.service';
 import { Venta, Cliente, Almacen, PresentacionConStockLocal, PresentacionConStockGlobal, PresentacionDisponible } from '../../../../../types/contract.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { AuthService } from '../../../../../core/services/auth.service';
@@ -28,6 +29,7 @@ export default class VentaFormPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly ventaService = inject(VentaService);
+  private readonly gastoService = inject(GastoService);
   private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
 
@@ -70,6 +72,7 @@ export default class VentaFormPageComponent implements OnInit {
       tipo_pago: ['contado', Validators.required],
       estado_pago: ['pendiente', Validators.required],
       consumo_diario_kg: ['0.00', Validators.required],
+      gasto_monto: [null as number | null, [Validators.min(0.01)]],
       detalles: this.fb.array([], [Validators.required, Validators.minLength(1)]),
     });
   }
@@ -221,7 +224,32 @@ export default class VentaFormPageComponent implements OnInit {
       .subscribe({
         next: () => {
           this.notificationService.showSuccess(`Venta ${id ? 'actualizada' : 'creada'} correctamente.`);
-          this.router.navigate(['/admin/ventas']);
+          const gastoMonto = formValue.gasto_monto;
+          const agregarGasto = gastoMonto !== null && gastoMonto !== '' && Number(gastoMonto) > 0;
+          if (agregarGasto) {
+            const cliente = this.clientes().find(c => c.id === Number(formValue.cliente_id));
+            const descripcion = `Gasto en la venta al cliente ${cliente?.nombre ?? ''}`;
+            const gastoPayload = {
+              descripcion,
+              monto: String(gastoMonto),
+              fecha: new Date(formValue.fecha).toISOString().substring(0, 10),
+              categoria: 'logistica',
+              almacen_id: Number(formValue.almacen_id),
+              lote_id: null,
+            };
+            this.gastoService.createGasto(gastoPayload).subscribe({
+              next: () => {
+                this.notificationService.showSuccess('Gasto registrado correctamente.');
+                this.router.navigate(['/admin/ventas']);
+              },
+              error: () => {
+                this.notificationService.showError('Error al registrar el gasto.');
+                this.router.navigate(['/admin/ventas']);
+              }
+            });
+          } else {
+            this.router.navigate(['/admin/ventas']);
+          }
         },
         error: (err) => {
           this.notificationService.showError(`Error al ${id ? 'actualizar' : 'crear'} la venta.`);

@@ -1,0 +1,133 @@
+// =============================================================================
+// THEME TOKENS - CSS Custom Properties
+// Single Theme (Light Mode)
+// =============================================================================
+
+@use './variables' as vars;
+
+// =============================================================================
+// CSS CUSTOM PROPERTIES - Theme Variables
+// =============================================================================
+
+:root {
+    // ---------------------------------------------------------------------------
+    // COLORS
+    // ---------------------------------------------------------------------------
+
+    // Primary Colors
+    --color-primary: #{vars.$color-primary-600};
+    --color-primary-hover: #{vars.$color-primary-700};
+    --color-primary-active: #{vars.$color-primary-800};
+
+    // Secondary Colors
+    --color-secondary: #{vars.$color-secondary-600};
+    --color-secondary-hover: #{vars.$color-secondary-700};
+
+    // Surface Colors
+    --color-surface: #{vars.$color-bg-primary};
+    --color-surface-variant: #{vars.$color-bg-secondary};
+    --color-surface-tertiary: #{vars.$color-bg-tertiary};
+    --color-surface-hover: #{vars.$color-bg-hover};
+
+    // Text Colors
+    --color-on-surface: #{vars.$color-text-primary};
+    --color-on-surface-variant: #{vars.$color-text-secondary};
+    --color-on-surface-muted: #{vars.$color-text-muted};
+
+    // Border Colors
+    --color-outline: #{vars.$color-border};
+    --color-outline-variant: #{vars.$color-border-light};
+
+    // Semantic Colors
+    --color-success: #{vars.$color-success};
+    --color-warning: #{vars.$color-warning};
+    --color-error: #{vars.$color-danger};
+    --color-info: #{vars.$color-info};
+
+    // Shadows
+    --elevation-1: #{vars.$box-shadow-sm};
+    --elevation-2: #{vars.$box-shadow};
+    --elevation-3: #{vars.$box-shadow-md};
+    --elevation-4: #{vars.$box-shadow-lg};
+
+    // Sidebar Specific
+    --sidebar-bg: linear-gradient(135deg, #{vars.$color-primary-700} 0%, #{vars.$color-primary-600} 50%, #{vars.$color-primary-500} 100%);
+    --sidebar-text: #{vars.$color-text-white};
+    --sidebar-text-muted: #{rgba(vars.$color-text-white, 0.7)};
+    --sidebar-hover: #{rgba(vars.$color-text-white, 0.1)};
+    --sidebar-active: #{rgba(vars.$color-text-white, 0.2)};
+    --sidebar-border: #{rgba(vars.$color-text-white, 0.1)};
+
+    // ---------------------------------------------------------------------------
+    // FRIENDLY ALIASES
+    // ---------------------------------------------------------------------------
+
+    // Background aliases
+    --bg-primary: var(--color-surface);
+    --bg-secondary: var(--color-surface-variant);
+    --bg-tertiary: var(--color-surface-tertiary);
+    --bg-hover: var(--color-surface-hover);
+
+    // Text aliases
+    --text-primary: var(--color-on-surface);
+    --text-secondary: var(--color-on-surface-variant);
+    --text-muted: var(--color-on-surface-muted);
+    --text-light: #{vars.$color-text-muted};
+
+    // Border aliases
+    --border-color: var(--color-outline);
+    --border-light: var(--color-outline-variant);
+
+    // Shadow aliases
+    --shadow: var(--elevation-2);
+    --shadow-sm: var(--elevation-1);
+    --shadow-md: var(--elevation-3);
+    --shadow-lg: var(--elevation-4);
+
+    // Overlay
+    --overlay-bg: rgba(0, 0, 0, 0.6);
+}
+
+// =============================================================================
+// UTILITY CLASSES
+// =============================================================================
+
+.bg-surface {
+    background-color: var(--color-surface);
+}
+
+.bg-surface-variant {
+    background-color: var(--color-surface-variant);
+}
+
+.text-on-surface {
+    color: var(--color-on-surface);
+}
+
+.text-on-surface-variant {
+    color: var(--color-on-surface-variant);
+}
+
+.text-muted {
+    color: var(--color-on-surface-muted);
+}
+
+.border-outline {
+    border-color: var(--color-outline);
+}
+
+.elevation-1 {
+    box-shadow: var(--elevation-1);
+}
+
+.elevation-2 {
+    box-shadow: var(--elevation-2);
+}
+
+.elevation-3 {
+    box-shadow: var(--elevation-3);
+}
+
+.elevation-4 {
+    box-shadow: var(--elevation-4);
+}

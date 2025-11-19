@@ -6,7 +6,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode';
 
 import { environment } from '../../../environments/environment';
-import { AuthResponse, DecodedToken } from '../../types/auth.types';
+import { AuthResponse, DecodedToken, User } from '../../types/auth.types';
 
 @Injectable({
   providedIn: 'root',
@@ -17,18 +17,19 @@ export class AuthService {
   private readonly apiUrl = environment.apiUrl;
 
   private readonly tokenKey = 'authToken';
+  private readonly userKey = 'authUser';
 
-  // Señal para el token decodificado
-  currentUser = signal<DecodedToken | null>(this.getDecodedToken());
+  // Señal para el usuario actual
+  currentUser = signal<User | null>(this.getUserFromStorage());
 
   // Señal computada para saber si el usuario está autenticado
-  isAuthenticated = computed(() => !!this.currentUser());
+  isAuthenticated = computed(() => !!this.currentUser() && this.isTokenValid());
 
   login(username: string, password: string): Observable<boolean> {
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/auth`, { username, password })
       .pipe(
-        tap((response) => this.setSession(response.access_token)),
+        tap((response) => this.setSession(response)),
         map(() => true),
         catchError(() => of(false))
       );
@@ -36,6 +37,7 @@ export class AuthService {
 
   logout(): void {
     sessionStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem(this.userKey);
     this.currentUser.set(null);
     this.router.navigate(['/admin/login']);
   }
@@ -44,25 +46,33 @@ export class AuthService {
     return sessionStorage.getItem(this.tokenKey);
   }
 
-  private setSession(token: string): void {
-    sessionStorage.setItem(this.tokenKey, token);
-    this.currentUser.set(this.getDecodedToken());
+  private setSession(response: AuthResponse): void {
+    sessionStorage.setItem(this.tokenKey, response.access_token);
+    sessionStorage.setItem(this.userKey, JSON.stringify(response.user));
+    this.currentUser.set(response.user);
   }
 
-  private getDecodedToken(): DecodedToken | null {
-    const token = this.getToken();
-    if (token) {
+  private getUserFromStorage(): User | null {
+    const userStr = sessionStorage.getItem(this.userKey);
+    if (userStr) {
       try {
-        const decoded: DecodedToken = jwtDecode(token);
-        // Verificar si el token ha expirado
-        if (decoded.exp * 1000 > Date.now()) {
-          return decoded;
-        }
-      } catch (error) {
+        return JSON.parse(userStr);
+      } catch {
         return null;
       }
     }
     return null;
+  }
+
+  private isTokenValid(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+    try {
+      const decoded: DecodedToken = jwtDecode(token);
+      return decoded.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
   }
 
   // --- Métodos de utilidad para roles ---

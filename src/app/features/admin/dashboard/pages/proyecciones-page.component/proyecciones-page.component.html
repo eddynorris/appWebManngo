@@ -8,65 +8,80 @@
   </div>
 
   <!-- Filters Section -->
-  <div class="filters-section">
-    <div class="search-box">
-      <span class="search-icon">
-        <fa-icon [icon]="faSearch"></fa-icon>
-      </span>
-      <input
-        type="text"
-        placeholder="Buscar por nombre o email..."
-        [ngModel]="searchTerm()"
-        (input)="onSearchChange($any($event.target).value)">
+  <div class="filters-container">
+    <span class="filters-title">Filtros</span>
+    <div class="filters-grid">
+      <div class="filter-group col-2">
+        <label>Buscar</label>
+        <div class="search-box">
+          <span class="search-icon">
+            <fa-icon [icon]="faSearch"></fa-icon>
+          </span>
+          <input type="text" placeholder="Nombre o email" [ngModel]="searchTerm()"
+            (input)="onSearchChange($any($event.target).value)" />
+        </div>
+      </div>
+      <div class="filter-group">
+        <label for="ciudad-select">Ciudad</label>
+        <select id="ciudad-select" [ngModel]="ciudad()" (ngModelChange)="onCiudadChange($event)"
+          aria-label="Seleccionar ciudad">
+          <option value="">Todas</option>
+          <option value="Abancay">Abancay</option>
+          <option value="Andahuaylas">Andahuaylas</option>
+        </select>
+      </div>
+      <div class="filter-group col-2">
+        <label>Rango rápido</label>
+        <div class="filter-actions">
+          <button class="btn-ghost" type="button" (click)="setQuickRange('manana')">Mañana</button>
+          <button class="btn-ghost" type="button" (click)="setQuickRange('semana')">Semana</button>
+          <button class="btn-ghost" type="button" (click)="setQuickRange('mes')">Mes</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Desde</label>
+        <input type="date" [ngModel]="fechaDesde()" (ngModelChange)="onFechaDesdeChange($event)" />
+      </div>
+      <div class="filter-group">
+        <label>Hasta</label>
+        <input type="date" [ngModel]="fechaHasta()" (ngModelChange)="onFechaHastaChange($event)" />
+      </div>
+      <div class="filter-group col-full">
+        <div class="filter-actions">
+          <button class="btn btn-secondary" type="button" (click)="clearFilters()">Limpiar filtros</button>
+          <button type="button" class="btn btn-success btn-export" (click)="handleExportExcel()"
+            [disabled]="isExporting()">
+            @if (isExporting()) {
+            <span class="spinner-small" aria-hidden="true"></span>
+            Exportando...
+            } @else {
+            <fa-icon [icon]="faFileExcel"></fa-icon>
+            Exportar a Excel
+            }
+          </button>
+        </div>
+      </div>
     </div>
-    
-    <div class="date-filter">
-      <select 
-        [ngModel]="dateFilter()"
-        (ngModelChange)="onDateFilterChange($event)"
-        class="date-filter-select">
-        @for (option of dateFilterOptions; track option.value) {
-          <option [value]="option.value">{{ option.label }}</option>
-        }
-      </select>
-    </div>
-    
+
     <div class="results-info">
-      Mostrando <strong>{{ filteredProyecciones().length }}</strong> de <strong>{{ pagination()?.total || 0 }}</strong> resultados.
-    </div>
-    
-    <div class="export-section">
-      <button 
-        type="button" 
-        class="btn btn-success btn-export"
-        (click)="handleExportExcel()"
-        [disabled]="isExporting()">
-        @if (isExporting()) {
-          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Exportando...
-        } @else {
-          <fa-icon [icon]="faFileExcel"></fa-icon>
-          Exportar a Excel
-        }
-      </button>
+      Mostrando <strong>{{ filteredProyecciones().length }}</strong> de <strong>{{ pagination()?.total || 0 }}</strong>
+      resultados.
     </div>
   </div>
 
   <!-- Reusable Data Table -->
-  <app-data-table
-    [data]="filteredProyecciones()"
-    [columns]="columns"
-    [actions]="actions"
-    [isLoading]="isLoading()"
-    (onAction)="handleTableAction($event)"
-  ></app-data-table>
+  <app-data-table [data]="filteredProyecciones()" [columns]="columns" [actions]="actions" [isLoading]="isLoading()"
+    (onAction)="handleTableAction($event)"></app-data-table>
 
   <!-- Pagination -->
   @if (pagination()) {
-    <app-pagination
-      [pagination]="pagination()!"
-      (pageChange)="onPageChange($event)"
-      (perPageChange)="onPerPageChange($event)"
-    ></app-pagination>
+  <app-pagination [pagination]="pagination()!" (pageChange)="onPageChange($event)"
+    (perPageChange)="onPerPageChange($event)"></app-pagination>
   }
 </div>
+
+<!-- Modal de Detalle de Proyección -->
+@if (modalVisible()) {
+<app-proyecciones-page-detail [proyeccionDetalle]="selectedProyeccion()" [isLoading]="isLoadingDetail()"
+  [visible]="modalVisible()" (close)="closeModal()"></app-proyecciones-page-detail>
+}

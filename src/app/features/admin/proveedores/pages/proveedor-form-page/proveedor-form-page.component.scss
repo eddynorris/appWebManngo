@@ -1,162 +1,270 @@
+@use '../../../../../../styles/variables' as vars;
+
+// ============================================================================
+// FORM PAGE CONTAINER
+// ============================================================================
+
 .form-page-container {
-  padding: 1.5rem;
-  max-width: 800px;
+  padding: vars.$spacer-xl;
+  max-width: 900px;
   margin: 0 auto;
+
+  @media (max-width: vars.$breakpoint-md) {
+    padding: vars.$spacer-md;
+  }
 }
 
+// ============================================================================
+// PAGE HEADER
+// ============================================================================
+
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: vars.$spacer-2xl;
   text-align: center;
-  
+
   h1 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 vars.$spacer-sm 0;
     color: var(--text-primary);
-    font-size: 2rem;
-    font-weight: 600;
+    font-size: vars.$font-size-3xl;
+    font-weight: vars.$font-weight-bold;
+    font-family: vars.$font-family-heading;
   }
-  
+
   p {
     margin: 0;
     color: var(--text-secondary);
-    font-size: 1rem;
+    font-size: vars.$font-size-base;
     max-width: 600px;
     margin: 0 auto;
+    line-height: vars.$line-height-relaxed;
   }
 }
 
+// ============================================================================
+// DATA FORM
+// ============================================================================
+
 .data-form {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--bg-primary);
+  border-radius: vars.$border-radius-lg;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
+// ============================================================================
+// FORM SECTIONS
+// ============================================================================
+
 .form-section {
-  padding: 2rem;
-  border-bottom: 1px solid var(--border-light);
-  
+  padding: vars.$spacer-2xl;
+  border-bottom: 1px solid var(--border-color);
+
   &:last-child {
     border-bottom: none;
   }
-  
+
   .section-title {
-    margin: 0 0 1.5rem 0;
+    margin: 0 0 vars.$spacer-xl 0;
     color: var(--text-primary);
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: vars.$font-size-xl;
+    font-weight: vars.$font-weight-semibold;
+    font-family: vars.$font-family-heading;
+    padding-bottom: vars.$spacer-sm;
+    border-bottom: 2px solid vars.$color-primary-200;
+    display: inline-block;
   }
 }
 
+// ============================================================================
+// FORM GRID
+// ============================================================================
+
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  
-  @media (max-width: 768px) {
+  grid-template-columns: repeat(2, 1fr);
+  gap: vars.$spacer-xl;
+
+  @media (max-width: vars.$breakpoint-md) {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: vars.$spacer-lg;
   }
-  
+
   .full-width {
     grid-column: 1 / -1;
   }
 }
 
+// ============================================================================
+// INPUT GROUP (MODERN DESIGN)
+// ============================================================================
+
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  
+  gap: vars.$spacer-xs;
+
   label {
-    font-weight: 500;
+    font-weight: vars.$font-weight-medium;
     color: var(--text-primary);
-    font-size: 0.9rem;
+    font-size: vars.$font-size-sm;
+    margin-bottom: vars.$spacer-xs;
+
+    &.required::after {
+      content: ' *';
+      color: vars.$color-danger;
+    }
   }
-  
-  input, textarea, select {
-    padding: 0.75rem;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-    background: white;
-    
+
+  input,
+  textarea,
+  select {
+    padding: vars.$spacer-sm vars.$spacer-md;
+    border: 1px solid var(--border-color);
+    border-radius: vars.$border-radius-md;
+    font-size: vars.$font-size-base;
+    font-family: vars.$font-family-base;
+    transition: all vars.$transition-fast;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: vars.$line-height-normal;
+
     &:focus {
       outline: none;
-      border-color: var(--primary-500);
-      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+      border-color: vars.$color-primary;
+      box-shadow: 0 0 0 3px rgba(vars.$color-primary-600, 0.1);
+      background: var(--bg-primary);
     }
-    
+
     &:disabled {
-      background: var(--background-light);
-      color: var(--text-disabled);
+      background: var(--bg-secondary);
+      color: var(--text-muted);
       cursor: not-allowed;
+      opacity: 0.7;
     }
-    
+
     &::placeholder {
-      color: var(--text-disabled);
+      color: var(--text-muted);
+    }
+
+    &.error {
+      border-color: vars.$color-danger;
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(vars.$color-danger-600, 0.1);
+      }
     }
   }
-  
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: vars.$font-family-base;
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right vars.$spacer-md center;
+    padding-right: vars.$spacer-3xl;
+  }
+
   .error-message {
-    color: var(--danger-500);
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
+    color: vars.$color-danger;
+    font-size: vars.$font-size-sm;
+    margin-top: vars.$spacer-xs;
+    display: flex;
+    align-items: center;
+    gap: vars.$spacer-xs;
+
+    &::before {
+      content: '⚠';
+    }
+  }
+
+  .help-text {
+    color: var(--text-secondary);
+    font-size: vars.$font-size-sm;
+    margin-top: vars.$spacer-xs;
   }
 }
 
+// ============================================================================
+// FORM ACTIONS
+// ============================================================================
+
 .form-actions {
-  padding: 2rem;
-  background: var(--background-light);
+  padding: vars.$spacer-xl vars.$spacer-2xl;
+  background: var(--bg-secondary);
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  
-  @media (max-width: 768px) {
+  gap: vars.$spacer-md;
+  border-top: 1px solid var(--border-color);
+
+  @media (max-width: vars.$breakpoint-md) {
     flex-direction: column-reverse;
+    padding: vars.$spacer-lg;
+
+    button {
+      width: 100%;
+    }
   }
-  
+
   button {
-    padding: 0.75rem 2rem;
+    padding: vars.$spacer-sm vars.$spacer-xl;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
+    border-radius: vars.$border-radius-md;
+    font-size: vars.$font-size-base;
+    font-weight: vars.$font-weight-semibold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all vars.$transition-fast;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    min-width: 140px;
     justify-content: center;
-    
+    gap: vars.$spacer-sm;
+    min-width: 140px;
+    font-family: vars.$font-family-base;
+
     &:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
       cursor: not-allowed;
     }
-    
+
     &.btn-primary {
-      background: var(--primary-500);
+      background: vars.$color-primary;
       color: white;
-      
+      box-shadow: var(--shadow-sm);
+
       &:hover:not(:disabled) {
-        background: var(--primary-600);
+        background: vars.$color-primary-700;
+        box-shadow: var(--shadow-md);
         transform: translateY(-1px);
       }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
     }
-    
+
     &.btn-ghost {
       background: transparent;
       color: var(--text-secondary);
-      border: 2px solid var(--border);
-      
+      border: 1px solid var(--border-color);
+
       &:hover:not(:disabled) {
-        background: var(--background-light);
+        background: var(--bg-hover);
         color: var(--text-primary);
+        border-color: var(--text-secondary);
       }
     }
   }
 }
+
+// ============================================================================
+// SPINNER
+// ============================================================================
 
 .spinner-small {
   width: 16px;
@@ -170,5 +278,71 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+// ============================================================================
+// ADDITIONAL FORM STYLES
+// ============================================================================
+
+// Checkbox and Radio Groups
+.checkbox-group,
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$spacer-sm;
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: vars.$spacer-sm;
+    padding: vars.$spacer-sm;
+    border-radius: vars.$border-radius-sm;
+    cursor: pointer;
+    transition: background vars.$transition-fast;
+
+    &:hover {
+      background: var(--bg-hover);
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: vars.$color-primary;
+    }
+
+    label {
+      margin: 0;
+      cursor: pointer;
+      flex: 1;
+    }
+  }
+}
+
+// File Input
+.file-input-wrapper {
+  position: relative;
+
+  input[type="file"] {
+    padding: vars.$spacer-sm;
+    cursor: pointer;
+
+    &::file-selector-button {
+      padding: vars.$spacer-xs vars.$spacer-md;
+      margin-right: vars.$spacer-md;
+      border: none;
+      border-radius: vars.$border-radius-sm;
+      background: vars.$color-secondary-100;
+      color: vars.$color-secondary-700;
+      font-weight: vars.$font-weight-medium;
+      cursor: pointer;
+      transition: all vars.$transition-fast;
+
+      &:hover {
+        background: vars.$color-secondary-200;
+      }
+    }
   }
 }

@@ -1,0 +1,257 @@
+<div class="page-container custom-scrollbar">
+    <!-- Header -->
+    <header class="page-header">
+        <div class="header-content">
+            <h1>Reporte</h1>
+            <p class="subtitle">Visión general de inventario, ventas y finanzas</p>
+        </div>
+        <div class="header-actions">
+            <!-- Future Export Button -->
+        </div>
+    </header>
+
+    <!-- Loading State -->
+    @if (loading()) {
+    <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Generando reporte...</p>
+    </div>
+    }
+
+    <!-- Content -->
+    @if (data() && !loading()) {
+    <div class="report-content">
+
+        <!-- KPI Cards -->
+        <section class="kpi-grid">
+            <div class="metric-card primary">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <fa-icon [icon]="icons.money"></fa-icon>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-title">Ventas Totales</span>
+                        <span class="metric-value">{{ formatCurrency(financiero()?.total_ventas) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card success">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <fa-icon [icon]="icons.chart"></fa-icon>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-title">Ganancia Neta</span>
+                        <span class="metric-value">{{ formatCurrency(financiero()?.ganancia_neta) }}</span>
+                        <span class="sub-value">Margen: {{ financiero()?.margen_ganancia }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card info">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <fa-icon [icon]="icons.boxes"></fa-icon>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-title">Valor Inventario</span>
+                        <span class="metric-value">{{ formatCurrency(kpis()?.valor_inventario_actual) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card warning">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <fa-icon [icon]="icons.warehouse"></fa-icon>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-title">Unidades Vendidas</span>
+                        <span class="metric-value">{{ formatNumber(kpis()?.total_unidades_vendidas) }}</span>
+                        <span class="sub-value">{{ formatNumber(kpis()?.total_kg_vendidos) }} Kg</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-btn" [class.active]="activeTab() === 'financiero'"
+                    (click)="setActiveTab('financiero')">
+                    Finanzas y Ventas
+                </button>
+                <button class="tab-btn" [class.active]="activeTab() === 'inventario'"
+                    (click)="setActiveTab('inventario')">
+                    Inventario Actual
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <section class="filters-container">
+                <form [formGroup]="filterForm" class="filters-grid">
+                    <!-- Date Range -->
+                    <div class="filter-group">
+                        <label>Fecha Inicio</label>
+                        <div class="input-wrapper">
+                            <fa-icon [icon]="icons.calendar" class="input-icon"></fa-icon>
+                            <input type="date" formControlName="fecha_inicio" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Fecha Fin</label>
+                        <div class="input-wrapper">
+                            <fa-icon [icon]="icons.calendar" class="input-icon"></fa-icon>
+                            <input type="date" formControlName="fecha_fin" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- Warehouse -->
+                    <div class="filter-group">
+                        <label>Almacén</label>
+                        <div class="input-wrapper">
+                            <fa-icon [icon]="icons.warehouse" class="input-icon"></fa-icon>
+                            <select formControlName="almacen_id" class="form-control">
+                                <option [ngValue]="null">Todos los almacenes</option>
+                                @for (almacen of almacenes(); track almacen.id) {
+                                <option [value]="almacen.id">
+                                    {{ almacen.nombre }}
+                                </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Lote -->
+                    <div class="filter-group">
+                        <label>Lote</label>
+                        <div class="input-wrapper">
+                            <fa-icon [icon]="icons.boxes" class="input-icon"></fa-icon>
+                            <select formControlName="lote_id" class="form-control">
+                                <option [ngValue]="null">Todos los lotes</option>
+                                @for (lote of lotes(); track lote.id) {
+                                <option [value]="lote.id">
+                                    {{ lote.descripcion }}
+                                </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <div class="tab-content">
+                <!-- Tab: Financiero -->
+                @if (activeTab() === 'financiero') {
+                <div class="tab-pane fade-in">
+                    <div class="section-title">
+                        <h3>Detalle de Ventas por Presentación</h3>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Presentación</th>
+                                    <th class="text-right">Unidades</th>
+                                    <th class="text-right">Kg</th>
+                                    <th class="text-right">Total Vendido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (item of ventas(); track item.presentacion_id) {
+                                <tr>
+                                    <td>{{ item.presentacion_nombre }}</td>
+                                    <td class="text-right">{{ formatNumber(item.unidades_vendidas) }}</td>
+                                    <td class="text-right">{{ formatNumber(item.kg_vendidos) }}</td>
+                                    <td class="text-right font-medium">{{ formatCurrency(item.total_vendido) }}</td>
+                                </tr>
+                                }
+                                @if (ventas().length === 0) {
+                                <tr class="empty-row">
+                                    <td colspan="4" class="empty-state">No hay ventas registradas en este período</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="financial-summary-grid">
+                        <div class="summary-card">
+                            <h4>Resumen de Gastos</h4>
+                            <div class="summary-row">
+                                <span>Total Gastos</span>
+                                <span class="amount negative">{{ formatCurrency(financiero()?.total_gastos) }}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Nro. Gastos</span>
+                                <span>{{ financiero()?.numero_gastos }}</span>
+                            </div>
+                        </div>
+
+                        <div class="summary-card">
+                            <h4>Créditos y Cobranzas</h4>
+                            <div class="summary-row">
+                                <span>Total Deuda (Crédito)</span>
+                                <span class="amount warning">{{ formatCurrency(financiero()?.total_deuda) }}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Total Cobrado</span>
+                                <span class="amount success">{{ formatCurrency(financiero()?.total_pagado) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+
+                <!-- Tab: Inventario -->
+                @if (activeTab() === 'inventario') {
+                <div class="tab-pane fade-in">
+                    <div class="section-title">
+                        <h3>Stock Actual en Almacenes</h3>
+                    </div>
+
+                    <div class="inventory-grid">
+                        @for (item of inventario(); track item.presentacion_id) {
+                        <div class="inventory-card">
+                            <div class="card-header">
+                                <h4>{{ item.presentacion_nombre }}</h4>
+                                <span class="badge-stock">{{ formatNumber(item.stock_unidades) }} Und.</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="metric">
+                                    <span class="label">Peso Total</span>
+                                    <span class="value">{{ formatNumber(item.stock_kg) }} Kg</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="label">Valor Est.</span>
+                                    <span class="value">{{ formatCurrency(item.valor_estimado) }}</span>
+                                </div>
+
+                                <div class="warehouse-breakdown">
+                                    @for (det of item.detalle_almacenes; track det.almacen) {
+                                    <div class="warehouse-row">
+                                        <span class="warehouse-name">{{ det.almacen }}</span>
+                                        <span class="warehouse-qty">{{ det.cantidad }}</span>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+
+                    @if (inventario().length === 0) {
+                    <div class="empty-state">
+                        <p>No hay inventario disponible con los filtros seleccionados</p>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+    }
+</div>

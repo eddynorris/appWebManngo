@@ -1,0 +1,68 @@
+@use 'src/styles/variables' as vars;
+
+:host {
+    display: inline-block;
+}
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--color-surface-variant);
+    border: vars.$border-width solid var(--color-outline);
+    border-radius: vars.$border-radius-md;
+    cursor: pointer;
+    transition: all vars.$transition-base;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+        background: var(--color-surface-hover);
+        border-color: var(--color-primary);
+        transform: scale(1.05);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+
+    &:focus-visible {
+        outline: vars.$border-width-thick solid var(--color-primary);
+        outline-offset: vars.$focus-ring-offset;
+    }
+
+    .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform vars.$transition-slow;
+
+        &.flip {
+            transform: rotateY(180deg);
+        }
+    }
+
+    .theme-icon {
+        font-size: vars.$font-size-lg;
+        color: var(--color-primary);
+        transition: color vars.$transition-base;
+    }
+
+    &:hover .theme-icon {
+        color: var(--color-primary-hover);
+    }
+}
+
+// Animation keyframes
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

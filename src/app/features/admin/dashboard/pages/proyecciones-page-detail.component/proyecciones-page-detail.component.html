@@ -1,187 +1,155 @@
-<div class="detail-container">
-  <!-- Loading State -->
-  @if (isLoading()) {
-    <div class="loading-container">
-      <div class="loading-spinner"></div>
-      <p>Cargando información del cliente...</p>
-    </div>
-  }
-  
-  <!-- Content -->
-  @if (clienteProyeccion(); as cliente) {
-    <!-- Header -->
-    <div class="detail-header">
-      <div class="header-actions">
-        <button (click)="goBack()" class="back-btn">
-          <fa-icon [icon]="faArrowLeft"></fa-icon>
-          Volver a Proyecciones
-        </button>
-      </div>
-      
-      <div class="header-content">
-        <div class="client-info">
-          <div class="client-avatar">
-            <fa-icon [icon]="faUser"></fa-icon>
-          </div>
-          <div class="client-details">
-            <h1>{{ cliente.nombre }}</h1>
-            <p class="client-id">Cliente #{{ cliente.id }}</p>
-          </div>
-        </div>
-        
-        <div class="next-purchase-card" [class]="getUrgenciaClass()">
-          <div class="card-icon">
-            <fa-icon [icon]="faCalendarAlt"></fa-icon>
-          </div>
-          <div class="card-content">
-            <h3>Próxima Compra Estimada</h3>
-            <p class="date">{{ formatDate(cliente.proxima_compra_estimada) }}</p>
-            <p class="urgency">{{ getUrgenciaText() }}</p>
-          </div>
-        </div>
-      </div>
+<!-- Modal Overlay -->
+@if (visible) {
+<div class="modal-overlay" (click)="onOverlayClick()">
+  <div class="modal-container" (click)="onContentClick($event)">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h2>Detalle de Proyección</h2>
+      <button class="close-btn" (click)="closeModal()" aria-label="Cerrar">
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </button>
     </div>
 
-    <!-- Main Content -->
-    <div class="detail-content">
-      <!-- Contact Information -->
-      <div class="info-section">
-        <h2>
-          <fa-icon [icon]="faUser"></fa-icon>
-          Información de Contacto
-        </h2>
-        <div class="info-grid">
-          <div class="info-item">
-            <fa-icon [icon]="faEnvelope"></fa-icon>
-            <div class="info-content">
-              <label>Email</label>
-              <span>{{ cliente.email || 'No disponible' }}</span>
-            </div>
-          </div>
-          <div class="info-item">
-            <fa-icon [icon]="faPhone"></fa-icon>
-            <div class="info-content">
-              <label>Teléfono</label>
-              <span>{{ cliente.telefono || 'No disponible' }}</span>
-            </div>
-          </div>
-          <div class="info-item">
-            <fa-icon [icon]="faMapMarkerAlt"></fa-icon>
-            <div class="info-content">
-              <label>Dirección</label>
-              <span>{{ cliente.direccion || 'No disponible' }}</span>
-            </div>
-          </div>
-          <div class="info-item">
-            <fa-icon [icon]="faMapMarkerAlt"></fa-icon>
-            <div class="info-content">
-              <label>Ciudad</label>
-              <span>{{ cliente.ciudad || 'No disponible' }}</span>
-            </div>
-          </div>
-          @if (cliente.pais) {
-            <div class="info-item">
-              <fa-icon [icon]="faMapMarkerAlt"></fa-icon>
-              <div class="info-content">
-                <label>País</label>
-                <span>{{ cliente.pais }}</span>
+    <!-- Modal Body with Scroll -->
+    <div class="modal-body-scroll">
+      @if (isLoading) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando detalle...</p>
+      </div>
+      } @else if (proyeccionDetalle) {
+
+      <!-- Proyección de Compra -->
+      <div class="form-section-card">
+        <h3 class="section-title">
+          <fa-icon [icon]="faCalendarAlt"></fa-icon>
+          Proyección de Compra
+        </h3>
+
+        <div class="form-grid two-cols">
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-icon">
+                <fa-icon [icon]="faCalendarAlt"></fa-icon>
+              </div>
+              <div class="metric-value">
+                {{ formatDate(proyeccionDetalle.proyeccion_detallada.fecha_estimada) }}
               </div>
             </div>
-          }
-          @if (cliente.codigo_postal) {
-            <div class="info-item">
-              <fa-icon [icon]="faMapMarkerAlt"></fa-icon>
-              <div class="info-content">
-                <label>Código Postal</label>
-                <span>{{ cliente.codigo_postal }}</span>
+            <div class="metric-title">Fecha Estimada</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-icon">
+                <fa-icon [icon]="faDollarSign"></fa-icon>
+              </div>
+              <div class="metric-value">
+                {{ formatCurrency(proyeccionDetalle.proyeccion_detallada.valor_estimado) }}
               </div>
             </div>
-          }
+            <div class="metric-title">Valor Estimado</div>
+          </div>
         </div>
+
+        @if (proyeccionDetalle.proyeccion_detallada.productos_probables &&
+        proyeccionDetalle.proyeccion_detallada.productos_probables.length > 0) {
+        <div class="productos-section">
+          <label class="form-label">Productos Probables:</label>
+          <div class="tags-container">
+            @for (producto of proyeccionDetalle.proyeccion_detallada.productos_probables; track producto) {
+            <span class="status-badge partial">{{ getProductoLabel(producto) }}</span>
+            }
+          </div>
+        </div>
+        }
       </div>
 
-      <!-- Purchase Pattern -->
-      <div class="info-section">
-        <h2>
+      <!-- Estadísticas del Cliente -->
+      <div class="form-section-card">
+        <h3 class="section-title">
           <fa-icon [icon]="faChartLine"></fa-icon>
-          Patrón de Compras
-        </h2>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-value">{{ cliente.frecuencia_compra_dias }}</div>
-            <div class="stat-label">Días entre compras</div>
+          Estadísticas del Cliente
+        </h3>
+
+        <div class="form-grid four-cols">
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-value">{{ proyeccionDetalle.estadisticas.total_ventas }}</div>
+            </div>
+            <div class="metric-title">Total de Ventas</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ formatDate(cliente.ultima_fecha_compra) }}</div>
-            <div class="stat-label">Última compra</div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-value">{{ formatCurrency(proyeccionDetalle.estadisticas.monto_total_comprado) }}</div>
+            </div>
+            <div class="metric-title">Monto Total</div>
           </div>
-          <div class="stat-card" [class.warning]="cliente.saldo_pendiente > 0">
-            <div class="stat-value">{{ formatCurrency(cliente.saldo_pendiente) }}</div>
-            <div class="stat-label">Saldo pendiente</div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-value">{{ formatCurrency(proyeccionDetalle.estadisticas.promedio_compra) }}</div>
+            </div>
+            <div class="metric-title">Promedio / Compra</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <div class="metric-value">{{ proyeccionDetalle.estadisticas.frecuencia_compra_dias }}</div>
+            </div>
+            <div class="metric-title">Días entre Compras</div>
           </div>
         </div>
+
+        @if (proyeccionDetalle.estadisticas.productos_mas_comprados &&
+        proyeccionDetalle.estadisticas.productos_mas_comprados.length > 0) {
+        <div class="productos-mas-comprados">
+          <h4 class="subsection-title">Productos Más Comprados</h4>
+          <div class="list-group">
+            @for (producto of proyeccionDetalle.estadisticas.productos_mas_comprados; track producto.presentacion) {
+            <div class="list-item">
+              <span class="item-name">{{ producto.presentacion }}</span>
+              <span class="item-meta">
+                <fa-icon [icon]="faShoppingCart"></fa-icon>
+                {{ producto.veces_comprado }} veces ({{ producto.cantidad_total }} unids.)
+              </span>
+            </div>
+            }
+          </div>
+        </div>
+        }
       </div>
 
-      <!-- Statistics -->
-      <div class="info-section">
-        <h2>
-          <fa-icon [icon]="faDollarSign"></fa-icon>
-          Estadísticas de Ventas
-        </h2>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-value">{{ cliente.estadisticas.total_ventas }}</div>
-            <div class="stat-label">Total de ventas</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ formatCurrency(cliente.estadisticas.monto_total_comprado) }}</div>
-            <div class="stat-label">Monto total comprado</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ formatCurrency(cliente.estadisticas.promedio_compra) }}</div>
-            <div class="stat-label">Promedio por compra</div>
-          </div>
+      <!-- Historial de Ventas -->
+      <div class="form-section-card">
+        <h3 class="section-title">Historial de Ventas</h3>
+        @if (proyeccionDetalle.historial_ventas && proyeccionDetalle.historial_ventas.length > 0) {
+        <div class="table-container">
+          <app-data-table [data]="proyeccionDetalle.historial_ventas" [columns]="ventasColumns"
+            [isLoading]="false"></app-data-table>
         </div>
-      
+        } @else {
+        <div class="empty-state">
+          <p>No hay ventas registradas</p>
+        </div>
+        }
       </div>
 
-      <!-- Recent Sales -->
-      @if (cliente.ventas && cliente.ventas.length > 0) {
-        <div class="info-section">
-          <h2>
-            <fa-icon [icon]="faShoppingCart"></fa-icon>
-            Historial de Ventas
-          </h2>
-          <div class="table-container">
-            <app-data-table
-              [data]="cliente.ventas"
-              [columns]="ventasColumns"
-              [actions]="ventasActions"
-              [isLoading]="isLoading()"
-              (onAction)="handleVentasTableAction($event)">
-            </app-data-table>
-          </div>
-        </div>
-      } @else if (!isLoading()) {
-        <div class="info-section">
-          <h2>
-            <fa-icon [icon]="faShoppingCart"></fa-icon>
-            Ventas Recientes
-          </h2>
-          <div class="no-data">
-            <p>No hay ventas registradas para este cliente.</p>
-          </div>
-        </div>
+      } @else {
+      <div class="empty-state">
+        <p>No se pudo cargar el detalle de la proyección</p>
+      </div>
       }
     </div>
-  }
-</div>
 
-<!-- Modal de Detalle de Venta -->
-@if (selectedVenta() && ventaDetalleVisible()) {
-  <app-venta-detalle-modal
-    [venta]="selectedVenta()!"
-    [visible]="ventaDetalleVisible"
-    (close)="closeVentaDetail()">
-  </app-venta-detalle-modal>
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModal()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
 }

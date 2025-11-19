@@ -1,90 +1,122 @@
 <div class="admin-layout" [class.sidebar-collapsed]="!isSidebarOpen()">
-  <!-- Sidebar -->
-  <aside class="sidebar">
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" [class.collapsed]="!isSidebarOpen()" role="navigation" aria-label="Main Navigation">
+    <!-- Logo Area -->
     <div class="sidebar-header">
-      <img src="assets/images/logo.jpg" alt="Manngo Logo" class="logo">
-      <h2>Admin Panel</h2>
+      <div class="logo-container">
+        <div class="logo-icon">
+          <fa-icon [icon]="icons.box"></fa-icon>
+        </div>
+        <span class="logo-text" *ngIf="isSidebarOpen()">Manngo</span>
+      </div>
+      <button class="sidebar-toggle-btn" (click)="toggleSidebar()"
+        [attr.aria-label]="isSidebarOpen() ? 'Collapse Sidebar' : 'Expand Sidebar'">
+        <fa-icon [icon]="isSidebarOpen() ? icons.times : icons.bars"></fa-icon>
+      </button>
     </div>
 
-    <nav class="sidebar-nav">
-      @for (item of navigationItems; track item.label) {
-        @if (item.hasSubmenu) {
-          <div class="nav-item-group">
-            <button
-              (click)="toggleSubmenu(item.label)"
-              class="nav-item nav-item-parent"
-              [class.expanded]="isSubmenuExpanded(item.label)">
-              <span class="nav-icon">
-                <fa-icon [icon]="item.icon"></fa-icon>
-              </span>
-              <span class="nav-label">{{ item.label }}</span>
-              <span class="nav-arrow">
-                @if (isSubmenuExpanded(item.label)) {
-                  <fa-icon [icon]="faChevronDown"></fa-icon>
-                } @else {
-                  <fa-icon [icon]="faChevronRight"></fa-icon>
-                }
-              </span>
+    <!-- Navigation Menu -->
+    <div class="sidebar-content custom-scrollbar">
+      <nav class="nav-menu">
+        @for (item of navigationItems; track item.label) {
+        <div class="nav-item-group">
+          <!-- Parent Menu Item -->
+          <div class="nav-item" [class.active]="isMenuExpanded(item.label)" [class.has-submenu]="item.hasSubmenu"
+            (click)="item.hasSubmenu ? toggleSubmenu(item.label) : null">
+
+            <a [routerLink]="item.route" [routerLinkActive]="'active'" class="nav-link" *ngIf="!item.hasSubmenu">
+              <fa-icon [icon]="item.icon" class="nav-icon"></fa-icon>
+              <span class="nav-text" *ngIf="isSidebarOpen()">{{ item.label }}</span>
+            </a>
+
+            <button class="nav-link submenu-toggle" *ngIf="item.hasSubmenu"
+              [attr.aria-expanded]="isMenuExpanded(item.label)">
+              <fa-icon [icon]="item.icon" class="nav-icon"></fa-icon>
+              <span class="nav-text" *ngIf="isSidebarOpen()">{{ item.label }}</span>
+              <fa-icon [icon]="isMenuExpanded(item.label) ? icons.chevronDown : icons.chevronRight"
+                class="submenu-arrow" *ngIf="isSidebarOpen()">
+              </fa-icon>
             </button>
-            @if (isSubmenuExpanded(item.label)) {
-              <div class="submenu">
-                @for (subitem of item.submenu; track subitem.route) {
-                  <a
-                    [routerLink]="subitem.route"
-                    routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: false }"
-                    class="nav-item nav-subitem">
-                    <span class="nav-icon">
-                      <fa-icon [icon]="subitem.icon"></fa-icon>
-                    </span>
-                    <span class="nav-label">{{ subitem.label }}</span>
-                  </a>
-                }
-              </div>
+          </div>
+
+          <!-- Submenu Items -->
+          @if (item.hasSubmenu && isMenuExpanded(item.label) && isSidebarOpen()) {
+          <div class="submenu" role="group">
+            @for (subItem of item.submenu; track subItem.label) {
+            <a [routerLink]="subItem.route" routerLinkActive="active"
+              [routerLinkActiveOptions]="{exact: subItem.exactMatch || false}" class="submenu-link">
+              <fa-icon [icon]="subItem.icon" class="submenu-icon"></fa-icon>
+              <span>{{ subItem.label }}</span>
+            </a>
             }
           </div>
-        } @else {
-          <a
-            [routerLink]="item.route"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: false }"
-            class="nav-item">
-            <span class="nav-icon">
-              <fa-icon [icon]="item.icon"></fa-icon>
-            </span>
-            <span class="nav-label">{{ item.label }}</span>
-          </a>
+          }
+        </div>
         }
-      }
-    </nav>
+      </nav>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <div class="user-profile" If="isSidebarOpen()">
+        <div class="avatar">
+          <fa-icon [icon]="icons.user"></fa-icon>
+        </div>
+        <div class="user-info">
+          <span class="user-name">{{ currentUser()?.username }}</span>
+          <span class="user-role">{{ currentUser()?.rol || 'Administrator' }}</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()" title="Sign Out">
+        <fa-icon [icon]="icons.signOut"></fa-icon>
+      </button>
+    </div>
   </aside>
 
   <!-- Main Content Area -->
-  <div class="main-content">
-    <!-- Header -->
-    <header class="header">
+  <div class="main-wrapper">
+    <!-- Top Header -->
+    <header class="top-header" role="banner">
       <div class="header-left">
-        <button (click)="toggleSidebar()" class="toggle-btn" aria-label="Toggle Sidebar">
-          <fa-icon [icon]="faBars"></fa-icon>
+        <button class="mobile-toggle" (click)="toggleSidebar()" aria-label="Toggle Menu">
+          <fa-icon [icon]="icons.bars"></fa-icon>
         </button>
-        <h1>Panel de Administración</h1>
+
+        <!-- Breadcrumbs Placeholder -->
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <span class="breadcrumb-item">Admin</span>
+          <span class="separator">/</span>
+          <span class="breadcrumb-item active">Dashboard</span>
+        </nav>
       </div>
 
       <div class="header-right">
-        <span class="user-info">Bienvenido, Admin</span>
-        <button (click)="logout()" class="logout-btn">
-          <fa-icon [icon]="faSignOutAlt"></fa-icon>
-          Salir
+        <!-- Notifications -->
+        <button class="icon-btn" aria-label="Notifications">
+          <fa-icon [icon]="icons.bell"></fa-icon>
+          <span class="badge">3</span>
         </button>
+
+        <!-- User Menu -->
+        <div class="user-menu-trigger">
+          <div class="avatar-sm">
+            <span>{{ (currentUser()?.username | slice:0:1) || 'A' }}</span>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- Content Area -->
-    <main class="content">
-      <router-outlet></router-outlet>
+    <!-- Page Content -->
+    <main class="content-area custom-scrollbar" role="main">
+      <div class="content-container">
+        <router-outlet></router-outlet>
+      </div>
+
+      <!-- Footer -->
+      <footer class="main-footer">
+        <p>&copy; {{ currentYear }} Manngo J&K. All rights reserved.</p>
+      </footer>
     </main>
   </div>
-
-  <!-- Floating Chat Component -->
-  <app-floating-chat></app-floating-chat>
 </div>

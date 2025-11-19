@@ -1,82 +1,38 @@
-import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, Signal, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowLeft, faUser, faEnvelope, faPhone, faMapMarkerAlt, faCalendarAlt, faChartLine, faShoppingCart, faDollarSign, faExclamationTriangle, faEye } from '@fortawesome/free-solid-svg-icons';
-import { ClienteService } from '../../../clientes/services/cliente.service';
-import { NotificationService } from '../../../../../shared/services/notification.service';
-import { ClienteProyeccion, VentaResumen, Venta } from '../../../../../types/contract.types';
+import { faTimes, faCalendarAlt, faChartLine, faDollarSign, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { ClienteProyeccionDetalle } from '../../../../../types/contract.types';
 import { DataTableComponent } from '../../../../../shared/components/data-table/data-table.component';
 import { ColumnConfig } from '../../../../../shared/components/data-table/data-table.types';
-import { VentaDetalleModalComponent } from '../../../ventas/components/venta-detalle-modal/venta-detalle-modal.component';
-import { VentaService } from '../../../ventas/services/venta.service';
 
 @Component({
   selector: 'app-proyecciones-page-detail',
-  imports: [CommonModule, FontAwesomeModule, DataTableComponent, VentaDetalleModalComponent],
+  imports: [CommonModule, FontAwesomeModule, DataTableComponent],
   templateUrl: './proyecciones-page-detail.component.html',
   styleUrl: './proyecciones-page-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProyeccionesPageDetailComponent implements OnInit {
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly clienteService = inject(ClienteService);
-  private readonly notificationService = inject(NotificationService);
-  private readonly ventaService = inject(VentaService);
+export class ProyeccionesPageDetailComponent {
+  @Input() proyeccionDetalle: ClienteProyeccionDetalle | null = null;
+  @Input() isLoading: boolean = false;
+  @Input() visible: boolean = false;
+  @Output() close = new EventEmitter<void>();
 
   // FontAwesome icons
-  faArrowLeft = faArrowLeft;
-  faUser = faUser;
-  faEnvelope = faEnvelope;
-  faPhone = faPhone;
-  faMapMarkerAlt = faMapMarkerAlt;
+  faTimes = faTimes;
   faCalendarAlt = faCalendarAlt;
   faChartLine = faChartLine;
-  faShoppingCart = faShoppingCart;
   faDollarSign = faDollarSign;
-  faExclamationTriangle = faExclamationTriangle;
-  faEye = faEye;
-
-  // Estado del componente
-  clienteProyeccion = signal<ClienteProyeccion | null>(null);
-  isLoading = signal(true);
-  clienteId = signal<number | null>(null);
-
-  // Estado para el modal de detalle de venta
-  ventaDetalleVisible = signal(false);
-  selectedVenta = signal<Venta | null>(null);
-  isLoadingVentaDetail = signal(false);
-
-  // Computed properties
-  diasHastaProximaCompra = computed(() => {
-    const cliente = this.clienteProyeccion();
-    if (!cliente?.proxima_compra_estimada) return null;
-    
-    const fechaProxima = new Date(cliente.proxima_compra_estimada);
-    const fechaActual = new Date();
-    const diferenciaDias = Math.ceil((fechaProxima.getTime() - fechaActual.getTime()) / (1000 * 60 * 60 * 24));
-    
-    return diferenciaDias;
-  });
-
-  urgenciaProximaCompra = computed(() => {
-    const dias = this.diasHastaProximaCompra();
-    if (dias === null) return 'normal';
-    
-    if (dias <= 0) return 'vencida';
-    if (dias <= 3) return 'urgente';
-    if (dias <= 7) return 'proxima';
-    return 'normal';
-  });
+  faShoppingCart = faShoppingCart;
 
   // Configuración de columnas para la tabla de ventas
-  readonly ventasColumns: ColumnConfig<VentaResumen>[] = [
+  readonly ventasColumns: ColumnConfig<any>[] = [
     {
       key: 'id',
       label: 'ID Venta',
       type: 'text',
-      customRender: (venta: VentaResumen) => `#${venta.id}`
+      customRender: (venta: any) => `#${venta.id}`
     },
     {
       key: 'fecha',
@@ -92,56 +48,11 @@ export class ProyeccionesPageDetailComponent implements OnInit {
       key: 'total',
       label: 'Total',
       type: 'currency'
-    },
-    {
-      key: 'actions',
-      label: 'Acciones',
-      type: 'actions'
     }
   ];
 
-  // Configuración de acciones para la tabla de ventas
-  readonly ventasActions = [
-    {
-      action: 'ver-detalle',
-      label: 'Ver Detalle',
-      icon: this.faEye,
-      class: 'btn-detail'
-    }
-  ];
-
-  ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const id = Number(params['id']);
-      if (id) {
-        this.clienteId.set(id);
-        this.loadClienteProyeccion(id);
-      } else {
-        this.notificationService.showError('ID de cliente no válido');
-        this.router.navigate(['/admin/proyecciones']);
-      }
-    });
-  }
-
-  private loadClienteProyeccion(id: number): void {
-    this.isLoading.set(true);
-    
-    this.clienteService.getClienteProyeccion(id).subscribe({
-      next: (cliente) => {
-        this.clienteProyeccion.set(cliente);
-        this.isLoading.set(false);
-      },
-      error: (error) => {
-        console.error('Error al cargar proyección del cliente:', error);
-        this.notificationService.showError('Error al cargar los datos del cliente');
-        this.isLoading.set(false);
-        this.router.navigate(['/admin/proyecciones']);
-      }
-    });
-  }
-
-  goBack(): void {
-    this.router.navigate(['/admin/proyecciones']);
+  closeModal(): void {
+    this.close.emit();
   }
 
   formatDate(dateString: string): string {
@@ -159,55 +70,18 @@ export class ProyeccionesPageDetailComponent implements OnInit {
     }).format(amount);
   }
 
-  getUrgenciaClass(): string {
-    const urgencia = this.urgenciaProximaCompra();
-    return `urgencia-${urgencia}`;
-  }
-
-  getUrgenciaText(): string {
-    const dias = this.diasHastaProximaCompra();
-    const urgencia = this.urgenciaProximaCompra();
-    
-    if (dias === null) return 'Sin datos';
-    
-    switch (urgencia) {
-      case 'vencida':
-        return dias === 0 ? 'Hoy' : `Hace ${Math.abs(dias)} día${Math.abs(dias) !== 1 ? 's' : ''}`;
-      case 'urgente':
-        return `En ${dias} día${dias !== 1 ? 's' : ''} (Urgente)`;
-      case 'proxima':
-        return `En ${dias} día${dias !== 1 ? 's' : ''}`;
-      default:
-        return `En ${dias} día${dias !== 1 ? 's' : ''}`;
+  getProductoLabel(producto: any): string {
+    if (typeof producto === 'string') {
+      return producto;
     }
+    return producto?.nombre || producto?.presentacion || producto?.producto || 'Producto desconocido';
   }
 
-  // Manejo de acciones de la tabla de ventas
-  handleVentasTableAction(event: { action: string; item: VentaResumen }): void {
-    if (event.action === 'ver-detalle') {
-      this.showVentaDetail(event.item.id);
-    }
+  onOverlayClick(): void {
+    this.closeModal();
   }
 
-  // Mostrar detalle de venta
-  showVentaDetail(ventaId: number): void {
-    this.isLoadingVentaDetail.set(true);
-    this.ventaService.getVentaById(ventaId).subscribe({
-      next: (venta) => {
-        this.selectedVenta.set(venta);
-        this.ventaDetalleVisible.set(true);
-        this.isLoadingVentaDetail.set(false);
-      },
-      error: (err) => {
-        this.notificationService.showError('Error al cargar el detalle de la venta.');
-        this.isLoadingVentaDetail.set(false);
-      }
-    });
-  }
-
-  // Cerrar modal de detalle de venta
-  closeVentaDetail(): void {
-    this.ventaDetalleVisible.set(false);
-    this.selectedVenta.set(null);
+  onContentClick(event: Event): void {
+    event.stopPropagation();
   }
 }
