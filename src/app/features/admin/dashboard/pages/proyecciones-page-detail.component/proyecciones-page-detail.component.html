@@ -102,24 +102,6 @@
             <div class="metric-title">Días entre Compras</div>
           </div>
         </div>
-
-        @if (proyeccionDetalle.estadisticas.productos_mas_comprados &&
-        proyeccionDetalle.estadisticas.productos_mas_comprados.length > 0) {
-        <div class="productos-mas-comprados">
-          <h4 class="subsection-title">Productos Más Comprados</h4>
-          <div class="list-group">
-            @for (producto of proyeccionDetalle.estadisticas.productos_mas_comprados; track producto.presentacion) {
-            <div class="list-item">
-              <span class="item-name">{{ producto.presentacion }}</span>
-              <span class="item-meta">
-                <fa-icon [icon]="faShoppingCart"></fa-icon>
-                {{ producto.veces_comprado }} veces ({{ producto.cantidad_total }} unids.)
-              </span>
-            </div>
-            }
-          </div>
-        </div>
-        }
       </div>
 
       <!-- Historial de Ventas -->

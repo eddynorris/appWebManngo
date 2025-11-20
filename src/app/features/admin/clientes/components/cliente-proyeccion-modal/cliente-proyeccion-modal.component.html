@@ -1,0 +1,42 @@
+@if (isVisible) {
+<div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Proyección del Cliente</h2>
+            <button class="close-btn" (click)="onClose()">
+                <fa-icon [icon]="faTimes"></fa-icon>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <p class="cliente-info">
+                Cliente: <strong>{{ _cliente?.nombre }}</strong>
+            </p>
+
+            <form [formGroup]="form" (ngSubmit)="onSave()">
+                <div class="form-group">
+                    <label for="proxima_compra_manual">Próxima Compra Manual</label>
+                    <input type="date" id="proxima_compra_manual" formControlName="proxima_compra_manual"
+                        class="form-control">
+                    <small class="help-text">Fecha estimada para la próxima compra.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="ultimo_contacto">Último Contacto</label>
+                    <input type="datetime-local" id="ultimo_contacto" formControlName="ultimo_contacto"
+                        class="form-control">
+                    <small class="help-text">Fecha y hora del último contacto realizado.</small>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-ghost" (click)="onClose()">Cancelar</button>
+                    <button type="submit" class="btn-primary" [disabled]="form.invalid">
+                        <fa-icon [icon]="faSave"></fa-icon>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+}

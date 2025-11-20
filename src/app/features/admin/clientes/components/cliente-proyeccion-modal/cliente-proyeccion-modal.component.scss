@@ -1,0 +1,93 @@
+@use '../../../../../../styles/variables' as vars;
+
+// Inherit global modal styles from _components.scss
+// We only need to add specific overrides or internal layout details here
+
+.modal-overlay {
+    // The base styles are in _components.scss .modal-overlay
+    // Ensure z-index is correct if needed, though global should handle it
+    z-index: vars.$z-index-modal;
+}
+
+.modal-content {
+    // Base styles in _components.scss
+    width: 90%;
+    max-width: 500px;
+    // Animation is inherited
+}
+
+.modal-body {
+    // Base styles in _components.scss
+
+    .cliente-info {
+        margin-bottom: 1.5rem;
+        color: vars.$color-text-secondary;
+        font-size: vars.$font-size-base;
+
+        strong {
+            color: vars.$color-text-primary;
+            font-weight: vars.$font-weight-semibold;
+        }
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        font-size: vars.$font-size-sm;
+        font-weight: vars.$font-weight-medium;
+        color: vars.$color-text-primary;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid vars.$color-border;
+        border-radius: vars.$border-radius;
+        font-size: vars.$font-size-base;
+        color: vars.$color-text-primary;
+        background-color: vars.$color-bg-primary;
+        transition: vars.$transition-base;
+        font-family: vars.$font-family-base;
+
+        &:focus {
+            outline: none;
+            border-color: vars.$color-primary;
+            box-shadow: 0 0 0 3px rgba(vars.$color-primary, 0.1);
+        }
+
+        &::placeholder {
+            color: vars.$color-text-muted;
+        }
+    }
+
+    .help-text {
+        font-size: vars.$font-size-xs;
+        color: vars.$color-text-secondary;
+    }
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid vars.$color-border-light;
+
+    button {
+        // Use global button classes in HTML, but we can enforce some layout here
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+}

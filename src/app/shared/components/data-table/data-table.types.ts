@@ -13,4 +13,5 @@ export interface ActionConfig {
   label: string;
   action: 'edit' | 'delete' | 'toggleStatus' | 'view' | 'pagos' | string;
   danger?: boolean; // Para estilizar botones peligrosos como el de eliminar
+  title?: string; // Tooltip opcional
 }

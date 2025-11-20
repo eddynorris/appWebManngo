@@ -3,74 +3,73 @@
     <thead>
       <tr>
         @for (column of columns(); track column.key) {
-          <th>{{ column.label }}</th>
+        <th>{{ column.label }}</th>
         }
       </tr>
     </thead>
     <tbody>
       @if (isLoading()) {
-        <tr>
-          <td [attr.colspan]="columns().length || 0">
-            <div class="loading-state">
-              <div class="spinner"></div>
-              <p>Cargando datos...</p>
-            </div>
-          </td>
-        </tr>
+      <tr>
+        <td [attr.colspan]="columns().length || 0">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando datos...</p>
+          </div>
+        </td>
+      </tr>
       } @else if (data().length === 0) {
-        <tr>
-          <td [attr.colspan]="columns().length || 0">
-            <div class="empty-state">
-              <p>No se encontraron registros</p>
-            </div>
-          </td>
-        </tr>
+      <tr>
+        <td [attr.colspan]="columns().length || 0">
+          <div class="empty-state">
+            <p>No se encontraron registros</p>
+          </div>
+        </td>
+      </tr>
       } @else {
-        @for (item of data(); track trackByFn($index, item)) {
-          <tr [class.inactive]="isItemInactive(item)">
-            @for (column of columns(); track column.key) {
-              <td>
-                @switch (column.type) {
-                  @case ('text') {
-                    {{ getCellValue(item, column) }}
-                  }
-                  @case ('date') {
-                    {{ getCellValue(item, column) | date:'dd/MM/yyyy' }}
-                  }
-                  @case ('currency') {
-                    {{ getCellValue(item, column) | currency:'S./':'symbol':'1.0-0' }}
-                  }
-                  @case ('status') {
-                    <span class="status-badge" [class.active]="isItemActive(item)" [class.inactive]="isItemInactive(item)">
-                      {{ getStatusText(item) }}
-                    </span>
-                  }
-                  @case ('image') {
-                    <!-- TODO: Añadir NgOptimizedImage aquí -->
-                    <img [src]="getCellValue(item, column) || 'assets/images/placeholder.png'" alt="Imagen" class="table-image">
-                  }
-                  @case ('actions') {
-                    <div class="actions">
-                      @for (action of actions(); track action.action) {
-                        <button (click)="handleAction(action.action, item)" class="btn-action">
-                          <fa-icon [icon]="action.icon"></fa-icon>
-                          @if (action.label) {
-                            <span>{{ action.label }}</span>
-                          }
-                        </button>
-                      }
-                    </div>
-                  }
-                  @case ('custom') {
-                    <ng-container
-                      *ngTemplateOutlet="customCellTemplate; context: { $implicit: item, column: column }"
-                    ></ng-container>
-                  }
-                }
-              </td>
+      @for (item of data(); track trackByFn($index, item)) {
+      <tr [class.inactive]="isItemInactive(item)">
+        @for (column of columns(); track column.key) {
+        <td>
+          @switch (column.type) {
+          @case ('text') {
+          {{ getCellValue(item, column) }}
+          }
+          @case ('date') {
+          {{ getCellValue(item, column) | date:'dd/MM/yyyy' }}
+          }
+          @case ('currency') {
+          {{ getCellValue(item, column) | currency:'S./':'symbol':'1.0-0' }}
+          }
+          @case ('status') {
+          <span class="status-badge" [class.active]="isItemActive(item)" [class.inactive]="isItemInactive(item)">
+            {{ getStatusText(item) }}
+          </span>
+          }
+          @case ('image') {
+          <!-- TODO: Añadir NgOptimizedImage aquí -->
+          <img [src]="getCellValue(item, column) || 'assets/images/placeholder.png'" alt="Imagen" class="table-image">
+          }
+          @case ('actions') {
+          <div class="actions">
+            @for (action of actions(); track action.action) {
+            <button (click)="handleAction(action.action, item)" class="btn-action" [title]="action.title || ''">
+              <fa-icon [icon]="action.icon"></fa-icon>
+              @if (action.label) {
+              <span>{{ action.label }}</span>
+              }
+            </button>
             }
-          </tr>
+          </div>
+          }
+          @case ('custom') {
+          <ng-container
+            *ngTemplateOutlet="customCellTemplate; context: { $implicit: item, column: column }"></ng-container>
+          }
+          }
+        </td>
         }
+      </tr>
+      }
       }
     </tbody>
   </table>

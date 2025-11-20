@@ -11,13 +11,22 @@ import { NotificationService } from '../../../../../shared/services/notification
 import { LoadingService } from '../../../../../shared/services/loading.service';
 import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
-import { faEdit, faTrash, faPlus, faSearch, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPlus, faSearch, faDownload, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ClienteProyeccionModalComponent } from '../../components/cliente-proyeccion-modal/cliente-proyeccion-modal.component';
 
 @Component({
   selector: 'app-clientes-list-page',
   standalone: true,
-  imports: [RouterLink, FormsModule, DataTableComponent, ConfirmationModalComponent, PaginationComponent, FontAwesomeModule],
+  imports: [
+    RouterLink,
+    FormsModule,
+    DataTableComponent,
+    ConfirmationModalComponent,
+    PaginationComponent,
+    FontAwesomeModule,
+    ClienteProyeccionModalComponent
+  ],
   templateUrl: './clientes-list-page.component.html',
   styleUrl: './clientes-list-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +43,7 @@ export default class ClientesListPageComponent implements OnDestroy {
   faEdit = faEdit;
   faTrash = faTrash;
   faDownload = faDownload;
+  faChartLine = faChartLine;
 
   clientes = signal<Cliente[]>([]);
   pagination = signal<Pagination | null>(null);
@@ -42,8 +52,14 @@ export default class ClientesListPageComponent implements OnDestroy {
   ciudadFilter = signal<string>(''); // Nuevo filtro de ciudad
   private searchSubject = new Subject<string>();
   private searchSubscription: Subscription | undefined;
+
+  // Delete Modal State
   isDeleteModalVisible = signal(false);
   clienteToDelete = signal<Cliente | null>(null);
+
+  // Projection Modal State
+  isProjectionModalVisible = signal(false);
+  selectedClienteForProjection = signal<Cliente | null>(null);
 
   // Opciones del filtro de ciudad
   ciudadFilterOptions = [
@@ -64,6 +80,7 @@ export default class ClientesListPageComponent implements OnDestroy {
   ];
 
   actions: ActionConfig[] = [
+    { icon: faChartLine, label: '', action: 'projection', title: 'Proyección' },
     { icon: faEdit, label: '', action: 'edit' },
     { icon: faTrash, label: '', action: 'delete', danger: true },
   ];
@@ -118,7 +135,7 @@ export default class ClientesListPageComponent implements OnDestroy {
 
   handleExportExcel(): void {
     const ciudadParam = this.ciudadFilter() || undefined;
-    
+
     this.clienteService.exportarClientes(ciudadParam).subscribe({
       next: (blob) => {
         // Crear URL del blob y descargar archivo
@@ -130,7 +147,7 @@ export default class ClientesListPageComponent implements OnDestroy {
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
-        
+
         this.notificationService.showSuccess('Archivo Excel descargado exitosamente.');
       },
       error: (err) => {
@@ -153,6 +170,9 @@ export default class ClientesListPageComponent implements OnDestroy {
     } else if (event.action === 'delete') {
       this.clienteToDelete.set(event.item);
       this.isDeleteModalVisible.set(true);
+    } else if (event.action === 'projection') {
+      this.selectedClienteForProjection.set(event.item);
+      this.isProjectionModalVisible.set(true);
     }
   }
 
@@ -176,6 +196,36 @@ export default class ClientesListPageComponent implements OnDestroy {
   closeDeleteModal(): void {
     this.isDeleteModalVisible.set(false);
     this.clienteToDelete.set(null);
+  }
+
+  // Projection Modal Methods
+  closeProjectionModal(): void {
+    this.isProjectionModalVisible.set(false);
+    this.selectedClienteForProjection.set(null);
+  }
+
+  handleProjectionSave(payload: { proxima_compra_manual?: string, ultimo_contacto?: string }): void {
+    const cliente = this.selectedClienteForProjection();
+    if (!cliente || !cliente.id) return;
+
+    this.loadingService.startLoading();
+    this.clienteService.updateCliente(cliente.id, payload)
+      .pipe(finalize(() => this.loadingService.stopLoading()))
+      .subscribe({
+        next: (updatedCliente) => {
+          this.notificationService.showSuccess('Proyección actualizada correctamente.');
+
+          // Update the client in the local list to reflect changes immediately
+          this.clientes.update(currentClientes =>
+            currentClientes.map(c => c.id === updatedCliente.id ? updatedCliente : c)
+          );
+
+          this.closeProjectionModal();
+        },
+        error: (err) => {
+          this.notificationService.showError('Error al actualizar la proyección.');
+        }
+      });
   }
 
   ngOnDestroy(): void {

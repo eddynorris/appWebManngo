@@ -18,63 +18,49 @@
         <span class="search-icon">
           <fa-icon [icon]="faSearch"></fa-icon>
         </span>
-        <input
-          type="text"
-          placeholder="Buscar por nombre..."
-          [ngModel]="searchTerm()"
+        <input type="text" placeholder="Buscar por nombre..." [ngModel]="searchTerm()"
           (input)="onSearchChange($any($event.target).value)">
       </div>
-      
+
       <div class="ciudad-filter">
-        <select 
-          class="ciudad-filter-select"
-          [ngModel]="ciudadFilter()"
-          (ngModelChange)="onCiudadFilterChange($event)">
+        <select class="ciudad-filter-select" [ngModel]="ciudadFilter()" (ngModelChange)="onCiudadFilterChange($event)">
           @for (option of ciudadFilterOptions; track option.value) {
-            <option [value]="option.value">{{ option.label }}</option>
+          <option [value]="option.value">{{ option.label }}</option>
           }
         </select>
       </div>
-      
-      <button 
-        class="btn-export"
-        (click)="handleExportExcel()"
-        [disabled]="isLoading()">
+
+      <button class="btn-export" (click)="handleExportExcel()" [disabled]="isLoading()">
         <fa-icon [icon]="faDownload"></fa-icon>
         Descargar Excel
       </button>
     </div>
-    
+
     <div class="results-info">
-      Mostrando <strong>{{ filteredClientes().length }}</strong> de <strong>{{ pagination()?.total || 0 }}</strong> resultados.
+      Mostrando <strong>{{ filteredClientes().length }}</strong> de <strong>{{ pagination()?.total || 0 }}</strong>
+      resultados.
     </div>
   </div>
 
   <!-- Reusable Data Table -->
-  <app-data-table
-    [data]="filteredClientes()"
-    [columns]="columns"
-    [actions]="actions"
-    (onAction)="handleTableAction($event)"
-  ></app-data-table>
+  <app-data-table [data]="filteredClientes()" [columns]="columns" [actions]="actions"
+    (onAction)="handleTableAction($event)"></app-data-table>
 
   <!-- Pagination -->
   @if (pagination()) {
-    <app-pagination
-      [pagination]="pagination()!"
-      (pageChange)="onPageChange($event)"
-      (perPageChange)="onPerPageChange($event)"
-    ></app-pagination>
+  <app-pagination [pagination]="pagination()!" (pageChange)="onPageChange($event)"
+    (perPageChange)="onPerPageChange($event)"></app-pagination>
   }
 </div>
 
 <!-- Modal de Confirmación -->
 @if (isDeleteModalVisible()) {
-  <app-confirmation-modal
-    [title]="'Confirmar Eliminación'"
-    [message]="'¿Estás seguro de que quieres eliminar al cliente ' + clienteToDelete()?.nombre + '?'"
-    confirmText="Sí, Eliminar"
-    (confirm)="handleDeleteConfirmation()"
-    (cancel)="closeDeleteModal()"
-  ></app-confirmation-modal>
+<app-confirmation-modal [title]="'Confirmar Eliminación'"
+  [message]="'¿Estás seguro de que quieres eliminar al cliente ' + clienteToDelete()?.nombre + '?'"
+  confirmText="Sí, Eliminar" (confirm)="handleDeleteConfirmation()"
+  (cancel)="closeDeleteModal()"></app-confirmation-modal>
 }
+
+<!-- Modal de Proyección -->
+<app-cliente-proyeccion-modal [isVisible]="isProjectionModalVisible()" [cliente]="selectedClienteForProjection()"
+  (close)="closeProjectionModal()" (save)="handleProjectionSave($event)"></app-cliente-proyeccion-modal>

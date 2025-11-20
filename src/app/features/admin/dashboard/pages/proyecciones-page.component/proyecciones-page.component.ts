@@ -3,18 +3,19 @@ import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from '../../../clientes/services/cliente.service';
-import { ClienteProyeccion, ClienteProyeccionDetalle, Pagination } from '../../../../../types/contract.types';
+import { Cliente, ClienteProyeccion, ClienteProyeccionDetalle, Pagination } from '../../../../../types/contract.types';
 import { DataTableComponent } from '../../../../../shared/components/data-table/data-table.component';
 import { ColumnConfig, ActionConfig } from '../../../../../shared/components/data-table/data-table.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
-import { faSearch, faEye, faFileExcel } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faEye, faFileExcel, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ProyeccionesPageDetailComponent } from '../proyecciones-page-detail.component/proyecciones-page-detail.component';
+import { ClienteProyeccionModalComponent } from '../../../clientes/components/cliente-proyeccion-modal/cliente-proyeccion-modal.component';
 
 @Component({
   selector: 'app-proyecciones-page',
-  imports: [FormsModule, DataTableComponent, PaginationComponent, FontAwesomeModule, ProyeccionesPageDetailComponent],
+  imports: [FormsModule, DataTableComponent, PaginationComponent, FontAwesomeModule, ProyeccionesPageDetailComponent, ClienteProyeccionModalComponent],
   templateUrl: './proyecciones-page.component.html',
   styleUrl: './proyecciones-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +28,7 @@ export default class ProyeccionesPageComponent implements OnInit, OnDestroy {
   faSearch = faSearch;
   faEye = faEye;
   faFileExcel = faFileExcel;
+  faChartLine = faChartLine;
 
   // State signals
   proyecciones = signal<ClienteProyeccion[]>([]);
@@ -40,10 +42,14 @@ export default class ProyeccionesPageComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   private searchSubscription: Subscription | undefined;
 
-  // Modal state
+  // Modal detalle state
   modalVisible = signal(false);
   selectedProyeccion = signal<ClienteProyeccionDetalle | null>(null);
   isLoadingDetail = signal(false);
+
+  // Modal proyección (edición) state
+  isProjectionModalVisible = signal(false);
+  selectedClienteForProjection = signal<Cliente | null>(null);
 
   // Table configuration
   columns: ColumnConfig<ClienteProyeccion>[] = [
@@ -76,8 +82,14 @@ export default class ProyeccionesPageComponent implements OnInit, OnDestroy {
 
   actions: ActionConfig[] = [
     {
+      icon: faChartLine,
+      label: '',
+      title: 'Proyección',
+      action: 'projection'
+    },
+    {
       icon: faEye,
-      label: 'Ver Detalle',
+      label: 'Ver',
       action: 'view'
     }
   ];
@@ -205,6 +217,19 @@ export default class ProyeccionesPageComponent implements OnInit, OnDestroy {
   handleTableAction(event: { action: string; item: ClienteProyeccion }): void {
     if (event.action === 'view') {
       this.loadProyeccionDetalle(event.item.codigo);
+    } else if (event.action === 'projection') {
+      // Adapt ClienteProyeccion to Cliente minimal shape expected by modal
+      const clienteAdaptado: Cliente = {
+        id: (event.item as any).codigo,
+        nombre: event.item.nombre,
+        ciudad: event.item.ciudad,
+        telefono: event.item.telefono,
+        proxima_compra_manual: undefined as any,
+        ultimo_contacto: undefined as any,
+      } as any;
+
+      this.selectedClienteForProjection.set(clienteAdaptado);
+      this.isProjectionModalVisible.set(true);
     }
   }
 
@@ -228,6 +253,37 @@ export default class ProyeccionesPageComponent implements OnInit, OnDestroy {
   closeModal(): void {
     this.modalVisible.set(false);
     this.selectedProyeccion.set(null);
+  }
+
+  // Proyección modal handlers
+  closeProjectionModal(): void {
+    this.isProjectionModalVisible.set(false);
+    this.selectedClienteForProjection.set(null);
+  }
+
+  handleProjectionSave(payload: { proxima_compra_manual?: string, ultimo_contacto?: string }): void {
+    const cliente = this.selectedClienteForProjection();
+    if (!cliente || !cliente.id) return;
+
+    // Reutiliza clienteService.updateCliente igual que en Clientes
+    this.clienteService.updateCliente(cliente.id as any, payload).subscribe({
+      next: (updatedCliente) => {
+        this.notificationService.showSuccess('Proyección actualizada correctamente.');
+
+        // Actualiza lista si nombre coincide
+        this.proyecciones.update(current => current.map(p => {
+          if ((p as any).codigo === cliente.id) {
+            return { ...p, proxima_fecha_estimada: payload.proxima_compra_manual || p.proxima_fecha_estimada } as any;
+          }
+          return p;
+        }));
+
+        this.closeProjectionModal();
+      },
+      error: () => {
+        this.notificationService.showError('Error al actualizar la proyección.');
+      }
+    });
   }
 
   handleExportExcel(): void {

@@ -85,3 +85,11 @@
 <app-proyecciones-page-detail [proyeccionDetalle]="selectedProyeccion()" [isLoading]="isLoadingDetail()"
   [visible]="modalVisible()" (close)="closeModal()"></app-proyecciones-page-detail>
 }
+
+<!-- Modal de Proyección (Edición) -->
+<app-cliente-proyeccion-modal
+  [isVisible]="isProjectionModalVisible()"
+  [cliente]="selectedClienteForProjection()"
+  (close)="closeProjectionModal()"
+  (save)="handleProjectionSave($event)"
+></app-cliente-proyeccion-modal>

@@ -37,6 +37,8 @@ export type Cliente = {
   ciudad?: string;
   saldo_pendiente?: string;
   ultima_fecha_compra?: string;
+  proxima_compra_manual?: string;
+  ultimo_contacto?: string;
 };
 
 export type Proveedor = {
