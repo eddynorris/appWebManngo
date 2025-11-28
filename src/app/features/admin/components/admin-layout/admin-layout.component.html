@@ -19,7 +19,7 @@
     <!-- Navigation Menu -->
     <div class="sidebar-content custom-scrollbar">
       <nav class="nav-menu">
-        @for (item of navigationItems; track item.label) {
+        @for (item of filteredNavigationItems(); track item.label) {
         <div class="nav-item-group">
           <!-- Parent Menu Item -->
           <div class="nav-item" [class.active]="isMenuExpanded(item.label)" [class.has-submenu]="item.hasSubmenu"

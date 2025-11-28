@@ -1,0 +1,145 @@
+<app-modal [open]="open" [title]="'Confirmar Venta Detectada'" [size]="'lg'" [showFooter]="true" (close)="onCancel()">
+    <div slot="body">
+
+        <!-- Warnings -->
+        @if (localData()?.warnings?.length) {
+        <div class="warnings-section">
+            <div class="warning-header">
+                <fa-icon [icon]="faExclamationTriangle"></fa-icon>
+                <span>Atención</span>
+            </div>
+            <ul class="warning-list">
+                @for (warning of localData()?.warnings; track $index) {
+                <li>{{ warning }}</li>
+                }
+            </ul>
+        </div>
+        }
+
+        <!-- Cliente Detectado -->
+        <div class="form-section">
+            <h3 class="section-title">Cliente Detectado</h3>
+            <div class="client-display">
+                @if (localData()?.cliente) {
+                <span class="client-name">{{ localData()?.cliente?.nombre }}</span>
+                <span class="status-badge active">{{ localData()?.cliente?.match_type }}</span>
+                } @else {
+                <span style="color: var(--color-text-secondary);">No se detectó cliente (se seleccionará
+                    manualmente)</span>
+                }
+            </div>
+        </div>
+
+        <!-- Productos -->
+        <div class="form-section">
+            <h3 class="section-title">Productos</h3>
+            @if (localData()?.items?.length) {
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th style="text-align: right;">Cant.</th>
+                            <th style="text-align: right;">Precio</th>
+                            <th style="text-align: right;">Subtotal</th>
+                            <th style="width: 60px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (item of localData()?.items; track $index) {
+                        <tr [class.invalid-item]="!item.lote_id">
+                            <td>
+                                <div class="product-name">{{ item.producto_nombre }}</div>
+                                @if (item.producto_nombre_buscado !== item.producto_nombre) {
+                                <small style="color: var(--color-text-muted);">Buscado: "{{ item.producto_nombre_buscado
+                                    }}"</small>
+                                }
+                                @if (!item.lote_id) {
+                                <div class="error-text">
+                                    <fa-icon [icon]="faExclamationTriangle"></fa-icon>
+                                    Sin stock/lote asignado
+                                </div>
+                                }
+                            </td>
+                            <td style="text-align: right;">
+                                <input type="number" [(ngModel)]="item.cantidad" class="modal-input small" min="1"
+                                    style="text-align: right; width: 80px;">
+                            </td>
+                            <td style="text-align: right;">
+                                <input type="number" [(ngModel)]="item.precio_unitario" class="modal-input small"
+                                    min="0" step="0.1" style="text-align: right; width: 100px;">
+                            </td>
+                            <td style="text-align: right; font-weight: 600;">
+                                {{ (item.cantidad * item.precio_unitario) | currency:'S/.' }}
+                            </td>
+                            <td style="text-align: center;">
+                                <button type="button" class="btn-icon danger" (click)="removeItem($index)">
+                                    <fa-icon [icon]="faTrash"></fa-icon>
+                                </button>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="total-label">Total Estimado:</td>
+                            <td class="total-amount">{{ total | currency:'S/.' }}</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            } @else {
+            <div class="empty-state">
+                <p>No se detectaron productos.</p>
+            </div>
+            }
+        </div>
+
+        <!-- Pagos y Gastos -->
+        <div class="payment-section">
+            <div class="form-section">
+                <h3 class="section-title">Pago</h3>
+                @if (localData()?.pagos?.length) {
+                @for (pago of localData()?.pagos; track $index) {
+                <div class="info-row">
+                    <span class="info-label">Monto:</span>
+                    <strong>{{ pago.monto | currency:'S/.' }}</strong>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Método:</span>
+                    <span class="status-badge pending">{{ pago.metodo_pago }}</span>
+                </div>
+                }
+                } @else {
+                <p style="color: var(--color-text-muted); margin: 0;">Contado (Por defecto)</p>
+                }
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Gastos Asociados</h3>
+                @if (localData()?.gasto_asociado) {
+                <div class="info-row">
+                    <span class="info-label">Descripción:</span>
+                    <span>{{ localData()?.gasto_asociado?.descripcion }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Monto:</span>
+                    <strong>{{ localData()?.gasto_asociado?.monto | currency:'S/.' }}</strong>
+                </div>
+                } @else {
+                <p style="color: var(--color-text-muted); margin: 0;">Sin gastos.</p>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div slot="footer" class="modal-actions">
+        <button type="button" class="btn-ghost" (click)="onCancel()">Cancelar</button>
+        <button type="button" class="btn-primary" (click)="onConfirm()">
+            <fa-icon [icon]="faCheck"></fa-icon>
+            Confirmar y Cargar
+        </button>
+    </div>
+</app-modal>

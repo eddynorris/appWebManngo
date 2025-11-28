@@ -1,5 +1,97 @@
 @use 'src/styles/variables' as vars;
 
+// Voice button in header
+.form-page-container {
+  .page-header {
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+
+      h1 {
+        margin: 0;
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .command-bar {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+
+        .text-command-input {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: vars.$color-bg-primary;
+          border: 1px solid vars.$color-border;
+          border-radius: vars.$border-radius;
+          padding: 0.25rem 0.5rem;
+          transition: vars.$transition-base;
+          min-width: 300px;
+
+          &:focus-within {
+            border-color: vars.$color-primary;
+            box-shadow: 0 0 0 3px rgba(vars.$color-primary, 0.1);
+          }
+
+          input {
+            border: none;
+            background: transparent;
+            padding: 0.5rem;
+            font-size: vars.$font-size-sm;
+            color: vars.$color-text-primary;
+            flex: 1;
+            outline: none;
+
+            &::placeholder {
+              color: vars.$color-text-muted;
+            }
+          }
+
+          .btn-icon {
+            color: vars.$color-primary;
+            padding: 0.25rem;
+
+            &:disabled {
+              color: vars.$color-text-muted;
+              opacity: 0.5;
+            }
+
+            &:hover:not(:disabled) {
+              background: rgba(vars.$color-primary, 0.1);
+              border-radius: 50%;
+            }
+          }
+        }
+
+        .voice-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          min-width: 160px;
+          justify-content: center;
+          white-space: nowrap;
+          flex-shrink: 0;
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+
+          fa-icon {
+            font-size: 1.1rem;
+          }
+        }
+      }
+    }
+  }
+}
+
 // Venta Form Page - Estilos específicos
 .details-array {
   display: flex;
@@ -18,7 +110,10 @@
 
 .details-header {
   .header-item {
-    &.quantity, &.price, &.total {
+
+    &.quantity,
+    &.price,
+    &.total {
       text-align: right;
     }
 
@@ -45,9 +140,11 @@
       &.stock-ok {
         color: vars.$color-success;
       }
+
       &.stock-low {
         color: vars.$color-warning-dark;
       }
+
       &.stock-out {
         color: vars.$color-danger;
         font-weight: vars.$font-weight-bold;
@@ -108,6 +205,7 @@
 // Estilos para campos requeridos
 .input-group {
   label {
+
     &[required]::after,
     &.required::after {
       content: '*';
@@ -120,6 +218,7 @@
 
 // Responsive específico del componente
 @media (max-width: 768px) {
+
   .details-header,
   .details-row {
     grid-template-columns: 1fr;

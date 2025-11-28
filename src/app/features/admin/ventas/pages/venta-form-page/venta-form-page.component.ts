@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit, computed } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faTrash, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faTimesCircle, faMicrophone, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 import { VentaService } from '../../services/venta.service';
 import { GastoService } from '../../../gastos/services/gasto.service';
@@ -12,6 +12,8 @@ import { Venta, Cliente, Almacen, PresentacionConStockLocal, PresentacionConStoc
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { ClientSelectComponent } from '../../../../../shared/components/client-select/client-select.component';
+import { VoiceCommandService, VoiceCommandResponse } from '../../../../../core/services/voice-command.service';
+import { VoiceResultModalComponent } from '../../components/voice-result-modal/voice-result-modal.component';
 
 // Tipo unificado para las presentaciones en el formulario
 type PresentacionParaVenta = PresentacionDisponible | (PresentacionConStockLocal & { stock_por_almacen?: never }) | (PresentacionConStockGlobal & { stock_disponible?: never });
@@ -19,7 +21,7 @@ type PresentacionParaVenta = PresentacionDisponible | (PresentacionConStockLocal
 @Component({
   selector: 'app-venta-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, ClientSelectComponent],
+  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, ClientSelectComponent, VoiceResultModalComponent],
   templateUrl: './venta-form-page.component.html',
   styleUrl: './venta-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,10 +34,15 @@ export default class VentaFormPageComponent implements OnInit {
   private readonly gastoService = inject(GastoService);
   private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
+  readonly voiceCommandService = inject(VoiceCommandService);
 
   // FontAwesome icons
   faTrash = faTrash;
   faTimesCircle = faTimesCircle;
+  faMicrophone = faMicrophone;
+  faPaperPlane = faPaperPlane;
+
+  commandInput = new FormControl('');
 
   ventaForm: FormGroup;
   isLoading = signal(false);
@@ -45,6 +52,10 @@ export default class VentaFormPageComponent implements OnInit {
   clientes = signal<Cliente[]>([]);
   almacenes = signal<Almacen[]>([]);
   presentaciones = signal<PresentacionParaVenta[]>([]);
+
+  // Voice modal state
+  showVoiceModal = signal(false);
+  voiceData = signal<VoiceCommandResponse['data'] | null>(null);
 
   // Para saber si el admin puede elegir almacén
   canSelectAlmacen = computed(() => this.authService.isAdmin() && this.almacenes().length > 0);
@@ -56,7 +67,7 @@ export default class VentaFormPageComponent implements OnInit {
   ventaTotal = computed(() => {
     // Incluir el trigger para forzar recálculo
     this.totalUpdateTrigger();
-    
+
     return this.detalles.controls.reduce((total, control) => {
       const cantidad = Number(control.get('cantidad')?.value) || 0;
       const precioUnitario = Number(control.get('precio_unitario')?.value) || 0;
@@ -109,13 +120,13 @@ export default class VentaFormPageComponent implements OnInit {
       .subscribe(response => {
         this.clientes.set(response.clientes);
 
-        if(response.almacenes) {
+        if (response.almacenes) {
           this.almacenes.set(response.almacenes);
         }
 
         const userAlmacenId = this.authService.currentUser()?.almacen_id;
         if (!this.canSelectAlmacen() && userAlmacenId) {
-           this.ventaForm.get('almacen_id')?.setValue(userAlmacenId);
+          this.ventaForm.get('almacen_id')?.setValue(userAlmacenId);
         }
 
         const presentacionesData = response.presentaciones_disponibles || response.presentaciones_con_stock_global || response.presentaciones_con_stock_local || [];
@@ -131,7 +142,7 @@ export default class VentaFormPageComponent implements OnInit {
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe(formData => {
         this.clientes.set(formData.clientes);
-        if(formData.almacenes) this.almacenes.set(formData.almacenes);
+        if (formData.almacenes) this.almacenes.set(formData.almacenes);
         const presentacionesData = formData.presentaciones_disponibles || formData.presentaciones_con_stock_global || formData.presentaciones_con_stock_local || [];
         this.presentaciones.set(presentacionesData);
 
@@ -190,6 +201,126 @@ export default class VentaFormPageComponent implements OnInit {
     this.triggerTotalUpdate();
   }
 
+  // ========== VOICE COMMAND METHODS ==========
+
+  startVoiceDictation(): void {
+    this.notificationService.showInfo('Escuchando... Habla ahora.');
+
+    this.voiceCommandService.startListening().subscribe({
+      next: (transcript) => {
+        console.log('Transcript received:', transcript);
+        this.notificationService.showInfo('Procesando comando de voz...');
+
+        // Send transcript to backend
+        this.voiceCommandService.sendCommand(transcript).subscribe({
+          next: (response) => {
+            console.log('Voice command response:', response);
+            if (response.status === 'success' && response.data) {
+              this.voiceData.set(response.data);
+              this.showVoiceModal.set(true);
+              this.notificationService.showSuccess('Comando procesado. Verifica los datos.');
+            } else {
+              this.notificationService.showError('No se pudo interpretar el comando.');
+            }
+          },
+          error: (err) => {
+            console.error('Error sending voice command:', err);
+            this.notificationService.showError('Error al procesar el comando de voz.');
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Voice recognition error:', err);
+        this.notificationService.showError('Error en el reconocimiento de voz.');
+      }
+    });
+  }
+
+  processTextCommand(): void {
+    const text = this.commandInput.value;
+    if (!text?.trim()) return;
+
+    this.notificationService.showInfo('Procesando comando de texto...');
+
+    this.voiceCommandService.sendCommand(text).subscribe({
+      next: (response) => {
+        console.log('Text command response:', response);
+        if (response.status === 'success' && response.data) {
+          this.voiceData.set(response.data);
+          this.showVoiceModal.set(true);
+          this.commandInput.setValue(''); // Clear input
+          this.notificationService.showSuccess('Comando procesado. Verifica los datos.');
+        } else {
+          this.notificationService.showError('No se pudo interpretar el comando.');
+        }
+      },
+      error: (err) => {
+        console.error('Error sending text command:', err);
+        this.notificationService.showError('Error al procesar el comando de texto.');
+      }
+    });
+  }
+
+  onVoiceConfirm(data: VoiceCommandResponse['data']): void {
+    console.log('Voice data confirmed, submitting directly:', data);
+
+    // 1. Validate Client
+    if (!data.cliente || !data.cliente.id) {
+      this.notificationService.showWarning("Por favor selecciona un cliente válido en el modal.");
+      return;
+    }
+
+    // 2. Validate Items (Check for lote_id)
+    const invalidItems = data.items?.filter(item => !item.lote_id);
+    if (invalidItems && invalidItems.length > 0) {
+      this.notificationService.showError("Algunos productos no tienen lote asignado (stock insuficiente). Verifica los items marcados.");
+      return;
+    }
+
+    // 3. Prepare Payload
+    const payload = {
+      cliente: {
+        id: data.cliente.id
+      },
+      items: data.items?.map(item => ({
+        producto_id: item.producto_id,
+        cantidad: item.cantidad,
+        precio_unitario: item.precio_unitario,
+        lote_id: item.lote_id
+      })) || [],
+      pagos: data.pagos?.map(pago => ({
+        monto: pago.monto,
+        metodo_pago: pago.metodo_pago,
+        es_deposito: pago.es_deposito || false
+      })) || [],
+      gasto_asociado: data.gasto_asociado // Optional
+    };
+
+    // 4. Send Request
+    this.isLoading.set(true);
+    this.ventaService.createVentaCompleta(payload)
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        next: (response) => {
+          this.showVoiceModal.set(false);
+          this.voiceData.set(null);
+          this.notificationService.showSuccess('Venta registrada correctamente con comando de voz.');
+          this.router.navigate(['/admin/ventas']);
+        },
+        error: (err) => {
+          console.error('Error creating transaction:', err);
+          this.notificationService.showError('Error al registrar la venta. Verifica los datos.');
+        }
+      });
+  }
+
+  onVoiceCancel(): void {
+    this.showVoiceModal.set(false);
+    this.voiceData.set(null);
+  }
+
+  // ========== END VOICE COMMAND METHODS ==========
+
   onSubmit(): void {
     if (this.ventaForm.invalid) {
       this.notificationService.showError('Formulario inválido. Por favor, revisa todos los campos.');
@@ -228,7 +359,7 @@ export default class VentaFormPageComponent implements OnInit {
           const agregarGasto = gastoMonto !== null && gastoMonto !== '' && Number(gastoMonto) > 0;
           if (agregarGasto) {
             const cliente = this.clientes().find(c => c.id === Number(formValue.cliente_id));
-            const descripcion = `Gasto en la venta al cliente ${cliente?.nombre ?? ''}`;
+            const descripcion = `Transporte por envio al cliente ${cliente?.nombre ?? ''}`;
             const gastoPayload = {
               descripcion,
               monto: String(gastoMonto),

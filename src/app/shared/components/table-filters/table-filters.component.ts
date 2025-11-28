@@ -33,12 +33,12 @@ export interface FilterValues {
 })
 export class TableFiltersComponent {
   // Inputs usando la nueva API de Angular
-  title = input<string>('Filtros Unificados');
+  title = input<string>('Filtros');
   filters = input.required<FilterConfig[]>();
   initialValues = input<FilterValues>({});
   showActions = input<boolean>(true);
   clients = input<Cliente[]>([]);
-  
+
   // Outputs usando la nueva API de Angular
   filtersChange = output<FilterValues>();
   search = output<FilterValues>();
@@ -65,13 +65,13 @@ export class TableFiltersComponent {
   private initializeForm() {
     const formControls: { [key: string]: any } = {};
     const initialValues = this.initialValues();
-    
+
     this.filters().forEach(filter => {
       formControls[filter.key] = [initialValues[filter.key] || ''];
     });
 
     this.filterForm = this.fb.group(formControls);
-    
+
     // Emitir cambios cuando el formulario cambie
     this.filterForm.valueChanges.subscribe(values => {
       this.filtersChange.emit(values);

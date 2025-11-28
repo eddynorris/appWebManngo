@@ -51,6 +51,11 @@ export class VentaService {
     return this.http.post<Venta>(this.apiUrl, venta);
   }
 
+  // Crear una venta completa desde comando de voz
+  createVentaCompleta(data: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/transacciones/venta-completa`, data);
+  }
+
   // Actualizar una venta existente
   updateVenta(id: number, venta: Partial<Venta>): Observable<Venta> {
     return this.http.put<Venta>(`${this.apiUrl}/${id}`, venta);
@@ -107,7 +112,7 @@ export class VentaService {
     fecha_fin?: string;
   }): Observable<Blob> {
     let params = new HttpParams();
-    
+
     if (filtros) {
       Object.keys(filtros).forEach(key => {
         const value = filtros[key as keyof typeof filtros];
@@ -116,12 +121,12 @@ export class VentaService {
         }
       });
     }
-    
+
     return this.http.get(`${this.apiUrl}/exportar`, {
       params,
       responseType: 'blob'
     });
   }
 
-// ... existing code ...
+  // ... existing code ...
 }

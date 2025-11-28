@@ -1,146 +1,167 @@
 <div class="form-page-container">
-  <div class="page-header">
-    <h1>{{ isEditMode() ? 'Editar Venta' : 'Registrar Nueva Venta' }}</h1>
-    <p>Completa los datos para registrar una nueva venta en el sistema.</p>
-  </div>
-
-  <form [formGroup]="ventaForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
-    <!-- SECCIÓN DE DATOS PRINCIPALES -->
-    <div class="form-section">
-      <h2 class="section-title">Datos de la Venta</h2>
-      <div class="form-grid two-cols">
-        <div class="input-group">
-          <app-client-select
-            [label]="'Cliente'"
-            [placeholder]="'Buscar cliente...'"
-            [required]="true"
-            [clients]="clientes()"
-            [selectedClientId]="ventaForm.get('cliente_id')?.value"
-            (clientSelected)="onClientSelected($event)"
-          ></app-client-select>
+    <div class="page-header">
+        <div class="header-top">
+            <h1>{{ isEditMode() ? 'Editar Venta' : 'Registrar Nueva Venta' }}</h1>
+            <div class="command-bar">
+                <div class="text-command-input">
+                    <input type="text" [formControl]="commandInput"
+                        placeholder="Escribe una orden (ej. Vender 20 sacos...)" (keyup.enter)="processTextCommand()">
+                    <button type="button" class="btn-icon" (click)="processTextCommand()"
+                        [disabled]="!commandInput.value" title="Enviar comando">
+                        <fa-icon [icon]="faPaperPlane"></fa-icon>
+                    </button>
+                </div>
+                <button type="button" class="btn-primary voice-btn" (click)="startVoiceDictation()"
+                    [disabled]="voiceCommandService.isListening() || isEditMode()" title="Dictar venta por voz">
+                    <fa-icon [icon]="faMicrophone"></fa-icon>
+                    {{ voiceCommandService.isListening() ? 'Escuchando...' : 'Dictar Venta' }}
+                </button>
+            </div>
         </div>
-
-        <!-- Selector de Almacén (solo para admin) -->
-        @if (canSelectAlmacen()) {
-          <div class="input-group">
-            <label for="almacen_id">Vender desde Almacén</label>
-            <select id="almacen_id" formControlName="almacen_id">
-              <option value="" disabled>Selecciona un almacén</option>
-              @for (almacen of almacenes(); track almacen.id) {
-                <option [value]="almacen.id">{{ almacen.nombre }}</option>
-              }
-            </select>
-          </div>
-        }
-
-        <div class="input-group">
-          <label for="fecha">Fecha de Venta</label>
-          <input id="fecha" type="datetime-local" formControlName="fecha">
-        </div>
-        <div class="input-group">
-          <label for="tipo_pago">Tipo de Pago</label>
-          <select id="tipo_pago" formControlName="tipo_pago">
-            <option value="contado">Contado</option>
-            <option value="credito">Crédito</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label for="estado_pago">Estado del Pago</label>
-          <select id="estado_pago" formControlName="estado_pago">
-            <option value="pagado">Pagado</option>
-            <option value="parcial">Parcial</option>
-            <option value="pendiente">Pendiente</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label for="consumo_diario_kg">Consumo Diario (kg)</label>
-          <input id="consumo_diario_kg" type="number" formControlName="consumo_diario_kg" placeholder="Ej: 5.0">
-        </div>
-        <div class="input-group">
-          <label for="gasto_monto">Monto del gasto</label>
-          <input id="gasto_monto" type="number" formControlName="gasto_monto" placeholder="Ej: 0.00" min="0.01" step="0.01">
-        </div>
-      </div>
+        <p>Completa los datos para registrar una nueva venta en el sistema.</p>
     </div>
 
-    <!-- SECCIÓN DE DETALLES DE VENTA (FORM ARRAY) -->
-    <div class="form-section">
-      <h2 class="section-title">Productos Vendidos</h2>
-      <div formArrayName="detalles" class="details-array">
-        <div class="details-header">
-          <div class="header-item product">Producto</div>
-          <div class="header-item quantity">Cantidad</div>
-          <div class="header-item price">Precio Unit. (S/.)</div>
-          <div class="header-item total">Subtotal</div>
-          <div class="header-item actions"></div>
-        </div>
-        @for (detalleGroup of detalles.controls; track $index; let i = $index) {
-          <div [formGroupName]="i" class="details-row">
-            <div class="input-group">
-              <label>Producto</label>
-              <select formControlName="presentacion_id" class="product-select">
-                <option value="" disabled>Selecciona un producto</option>
-                @for (p of presentaciones(); track p.id) {
-                  <option [value]="p.id" [disabled]="p.stock_disponible === 0" [class]="p.stock_disponible === 0 ? 'out-of-stock' : ''">
-                    {{ p.nombre }} ({{ p.capacidad_kg }} kg)
-                    @if (p.stock_disponible !== undefined) {
-                      @if (p.stock_disponible === 0) {
-                        <span class="stock-info stock-out"> - SIN STOCK</span>
-                      } @else {
-                        <span class="stock-info stock-{{ p.stock_disponible > 10 ? 'ok' : 'low' }}">
-                          (Stock: {{ p.stock_disponible }})
-                        </span>
-                      }
-                    }
-                  </option>
+    <form [formGroup]="ventaForm" (ngSubmit)="onSubmit()" class="data-form" novalidate>
+        <!-- SECCIÓN DE DATOS PRINCIPALES -->
+        <div class="form-section">
+            <h2 class="section-title">Datos de la Venta</h2>
+            <div class="form-grid two-cols">
+                <div class="input-group">
+                    <app-client-select [label]="'Cliente'" [placeholder]="'Buscar cliente...'" [required]="true"
+                        [clients]="clientes()" [selectedClientId]="ventaForm.get('cliente_id')?.value"
+                        (clientSelected)="onClientSelected($event)"></app-client-select>
+                </div>
+
+                <!-- Selector de Almacén (solo para admin) -->
+                @if (canSelectAlmacen()) {
+                <div class="input-group">
+                    <label for="almacen_id">Vender desde Almacén</label>
+                    <select id="almacen_id" formControlName="almacen_id">
+                        <option value="" disabled>Selecciona un almacén</option>
+                        @for (almacen of almacenes(); track almacen.id) {
+                        <option [value]="almacen.id">{{ almacen.nombre }}</option>
+                        }
+                    </select>
+                </div>
                 }
-              </select>
-            </div>
-            <div class="input-group">
-              <label>Cantidad</label>
-              <input type="number" formControlName="cantidad" placeholder="Cant.">
-            </div>
-            <div class="input-group">
-              <label>Precio Unit. (S/.)</label>
-              <input type="number" formControlName="precio_unitario" placeholder="Precio">
-            </div>
-            <div class="subtotal">
-              {{ (detalleGroup.get('cantidad')?.value || 0) * (detalleGroup.get('precio_unitario')?.value || 0) | currency:'S/.' }}
-            </div>
-            <button type="button" (click)="removeDetalle(i)" class="btn-icon danger" title="Eliminar producto">
-              <fa-icon [icon]="faTimesCircle"></fa-icon>
-            </button>
-          </div>
-        }
-        <!-- Fila del total -->
-        @if (detalles.length > 0) {
-          <div class="total-container">
-            <div class="total-content">
-              <div class="total-label">
-                <span class="total-text">Total de la Venta</span>
-              </div>
-              <div class="total-amount">
-                <span class="currency">S/.</span>
-                <span class="amount">{{ ventaTotal().toFixed(2) }}</span>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-      <button type="button" (click)="addDetalle()" class="btn-secondary add-detail-btn">
-        + Añadir Producto
-      </button>
-    </div>
 
-    <!-- SECCIÓN DE ACCIONES -->
-    <div class="form-actions">
-      <button type="button" (click)="cancel()" class="btn-ghost">Cancelar</button>
-      <button type="submit" class="btn-primary" [disabled]="ventaForm.invalid || isLoading()">
-        @if (isLoading()) {
-          <div class="spinner-small"></div>
-        }
-        {{ isEditMode() ? 'Actualizar Venta' : 'Crear Venta' }}
-      </button>
-    </div>
-  </form>
+                <div class="input-group">
+                    <label for="fecha">Fecha de Venta</label>
+                    <input id="fecha" type="datetime-local" formControlName="fecha">
+                </div>
+                <div class="input-group">
+                    <label for="tipo_pago">Tipo de Pago</label>
+                    <select id="tipo_pago" formControlName="tipo_pago">
+                        <option value="contado">Contado</option>
+                        <option value="credito">Crédito</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="estado_pago">Estado del Pago</label>
+                    <select id="estado_pago" formControlName="estado_pago">
+                        <option value="pagado">Pagado</option>
+                        <option value="parcial">Parcial</option>
+                        <option value="pendiente">Pendiente</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="consumo_diario_kg">Consumo Diario (kg)</label>
+                    <input id="consumo_diario_kg" type="number" formControlName="consumo_diario_kg"
+                        placeholder="Ej: 5.0">
+                </div>
+                <div class="input-group">
+                    <label for="gasto_monto">Monto del gasto</label>
+                    <input id="gasto_monto" type="number" formControlName="gasto_monto" placeholder="Ej: 0.00"
+                        min="0.01" step="0.01">
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE DETALLES DE VENTA (FORM ARRAY) -->
+        <div class="form-section">
+            <h2 class="section-title">Productos Vendidos</h2>
+            <div formArrayName="detalles" class="details-array">
+                <div class="details-header">
+                    <div class="header-item product">Producto</div>
+                    <div class="header-item quantity">Cantidad</div>
+                    <div class="header-item price">Precio Unit. (S/.)</div>
+                    <div class="header-item total">Subtotal</div>
+                    <div class="header-item actions"></div>
+                </div>
+                @for (detalleGroup of detalles.controls; track $index; let i = $index) {
+                <div [formGroupName]="i" class="details-row">
+                    <div class="input-group">
+                        <label>Producto</label>
+                        <select formControlName="presentacion_id" class="product-select">
+                            <option value="" disabled>Selecciona un producto</option>
+                            @for (p of presentaciones(); track p.id) {
+                            <option [value]="p.id" [disabled]="p.stock_disponible === 0"
+                                [class]="p.stock_disponible === 0 ? 'out-of-stock' : ''">
+                                {{ p.nombre }} ({{ p.capacidad_kg }} kg)
+                                @if (p.stock_disponible !== undefined) {
+                                @if (p.stock_disponible === 0) {
+                                <span class="stock-info stock-out"> - SIN STOCK</span>
+                                } @else {
+                                <span class="stock-info stock-{{ p.stock_disponible > 10 ? 'ok' : 'low' }}">
+                                    (Stock: {{ p.stock_disponible }})
+                                </span>
+                                }
+                                }
+                            </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Cantidad</label>
+                        <input type="number" formControlName="cantidad" placeholder="Cant.">
+                    </div>
+                    <div class="input-group">
+                        <label>Precio Unit. (S/.)</label>
+                        <input type="number" formControlName="precio_unitario" placeholder="Precio">
+                    </div>
+                    <div class="subtotal">
+                        {{ (detalleGroup.get('cantidad')?.value || 0) * (detalleGroup.get('precio_unitario')?.value ||
+                        0) | currency:'S/.' }}
+                    </div>
+                    <button type="button" (click)="removeDetalle(i)" class="btn-icon danger" title="Eliminar producto">
+                        <fa-icon [icon]="faTimesCircle"></fa-icon>
+                    </button>
+                </div>
+                }
+                <!-- Fila del total -->
+                @if (detalles.length > 0) {
+                <div class="total-container">
+                    <div class="total-content">
+                        <div class="total-label">
+                            <span class="total-text">Total de la Venta</span>
+                        </div>
+                        <div class="total-amount">
+                            <span class="currency">S/.</span>
+                            <span class="amount">{{ ventaTotal().toFixed(2) }}</span>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            <button type="button" (click)="addDetalle()" class="btn-secondary add-detail-btn">
+                + Añadir Producto
+            </button>
+        </div>
+
+        <!-- SECCIÓN DE ACCIONES -->
+        <div class="form-actions">
+            <button type="button" (click)="cancel()" class="btn-ghost">Cancelar</button>
+            <button type="submit" class="btn-primary" [disabled]="ventaForm.invalid || isLoading()">
+                @if (isLoading()) {
+                <div class="spinner-small"></div>
+                }
+                {{ isEditMode() ? 'Actualizar Venta' : 'Crear Venta' }}
+            </button>
+        </div>
+    </form>
+
+    <!-- Voice Result Modal -->
+    <app-voice-result-modal [open]="showVoiceModal" [voiceData]="voiceData()" (confirm)="onVoiceConfirm($event)"
+        (close)="onVoiceCancel()">
+    </app-voice-result-modal>
 </div>

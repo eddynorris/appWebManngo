@@ -54,6 +54,40 @@ export default class AdminLayoutComponent {
   // Navigation Configuration
   readonly navigationItems: NavigationItem[] = NAVIGATION_ITEMS;
 
+  readonly filteredNavigationItems = computed(() => {
+    const user = this.currentUser();
+    const isAdmin = user?.rol === 'admin';
+
+    if (isAdmin) {
+      return this.navigationItems;
+    }
+
+    return this.navigationItems.reduce<NavigationItem[]>((acc, item) => {
+      // Filter 'Operaciones'
+      if (item.label === 'Operaciones') {
+        const allowedSubmenu = ['Ventas', 'Pagos', 'Gastos'];
+        const filteredSubmenu = item.submenu?.filter(sub => allowedSubmenu.includes(sub.label));
+        if (filteredSubmenu && filteredSubmenu.length > 0) {
+          acc.push({ ...item, submenu: filteredSubmenu });
+        }
+        return acc;
+      }
+
+      // Filter 'Clientes'
+      if (item.label === 'Clientes') {
+        const allowedSubmenu = ['Clientes'];
+        const filteredSubmenu = item.submenu?.filter(sub => allowedSubmenu.includes(sub.label));
+        if (filteredSubmenu && filteredSubmenu.length > 0) {
+          acc.push({ ...item, submenu: filteredSubmenu });
+        }
+        return acc;
+      }
+
+      // Exclude everything else for non-admins
+      return acc;
+    }, []);
+  });
+
   // UI Icons
   readonly icons = {
     bars: faBars,
