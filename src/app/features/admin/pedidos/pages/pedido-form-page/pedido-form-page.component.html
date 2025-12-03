@@ -14,7 +14,7 @@
           <select id="cliente_id" formControlName="cliente_id">
             <option value="" disabled>Selecciona un cliente</option>
             @for (cliente of clientes(); track cliente.id) {
-              <option [value]="cliente.id">{{ cliente.nombre }}</option>
+            <option [value]="cliente.id">{{ cliente.nombre }}</option>
             }
           </select>
         </div>
@@ -25,14 +25,14 @@
         <div class="input-group">
           <label for="estado">Estado del Pedido</label>
           <select id="estado" formControlName="estado">
-             @for (estado of estados(); track estado) {
-              <option [value]="estado">{{ estado | titlecase }}</option>
+            @for (estado of estados(); track estado) {
+            <option [value]="estado">{{ estado | titlecase }}</option>
             }
           </select>
         </div>
         <div class="input-group full-width">
-           <label for="notas">Notas Adicionales</label>
-           <textarea id="notas" formControlName="notas" rows="3"></textarea>
+          <label for="notas">Notas Adicionales</label>
+          <textarea id="notas" formControlName="notas" rows="3"></textarea>
         </div>
       </div>
     </div>
@@ -48,25 +48,25 @@
           <div class="header-item actions"></div>
         </div>
         @for (detalleGroup of detalles.controls; track $index; let i = $index) {
-          <div [formGroupName]="i" class="details-row">
-            <div class="input-group">
-              <select formControlName="presentacion_id" class="product-select">
-                <option value="" disabled>Selecciona un producto</option>
-                @for (p of presentaciones(); track p.id) {
-                  <option [value]="p.id">{{ p.nombre }} ({{ p.capacidad_kg }} kg)</option>
-                }
-              </select>
-            </div>
-            <div class="input-group">
-              <input type="number" formControlName="cantidad" placeholder="Cant.">
-            </div>
-            <div class="input-group">
-              <input type="number" formControlName="precio_estimado" placeholder="Precio">
-            </div>
-            <button type="button" (click)="removeDetalle(i)" class="btn-icon danger" title="Eliminar producto">
-              <fa-icon [icon]="faTrash"></fa-icon>
-            </button>
+        <div [formGroupName]="i" class="details-row">
+          <div class="input-group">
+            <select formControlName="presentacion_id" class="product-select">
+              <option value="" disabled>Selecciona un producto</option>
+              @for (p of presentaciones(); track p.id) {
+              <option [value]="p.id">{{ p.nombre }} ({{ p.capacidad_kg }} kg)</option>
+              }
+            </select>
           </div>
+          <div class="input-group">
+            <input type="number" formControlName="cantidad" placeholder="Cant.">
+          </div>
+          <div class="input-group">
+            <input type="number" formControlName="precio_estimado" placeholder="Precio">
+          </div>
+          <button type="button" (click)="removeDetalle(i)" class="btn-icon danger" title="Eliminar producto">
+            <fa-icon [icon]="faTrash"></fa-icon>
+          </button>
+        </div>
         }
       </div>
       <button type="button" (click)="addDetalle()" class="btn-secondary add-detail-btn">
@@ -79,7 +79,7 @@
       <button type="button" (click)="cancel()" class="btn-ghost">Cancelar</button>
       <button type="submit" class="btn-primary" [disabled]="pedidoForm.invalid || isLoading()">
         @if (isLoading()) {
-          <div class="spinner-small"></div>
+        <div class="spinner-small"></div>
         }
         {{ isEditMode() ? 'Actualizar Pedido' : 'Crear Pedido' }}
       </button>

@@ -12,7 +12,10 @@ export interface VoiceCommandResponse {
     status: string;
     processed_action: string;
     data: {
+        fecha?: string;
         cliente?: { id: number; nombre: string; match_type: string } | null;
+        clientes_disponibles?: Array<{ id: number; nombre: string;[key: string]: any }>;
+        total_clientes?: number;
         items?: Array<{
             producto_nombre_buscado: string;
             producto_id: number | null;

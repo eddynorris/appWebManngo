@@ -37,7 +37,15 @@ export class VoiceResultModalComponent {
     ngOnChanges(): void {
         if (this.voiceData) {
             // Deep copy to avoid mutating parent state directly until confirmed
-            this.localData.set(JSON.parse(JSON.stringify(this.voiceData)));
+            const data = JSON.parse(JSON.stringify(this.voiceData));
+
+            // Siempre establecer la fecha actual por defecto, ignorando lo que venga del comando
+            // Formato para input datetime-local: YYYY-MM-DDTHH:mm
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // Ajuste zona horaria local simple
+            data.fecha = now.toISOString().slice(0, 16);
+
+            this.localData.set(data);
         }
     }
 
@@ -51,6 +59,23 @@ export class VoiceResultModalComponent {
         if (current && current.items) {
             current.items.splice(index, 1);
             this.localData.set({ ...current }); // Trigger update
+        }
+    }
+
+    selectClient(clientId: number): void {
+        const current = this.localData();
+        if (current && current.clientes_disponibles) {
+            const client = current.clientes_disponibles.find((c: any) => c.id === clientId);
+            if (client) {
+                this.localData.set({
+                    ...current,
+                    cliente: {
+                        id: client.id,
+                        nombre: client.nombre,
+                        match_type: 'manual'
+                    }
+                });
+            }
         }
     }
 

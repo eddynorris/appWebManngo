@@ -278,7 +278,9 @@ export default class VentaFormPageComponent implements OnInit {
     }
 
     // 3. Prepare Payload
+    // 3. Prepare Payload
     const payload = {
+      fecha: data.fecha,
       cliente: {
         id: data.cliente.id
       },

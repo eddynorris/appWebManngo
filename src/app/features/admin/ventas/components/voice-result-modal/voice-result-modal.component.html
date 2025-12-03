@@ -16,18 +16,47 @@
         </div>
         }
 
+        <!-- Fecha de Venta (Editable) -->
+        <div class="form-section">
+            <h3 class="section-title">Fecha de Venta</h3>
+            <div class="info-row">
+                <span class="info-label">Fecha:</span>
+                <input type="datetime-local" [ngModel]="localData()?.fecha"
+                    (ngModelChange)="localData()!.fecha = $event" class="modal-input" style="max-width: 250px;">
+            </div>
+        </div>
+
         <!-- Cliente Detectado -->
         <div class="form-section">
             <h3 class="section-title">Cliente Detectado</h3>
             <div class="client-display">
                 @if (localData()?.cliente) {
-                <span class="client-name">{{ localData()?.cliente?.nombre }}</span>
-                <span class="status-badge active">{{ localData()?.cliente?.match_type }}</span>
+                <div class="selected-client">
+                    <span class="client-name">{{ localData()?.cliente?.nombre }}</span>
+                    <span class="status-badge active">{{ localData()?.cliente?.match_type }}</span>
+                </div>
                 } @else {
                 <span style="color: var(--color-text-secondary);">No se detectó cliente (se seleccionará
                     manualmente)</span>
                 }
             </div>
+
+            <!-- Selector de Clientes Disponibles -->
+            @if (localData()?.clientes_disponibles?.length) {
+            <div class="available-clients mt-3">
+                <label class="text-sm font-medium text-gray-700 mb-2 block">
+                    Resultados encontrados ({{ localData()?.total_clientes || localData()?.clientes_disponibles?.length
+                    }}):
+                </label>
+                <select class="w-full p-2 border rounded-md" [ngModel]="localData()?.cliente?.id"
+                    (ngModelChange)="selectClient($any($event))">
+                    <option [ngValue]="null" disabled>Seleccionar otro cliente...</option>
+                    @for (c of localData()?.clientes_disponibles; track c.id) {
+                    <option [value]="c.id">{{ c.nombre }} {{ c['ciudad'] ? '- ' + c['ciudad'] : '' }}</option>
+                    }
+                </select>
+            </div>
+            }
         </div>
 
         <!-- Productos -->
