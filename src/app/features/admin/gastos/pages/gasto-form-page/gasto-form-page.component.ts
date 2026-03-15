@@ -36,7 +36,7 @@ export default class GastoFormPageComponent implements OnInit {
   almacenes = signal<Almacen[]>([]);
   lotes = signal<Lote[]>([]);
   // TODO: Fetch categories from an endpoint
-  categorias = signal(['logistica', 'personal', 'otros', 'materia prima']);
+  categorias = signal(['logistica', 'personal', 'insumos', 'otros']);
 
   constructor() {
     this.gastoForm = this.fb.group({

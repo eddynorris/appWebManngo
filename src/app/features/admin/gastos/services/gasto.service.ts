@@ -11,10 +11,20 @@ export class GastoService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/gastos`;
 
-  getGastos(page: number = 1, per_page: number = 10): Observable<GastosResponse> {
-    const params = new HttpParams()
+  getGastos(page: number = 1, per_page: number = 10, filters: any = {}): Observable<GastosResponse> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', per_page.toString());
+
+    if (filters.categoria) params = params.set('categoria', filters.categoria);
+    if (filters.fecha_inicio) params = params.set('fecha_inicio', filters.fecha_inicio);
+    if (filters.fecha_fin) params = params.set('fecha_fin', filters.fecha_fin);
+    if (filters.almacen_id) params = params.set('almacen_id', filters.almacen_id);
+    if (filters.usuario_id) params = params.set('usuario_id', filters.usuario_id);
+    if (filters.lote_id) params = params.set('lote_id', filters.lote_id);
+    if (filters.sort_by) params = params.set('sort_by', filters.sort_by);
+    if (filters.sort_order) params = params.set('sort_order', filters.sort_order);
+
     return this.http.get<GastosResponse>(this.apiUrl, { params });
   }
 

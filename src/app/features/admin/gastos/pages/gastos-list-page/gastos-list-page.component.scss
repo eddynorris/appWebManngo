@@ -1,4 +1,3 @@
-
 :host {
   display: block;
 }
@@ -6,6 +5,13 @@
 .page-container {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 // Header Actions

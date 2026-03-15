@@ -6,10 +6,7 @@
       <p>Registra y gestiona todos los gastos operativos.</p>
     </div>
     <div class="header-actions">
-      <button 
-        class="btn-export"
-        (click)="handleExportExcel()"
-        [disabled]="isLoading()">
+      <button class="btn-export" (click)="handleExportExcel()" [disabled]="isLoading()">
         <fa-icon [icon]="faDownload"></fa-icon>
         Descargar Excel
       </button>
@@ -20,31 +17,106 @@
     </div>
   </div>
 
+  <!-- Filters -->
+  <div class="filters-container" [formGroup]="filterForm">
+    <div class="filters-header">
+      <h3 class="filters-title">Filtrar Gastos</h3>
+      <button type="button" class="btn-ghost btn-sm" (click)="clearFilters()">
+        <fa-icon [icon]="faFilterCircleXmark"></fa-icon>
+        Limpiar
+      </button>
+    </div>
+
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="categoria">Categoría</label>
+        <select id="categoria" formControlName="categoria">
+          <option value="">Todas</option>
+          @for (cat of categorias; track cat) {
+          <option [value]="cat">{{ cat | titlecase }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="fecha_inicio">Desde</label>
+        <input id="fecha_inicio" type="date" formControlName="fecha_inicio">
+      </div>
+
+      <div class="filter-group">
+        <label for="fecha_fin">Hasta</label>
+        <input id="fecha_fin" type="date" formControlName="fecha_fin">
+      </div>
+
+      <div class="filter-group">
+        <label for="almacen_id">Almacén</label>
+        <select id="almacen_id" formControlName="almacen_id">
+          <option value="">Todos</option>
+          @for (almacen of almacenes(); track almacen.id) {
+          <option [value]="almacen.id">{{ almacen.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      @if (authService.isAdmin()) {
+      <div class="filter-group">
+        <label for="usuario_id">Usuario</label>
+        <select id="usuario_id" formControlName="usuario_id">
+          <option value="">Todos</option>
+          @for (usuario of usuarios(); track usuario.id) {
+          <option [value]="usuario.id">{{ usuario.username }}</option>
+          }
+        </select>
+      </div>
+      }
+
+      <div class="filter-group">
+        <label for="lote_id">Lote</label>
+        <select id="lote_id" formControlName="lote_id">
+          <option value="">Todos</option>
+          @for (lote of lotes(); track lote.id) {
+          <option [value]="lote.id">{{ lote.descripcion || 'Lote #' + lote.id }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="sort_by">Ordenar por</label>
+        <select id="sort_by" formControlName="sort_by">
+          <option value="fecha">Fecha</option>
+          <option value="monto">Monto</option>
+          <option value="categoria">Categoría</option>
+          <option value="descripcion">Descripción</option>
+          <option value="almacen_nombre">Almacén</option>
+          <option value="usuario_username">Usuario</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="sort_order">Orden</label>
+        <select id="sort_order" formControlName="sort_order">
+          <option value="desc">Descendente</option>
+          <option value="asc">Ascendente</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
   <!-- Reusable Data Table -->
-  <app-data-table
-    [data]="gastos()"
-    [columns]="columns"
-    [actions]="actions"
-    (onAction)="handleTableAction($event)"
-  ></app-data-table>
+  <app-data-table [data]="gastos()" [columns]="columns" [actions]="actions"
+    (onAction)="handleTableAction($event)"></app-data-table>
 
   <!-- Pagination -->
   @if (pagination()) {
-    <app-pagination
-      [pagination]="pagination()!"
-      (pageChange)="onPageChange($event)"
-      (perPageChange)="onPerPageChange($event)"
-    ></app-pagination>
+  <app-pagination [pagination]="pagination()!" (pageChange)="onPageChange($event)"
+    (perPageChange)="onPerPageChange($event)"></app-pagination>
   }
 </div>
 
 <!-- Modal de Confirmación -->
 @if (isDeleteModalVisible()) {
-  <app-confirmation-modal
-    [title]="'Confirmar Eliminación'"
-    [message]="'¿Estás seguro de que quieres eliminar el gasto: ' + gastoToDelete()?.descripcion + '?'"
-    confirmText="Sí, Eliminar"
-    (confirm)="handleDeleteConfirmation()"
-    (cancel)="closeDeleteModal()"
-  ></app-confirmation-modal>
+<app-confirmation-modal [title]="'Confirmar Eliminación'"
+  [message]="'¿Estás seguro de que quieres eliminar el gasto: ' + gastoToDelete()?.descripcion + '?'"
+  confirmText="Sí, Eliminar" (confirm)="handleDeleteConfirmation()"
+  (cancel)="closeDeleteModal()"></app-confirmation-modal>
 }
