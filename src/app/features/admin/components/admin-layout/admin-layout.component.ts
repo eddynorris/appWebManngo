@@ -119,6 +119,14 @@ export default class AdminLayoutComponent {
   }
 
   /**
+   * Verifica si una ruta está activa
+   */
+  isRouteActive(route?: string): boolean {
+    if (!route) return false;
+    return this.router.url.includes(route);
+  }
+
+  /**
    * Alterna la visibilidad del sidebar
    */
   toggleSidebar(): void {

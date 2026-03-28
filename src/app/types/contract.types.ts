@@ -80,6 +80,9 @@ export type Venta = {
   vendedor_id?: number;
   fecha?: string;
   total?: string;
+  monto_pago?: number;
+  metodo_pago?: string;
+  // Legacy fields (kept for list/detail views)
   tipo_pago?: string;
   estado_pago?: string;
   saldo_pendiente?: string;
@@ -89,7 +92,11 @@ export type Venta = {
   cliente?: Cliente;
   almacen?: Almacen;
   vendedor?: User;
+  monto_gasto?: number;
 };
+
+
+
 
 export type VentaDetalle = {
   id?: number;

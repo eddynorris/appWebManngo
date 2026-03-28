@@ -1,7 +1,9 @@
+@use 'src/styles/variables' as vars;
+
 .table-container {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: vars.$color-bg-primary;
+  border-radius: vars.$border-radius;
+  box-shadow: vars.$box-shadow-sm;
   overflow-x: auto;
 }
 
@@ -12,14 +14,14 @@
   th, td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid vars.$color-border;
   }
 
   th {
-    background: #f8f9fa;
-    font-weight: 600;
-    color: #495057;
-    font-size: 0.9rem;
+    background: vars.$color-bg-secondary;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-secondary;
+    font-size: vars.$font-size-sm;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -28,7 +30,7 @@
     transition: background-color 0.2s;
 
     &:hover {
-      background: #f8f9fa;
+      background: vars.$color-bg-secondary;
     }
 
     &.inactive {
@@ -40,24 +42,24 @@
 .table-image {
   width: 48px;
   height: 48px;
-  border-radius: 6px;
+  border-radius: vars.$border-radius-sm;
   object-fit: cover;
 }
 
 .status-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: vars.$font-size-xs;
+  font-weight: vars.$font-weight-medium;
 
   &.active {
-    background: rgba(40, 167, 69, 0.1);
-    color: #28a745;
+    background: rgba(vars.$color-success-500, 0.1);
+    color: vars.$color-success;
   }
 
   &.inactive {
-    background: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
+    background: rgba(vars.$color-danger-500, 0.1);
+    color: vars.$color-danger;
   }
 }
 
@@ -69,28 +71,28 @@
     background: none;
     border: none;
     padding: 0.5rem 0.75rem;
-    border-radius: 4px;
+    border-radius: vars.$border-radius-sm;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.875rem;
-    color: #495057;
+    transition: vars.$transition-base;
+    font-size: vars.$font-size-sm;
+    color: vars.$color-text-secondary;
     display: flex;
     align-items: center;
     gap: 0.25rem;
     white-space: nowrap;
 
     &:hover {
-      background: #e9ecef;
-      color: #007bff;
+      background: vars.$color-bg-tertiary;
+      color: vars.$color-primary;
     }
 
     &.danger:hover {
-      background: rgba(220, 53, 69, 0.1);
-      color: #dc3545;
+      background: rgba(vars.$color-danger-500, 0.1);
+      color: vars.$color-danger;
     }
 
     fa-icon {
-      font-size: 0.875rem;
+      font-size: vars.$font-size-sm;
     }
   }
 
@@ -98,19 +100,19 @@
     background: none;
     border: none;
     padding: 0.5rem;
-    border-radius: 4px;
+    border-radius: vars.$border-radius-sm;
     cursor: pointer;
     transition: background-color 0.2s;
-    font-size: 1rem;
-    color: #495057;
+    font-size: vars.$font-size-base;
+    color: vars.$color-text-secondary;
 
     &:hover {
-      background: #e9ecef;
+      background: vars.$color-bg-tertiary;
     }
 
     &.danger:hover {
-      background: rgba(220, 53, 69, 0.1);
-      color: #dc3545;
+      background: rgba(vars.$color-danger-500, 0.1);
+      color: vars.$color-danger;
     }
   }
 }
@@ -118,7 +120,7 @@
 .loading-state, .empty-state {
   text-align: center;
   padding: 3rem 2rem;
-  color: #6c757d;
+  color: vars.$color-text-muted;
 }
 
 .loading-state {
@@ -131,8 +133,8 @@
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(255, 68, 68, 0.3);
-  border-top-color: #ff4444;
+  border: 3px solid rgba(vars.$color-primary-500, 0.3);
+  border-top-color: vars.$color-primary;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

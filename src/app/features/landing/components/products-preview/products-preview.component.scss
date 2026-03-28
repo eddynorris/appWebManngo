@@ -68,11 +68,11 @@
   gap: 2rem;
   justify-items: center;
 
-  @media (max-width: 1024px) {
+  @media (max-width: vars.$breakpoint-lg) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: vars.$breakpoint-md) {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
@@ -80,17 +80,27 @@
   // Centrar último elemento en grid de 7 productos
   .product-card:nth-child(7) {
     grid-column: 2 / 3;
-    
-    @media (max-width: 1024px) {
+
+    @media (max-width: vars.$breakpoint-lg) {
       grid-column: 1 / -1;
       justify-self: center;
       max-width: 350px;
     }
-    
-    @media (max-width: 768px) {
+
+    @media (max-width: vars.$breakpoint-md) {
       grid-column: 1;
       max-width: none;
     }
+  }
+}
+
+@media (max-width: vars.$breakpoint-md) {
+  .products-section {
+    padding: 4rem 0;
+  }
+
+  .section-header {
+    margin-bottom: 2.5rem;
   }
 }
 

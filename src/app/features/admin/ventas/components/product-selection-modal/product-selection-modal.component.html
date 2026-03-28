@@ -1,0 +1,81 @@
+@if (isOpen()) {
+  <div class="product-modal-overlay" (click)="onOverlayClick($event)">
+    <div class="product-modal">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h2>Seleccionar Producto</h2>
+        <button type="button" class="btn-icon" (click)="onClose()" title="Cerrar">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="modal-search">
+        <div class="search-wrapper">
+          <fa-icon [icon]="faSearch" class="search-icon"></fa-icon>
+          <input
+            type="text"
+            placeholder="Buscar producto por nombre o tipo..."
+            [value]="searchTerm()"
+            (input)="onSearch($event)"
+            autofocus
+          />
+        </div>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="modal-body">
+        @if (filteredPresentaciones().length > 0) {
+          <div class="products-grid">
+            @for (p of filteredPresentaciones(); track p.id) {
+              <div
+                class="product-card"
+                [class.out-of-stock]="p.stock_disponible === 0"
+                (click)="selectProduct(p)"
+              >
+                @if (p.url_foto) {
+                  <img [src]="p.url_foto" [alt]="p.nombre" class="product-image" loading="lazy" />
+                } @else {
+                  <div class="product-image-placeholder">📦</div>
+                }
+
+                <div class="product-info">
+                  <span class="product-name">{{ p.nombre }}</span>
+                  <span class="product-capacity">{{ p.capacidad_kg }} kg · {{ p.tipo }}</span>
+                  <span class="product-price">S/. {{ p.precio_venta }}</span>
+                </div>
+
+                <div class="product-footer">
+                  @if (p.stock_disponible > 10) {
+                    <span class="stock-badge in-stock">Stock: {{ p.stock_disponible }}</span>
+                  } @else if (p.stock_disponible > 0) {
+                    <span class="stock-badge low-stock">Bajo: {{ p.stock_disponible }}</span>
+                  } @else {
+                    <span class="stock-badge no-stock">Sin stock</span>
+                  }
+
+                  <button
+                    type="button"
+                    class="add-btn"
+                    [disabled]="p.stock_disponible === 0"
+                    (click)="selectProduct(p); $event.stopPropagation()"
+                  >
+                    <fa-icon [icon]="faPlus"></fa-icon>
+                    Añadir
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="no-products">
+            <span>🔍</span>
+            <p>No se encontraron productos para "{{ searchTerm() }}"</p>
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+}

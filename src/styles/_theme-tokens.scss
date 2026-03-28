@@ -1,6 +1,6 @@
 // =============================================================================
 // THEME TOKENS - CSS Custom Properties
-// Single Theme (Light Mode)
+// Supports Light and Dark Modes
 // =============================================================================
 
 @use './variables' as vars;
@@ -11,13 +11,14 @@
 
 :root {
     // ---------------------------------------------------------------------------
-    // COLORS
+    // COLORS (LIGHT MODE - DEFAULT)
     // ---------------------------------------------------------------------------
 
     // Primary Colors
     --color-primary: #{vars.$color-primary-600};
     --color-primary-hover: #{vars.$color-primary-700};
     --color-primary-active: #{vars.$color-primary-800};
+    --color-primary-rgb: 22, 163, 74; // #16A34A
 
     // Secondary Colors
     --color-secondary: #{vars.$color-secondary-600};
@@ -50,13 +51,15 @@
     --elevation-3: #{vars.$box-shadow-md};
     --elevation-4: #{vars.$box-shadow-lg};
 
-    // Sidebar Specific
-    --sidebar-bg: linear-gradient(135deg, #{vars.$color-primary-700} 0%, #{vars.$color-primary-600} 50%, #{vars.$color-primary-500} 100%);
-    --sidebar-text: #{vars.$color-text-white};
-    --sidebar-text-muted: #{rgba(vars.$color-text-white, 0.7)};
-    --sidebar-hover: #{rgba(vars.$color-text-white, 0.1)};
-    --sidebar-active: #{rgba(vars.$color-text-white, 0.2)};
-    --sidebar-border: #{rgba(vars.$color-text-white, 0.1)};
+    // Sidebar Specific - Elite Style
+    --sidebar-bg: #060d0a;
+    --sidebar-text: #ffffff;
+    --sidebar-text-muted: #64748b;
+    --sidebar-hover: rgba(16, 185, 129, 0.05);
+    --sidebar-active-bg: rgba(16, 185, 129, 0.08);
+    --sidebar-active-text: #10b981;
+    --sidebar-border: rgba(255, 255, 255, 0.03);
+    --sidebar-accent: #10b981;
 
     // ---------------------------------------------------------------------------
     // FRIENDLY ALIASES
@@ -86,6 +89,47 @@
 
     // Overlay
     --overlay-bg: rgba(0, 0, 0, 0.6);
+}
+
+// ---------------------------------------------------------------------------
+// DARK MODE OVERRIDES
+// ---------------------------------------------------------------------------
+
+[data-theme='dark'] {
+    // Primary Colors (slightly brighter for dark bg)
+    --color-primary: #{vars.$color-primary-500};
+    --color-primary-hover: #{vars.$color-primary-400};
+    --color-primary-active: #{vars.$color-primary-300};
+    --color-primary-rgb: 34, 197, 94; // #22C55E
+
+    // Surface Colors
+    --color-surface: #{vars.$color-bg-primary-dark};
+    --color-surface-variant: #{vars.$color-bg-secondary-dark};
+    --color-surface-tertiary: #{vars.$color-bg-tertiary-dark};
+    --color-surface-hover: #{vars.$color-bg-hover-dark};
+
+    // Text Colors
+    --color-on-surface: #{vars.$color-text-primary-dark};
+    --color-on-surface-variant: #{vars.$color-text-secondary-dark};
+    --color-on-surface-muted: #{vars.$color-text-muted-dark};
+
+    // Border Colors
+    --color-outline: #{vars.$color-border-dark-mode};
+    --color-outline-variant: #{vars.$color-border-light-dark-mode};
+
+    // Sidebar Specific (Darker variant)
+    --sidebar-bg: linear-gradient(135deg, #{vars.$color-secondary-900} 0%, #{vars.$color-secondary-800} 100%);
+    --sidebar-text: #{vars.$color-text-primary-dark};
+    --sidebar-text-muted: #{vars.$color-text-secondary-dark};
+    --sidebar-hover: var(--color-surface-hover);
+    --sidebar-active: var(--color-surface-variant);
+    --sidebar-border: var(--color-outline);
+
+    // Shadows (Stronger for dark mode)
+    --elevation-1: #{vars.$box-shadow-sm-dark};
+    --elevation-2: #{vars.$box-shadow-dark};
+    --elevation-3: #{vars.$box-shadow-md-dark};
+    --elevation-4: #{vars.$box-shadow-lg-dark};
 }
 
 // =============================================================================

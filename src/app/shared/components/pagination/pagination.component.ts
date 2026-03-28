@@ -21,9 +21,33 @@ export class PaginationComponent {
   pages = computed(() => {
     const total = this.totalPages();
     const current = this.currentPage();
-    // Logic to create a pages array e.g., [1, '...', 4, 5, 6, '...', 10]
-    // For simplicity now, let's just create an array from 1 to totalPages
-    return Array.from({ length: total }, (_, i) => i + 1);
+    const range = 2; // Number of pages to show before and after current page
+    const result: (number | string)[] = [];
+
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    result.push(1);
+
+    if (current > range + 2) {
+      result.push('...');
+    }
+
+    const start = Math.max(2, current - range);
+    const end = Math.min(total - 1, current + range);
+
+    for (let i = start; i <= end; i++) {
+      result.push(i);
+    }
+
+    if (current < total - range - 1) {
+      result.push('...');
+    }
+
+    result.push(total);
+
+    return result;
   });
 
   goToPage(page: number): void {
@@ -44,5 +68,13 @@ export class PaginationComponent {
     const target = event.target as HTMLSelectElement;
     const newPerPage = parseInt(target.value, 10);
     this.perPageChange.emit(newPerPage);
+  }
+
+  isNumber(pageNum: number | string): pageNum is number {
+    return typeof pageNum === 'number';
+  }
+
+  asNumber(pageNum: number | string): number {
+    return pageNum as number;
   }
 }

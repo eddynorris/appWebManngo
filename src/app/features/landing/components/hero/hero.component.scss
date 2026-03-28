@@ -1,5 +1,4 @@
 
-
 .hero {
   height: 100vh;
   display: flex;
@@ -52,7 +51,7 @@
 }
 
 .hero-subtitle {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
   color: #e0e0e0;
   margin-bottom: 2rem;
   max-width: 600px;
@@ -68,7 +67,8 @@
   flex-wrap: wrap;
 }
 
-.btn-primary, .btn-secondary {
+// Botones específicos del hero para no pisar el sistema global
+.hero-btn {
   padding: 1rem 2rem;
   font-size: 1rem;
   font-weight: 700;
@@ -78,32 +78,32 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   border: 2px solid;
-}
 
-.btn-primary {
-  background: #ff4444;
-  color: #fff;
-  border-color: #ff4444;
-}
+  &--primary {
+    background: #ff4444;
+    color: #fff;
+    border-color: #ff4444;
 
-.btn-primary:hover {
-  background: #ff6666;
-  border-color: #ff6666;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
-}
+    &:hover {
+      background: #ff6666;
+      border-color: #ff6666;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
+    }
+  }
 
-.btn-secondary {
-  background: transparent;
-  color: #fff;
-  border-color: #fff;
-}
+  &--secondary {
+    background: transparent;
+    color: #fff;
+    border-color: #fff;
 
-.btn-secondary:hover {
-  background: #fff;
-  color: #000;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    &:hover {
+      background: #fff;
+      color: #000;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    }
+  }
 }
 
 .hero-video {
@@ -118,17 +118,32 @@
 
 @media (max-width: 768px) {
   .hero {
-    height: 80vh;
+    height: 85vh;
+    min-height: 480px;
     padding-top: 80px;
+  }
+
+  .hero-content {
+    padding: 0 1rem;
   }
 
   .hero-buttons {
     flex-direction: column;
     align-items: center;
+    gap: 0.75rem;
   }
 
-  .btn-primary, .btn-secondary {
+  .hero-btn {
     width: 100%;
     max-width: 300px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    height: auto;
+    padding-top: 100px;
+    padding-bottom: 3rem;
   }
 }

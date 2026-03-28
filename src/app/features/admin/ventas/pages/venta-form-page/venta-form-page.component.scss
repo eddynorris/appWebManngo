@@ -1,271 +1,258 @@
 @use 'src/styles/variables' as vars;
 
-// Voice button in header
-.form-page-container {
-  .page-header {
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 0.5rem;
-      flex-wrap: wrap;
+// ════════════════════════════════════════════════════════════════════════════
+// VENTA FORM PAGE – POS Desktop Layout
+// Usa clases globales de _components.scss; aquí solo van estilos específicos.
+// ════════════════════════════════════════════════════════════════════════════
 
-      h1 {
-        margin: 0;
-        flex: 1;
-        min-width: 200px;
-      }
+// ── Page Header ─────────────────────────────────────────────────────────────
 
-      .command-bar {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        flex-wrap: wrap;
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: vars.$spacer-md;
+  margin-bottom: vars.$spacer-xl;
 
-        .text-command-input {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          background: vars.$color-bg-primary;
-          border: 1px solid vars.$color-border;
-          border-radius: vars.$border-radius;
-          padding: 0.25rem 0.5rem;
-          transition: vars.$transition-base;
-          min-width: 300px;
+  @media (max-width: vars.$breakpoint-md) {
+    flex-direction: column;
 
-          &:focus-within {
-            border-color: vars.$color-primary;
-            box-shadow: 0 0 0 3px rgba(vars.$color-primary, 0.1);
-          }
-
-          input {
-            border: none;
-            background: transparent;
-            padding: 0.5rem;
-            font-size: vars.$font-size-sm;
-            color: vars.$color-text-primary;
-            flex: 1;
-            outline: none;
-
-            &::placeholder {
-              color: vars.$color-text-muted;
-            }
-          }
-
-          .btn-icon {
-            color: vars.$color-primary;
-            padding: 0.25rem;
-
-            &:disabled {
-              color: vars.$color-text-muted;
-              opacity: 0.5;
-            }
-
-            &:hover:not(:disabled) {
-              background: rgba(vars.$color-primary, 0.1);
-              border-radius: 50%;
-            }
-          }
-        }
-
-        .voice-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          min-width: 160px;
-          justify-content: center;
-          white-space: nowrap;
-          flex-shrink: 0;
-
-          &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
-
-          fa-icon {
-            font-size: 1.1rem;
-          }
-        }
-      }
+    .header-actions {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
     }
+  }
+
+  h1 {
+    font-size: vars.$font-size-2xl;
+    font-weight: vars.$font-weight-bold;
+    color: vars.$color-text-primary;
+    margin: 0 0 vars.$spacer-xs;
+  }
+
+  p {
+    color: vars.$color-text-secondary;
+    font-size: vars.$font-size-base;
+    margin: 0;
   }
 }
 
-// Venta Form Page - Estilos específicos
-.details-array {
+.header-actions {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.details-header,
-.details-row {
-  display: grid;
-  grid-template-columns: 3fr 1fr 1fr 1fr 40px;
-  gap: 1rem;
+  gap: vars.$spacer-sm;
   align-items: center;
 }
 
+// ── Command bar (cabecera) ────────────────────────────────────────────────
+
+.text-command-input {
+  display: flex;
+  gap: vars.$spacer-xs;
+  align-items: center;
+  width: 100%;
+
+  input {
+    flex: 1;
+    min-width: 0; // Fixes overflow on very small devices
+    width: 100%;
+    padding: vars.$spacer-sm vars.$spacer-md;
+    border: 1px solid vars.$color-border;
+    border-radius: vars.$border-radius;
+    font-family: vars.$font-family-base;
+    font-size: vars.$font-size-sm;
+    color: vars.$color-text-primary;
+    background: vars.$color-bg-primary;
+    transition: vars.$transition-base;
+
+    &:focus {
+      outline: none;
+      border-color: vars.$color-primary;
+      box-shadow: 0 0 0 3px rgba(vars.$color-primary, 0.1);
+    }
+  }
+}
+
+// ── Tabla de detalles ─────────────────────────────────────────────────────
+
+.details-array {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$spacer-sm;
+  margin-bottom: vars.$spacer-lg;
+}
+
 .details-header {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1.5fr 1fr 40px;
+  gap: vars.$spacer-sm;
+  padding: vars.$spacer-xs vars.$spacer-sm;
+  background: vars.$color-bg-secondary;
+  border-radius: vars.$border-radius-sm;
+
   .header-item {
+    font-size: vars.$font-size-xs;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 
-    &.quantity,
-    &.price,
-    &.total {
-      text-align: right;
-    }
+    &.actions { text-align: center; }
+    &.total { text-align: right; }
+    &.price { text-align: right; }
+  }
 
-    &.product {
-      text-align: left;
-    }
-
-    &.actions {
-      text-align: center;
-    }
+  // Ocultar la cabecera en móvil, los labels se muestran inline
+  @media (max-width: vars.$breakpoint-sm) {
+    display: none;
   }
 }
 
 .details-row {
-  input[type="number"] {
-    text-align: right;
+  display: grid;
+  grid-template-columns: 3fr 1fr 1.5fr 1fr 40px;
+  gap: vars.$spacer-sm;
+  align-items: center;
+  padding: vars.$spacer-sm;
+  background: vars.$color-bg-primary;
+  border: 1px solid vars.$color-border;
+  border-radius: vars.$border-radius;
+  animation: slideIn 0.2s ease-out;
+
+  &:hover {
+    border-color: vars.$color-border-dark;
+    box-shadow: vars.$box-shadow-xs;
   }
 
-  .product-select {
-    .stock-info {
+  // Ocultar labels en la fila (visibles solo en accesibilidad)
+  .input-group label {
+    display: none;
+  }
+
+  // Layout de tarjeta en móvil
+  @media (max-width: vars.$breakpoint-sm) {
+    grid-template-columns: 1fr;
+    gap: vars.$spacer-xs;
+    position: relative;
+    padding-right: 48px; // Espacio para el botón de eliminar
+
+    // Restaurar labels en móvil
+    .input-group label {
+      display: block;
+      font-size: vars.$font-size-xs;
       font-weight: vars.$font-weight-semibold;
-      margin-left: 0.5rem;
-
-      &.stock-ok {
-        color: vars.$color-success;
-      }
-
-      &.stock-low {
-        color: vars.$color-warning-dark;
-      }
-
-      &.stock-out {
-        color: vars.$color-danger;
-        font-weight: vars.$font-weight-bold;
-      }
+      color: vars.$color-text-secondary;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
     }
-  }
 
-  .subtotal {
-    text-align: right;
-    font-weight: vars.$font-weight-semibold;
-    color: vars.$color-primary;
+    // Botón de eliminar anclado al extremo superior derecho
+    button[type="button"] {
+      position: absolute;
+      top: vars.$spacer-sm;
+      right: vars.$spacer-sm;
+    }
   }
 }
 
-// Estilos específicos para total
-.total-container {
-  .total-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.product-name-display {
+  background: vars.$color-bg-secondary !important;
+  cursor: default !important;
+  font-weight: vars.$font-weight-medium;
+  color: vars.$color-text-primary;
+}
 
-  .total-label .total-text {
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.subtotal {
+  text-align: right;
+  font-weight: vars.$font-weight-semibold;
+  color: vars.$color-text-primary;
+  font-size: vars.$font-size-sm;
+}
+
+// ── Sección de total ─────────────────────────────────────────────────────
+
+.total-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: vars.$spacer-md;
+  border-top: 2px solid vars.$color-border;
+}
+
+.total-content {
+  display: flex;
+  align-items: center;
+  gap: vars.$spacer-md;
+  flex-wrap: wrap; // Allows wrapped text on very small screens
+
+  .total-text {
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-secondary;
+    font-size: vars.$font-size-base;
   }
 
   .total-amount {
     display: flex;
     align-items: baseline;
-    gap: 0.25rem;
+    gap: vars.$spacer-xs;
 
     .currency {
-      color: rgba(255, 255, 255, 0.8);
+      font-size: vars.$font-size-sm;
+      color: vars.$color-text-secondary;
+      font-weight: vars.$font-weight-medium;
     }
-  }
-}
 
-// Estilos específicos para botón agregar
-.add-detail-btn {
-  align-self: flex-start;
-
-  &:hover {
-    transform: translateY(-1px);
-  }
-}
-
-// Estilos específicos para sección de formulario
-.form-section {
-  &:nth-child(2) {
-    .section-title {
-      color: vars.$color-primary;
-      border-bottom-color: vars.$color-primary;
-    }
-  }
-}
-
-// Estilos para campos requeridos
-.input-group {
-  label {
-
-    &[required]::after,
-    &.required::after {
-      content: '*';
-      color: vars.$color-danger;
-      margin-left: 4px;
+    .amount {
+      font-size: vars.$font-size-3xl;
       font-weight: vars.$font-weight-bold;
+      color: vars.$color-primary;
     }
   }
 }
 
-// Responsive específico del componente
-@media (max-width: 768px) {
+// ── Barra de pago + añadir producto ──────────────────────────────────────
 
-  .details-header,
-  .details-row {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    text-align: left;
+.add-product-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: vars.$spacer-md;
+  padding: vars.$spacer-md;
+  background: vars.$color-bg-secondary;
+  border-radius: vars.$border-radius;
+  border: 1px solid vars.$color-border;
+
+  .payment-field {
+    min-width: 150px;
+    flex: 1;
   }
 
-  .details-header {
-    display: none;
+  .expense-field {
+    min-width: 120px;
+    flex: 0.5;
   }
 
-  .details-row {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-
-    .input-group {
-      width: 100%;
-
-      label {
-        display: block;
-        margin-bottom: 0.25rem;
-      }
-    }
-
-    .subtotal {
-      text-align: center;
-    }
-
-    .btn-icon.danger {
-      align-self: center;
-      margin-top: 0.5rem;
-    }
+  .expense-desc-field {
+    min-width: 180px;
+    flex: 1;
   }
 
-  .total-container {
-    .total-content {
-      flex-direction: column;
-      gap: 1rem;
-      text-align: center;
-    }
-  }
-}
-
-@media (max-width: 576px) {
   .add-detail-btn {
-    width: 100%;
-    justify-content: center;
+    align-self: flex-end;
+    height: 48px;
+    padding: 0 1.5rem;
+    white-space: nowrap;
+  }
+
+  .input-group {
+    position: relative;
+  }
+
+  @media (max-width: vars.$breakpoint-md) {
+    flex-direction: column;
+    align-items: stretch;
+
+    .add-detail-btn {
+      height: auto;
+    }
   }
 }

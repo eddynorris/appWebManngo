@@ -1,0 +1,254 @@
+@use 'src/styles/variables' as vars;
+
+// El host ocupa todo el "slot" que Angular asigna al componente
+:host {
+  display: contents;
+}
+
+// ──────────────────────────────────────────────
+// Modal de selección de productos – POS desktop
+// ──────────────────────────────────────────────
+
+.product-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: vars.$z-index-modal;
+  animation: fadeIn 0.2s ease-out;
+  padding: vars.$spacer-lg;
+}
+
+.product-modal {
+  background: vars.$color-bg-primary;
+  border-radius: vars.$border-radius-lg;
+  box-shadow: vars.$box-shadow-xl;
+  width: 100%;
+  max-width: 860px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.25s ease-out;
+  overflow: hidden;
+}
+
+// ── Cabecera ──────────────────────────────────
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: vars.$spacer-lg vars.$spacer-xl;
+  border-bottom: 1px solid vars.$color-border;
+  flex-shrink: 0;
+
+  h2 {
+    margin: 0;
+    font-size: vars.$font-size-xl;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-primary;
+  }
+}
+
+// ── Búsqueda ─────────────────────────────────
+
+.modal-search {
+  padding: vars.$spacer-md vars.$spacer-xl;
+  border-bottom: 1px solid vars.$color-border;
+  flex-shrink: 0;
+
+  .search-wrapper {
+    position: relative;
+
+    .search-icon {
+      position: absolute;
+      left: vars.$spacer-md;
+      top: 50%;
+      transform: translateY(-50%);
+      color: vars.$color-text-muted;
+      pointer-events: none;
+    }
+
+    input {
+      width: 100%;
+      padding: vars.$spacer-sm vars.$spacer-md vars.$spacer-sm 2.5rem;
+      border: 1px solid vars.$color-border;
+      border-radius: vars.$border-radius;
+      font-size: vars.$font-size-base;
+      color: vars.$color-text-primary;
+      background: vars.$color-bg-secondary;
+      transition: vars.$transition-base;
+      box-sizing: border-box;
+
+      &:focus {
+        outline: none;
+        border-color: vars.$color-primary;
+        box-shadow: 0 0 0 3px rgba(vars.$color-primary, 0.1);
+        background: vars.$color-bg-primary;
+      }
+
+      &::placeholder {
+        color: vars.$color-text-muted;
+      }
+    }
+  }
+}
+
+// ── Grid de productos ─────────────────────────
+
+.modal-body {
+  overflow-y: auto;
+  padding: vars.$spacer-lg vars.$spacer-xl;
+  flex: 1;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: vars.$spacer-md;
+}
+
+// ── Tarjeta de producto ───────────────────────
+
+.product-card {
+  border: 1px solid vars.$color-border;
+  border-radius: vars.$border-radius-md;
+  overflow: hidden;
+  background: vars.$color-bg-primary;
+  cursor: pointer;
+  transition: vars.$transition-base;
+  display: flex;
+  flex-direction: column;
+
+  &:hover:not(.out-of-stock) {
+    border-color: vars.$color-primary;
+    box-shadow: vars.$box-shadow-md;
+    transform: translateY(-2px);
+  }
+
+  &.out-of-stock {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.product-image {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  background: vars.$color-bg-tertiary;
+  flex-shrink: 0;
+}
+
+.product-image-placeholder {
+  width: 100%;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: vars.$color-bg-secondary;
+  color: vars.$color-text-muted;
+  font-size: vars.$font-size-3xl;
+  flex-shrink: 0;
+}
+
+.product-info {
+  padding: vars.$spacer-sm vars.$spacer-md;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+
+  .product-name {
+    font-size: vars.$font-size-sm;
+    font-weight: vars.$font-weight-semibold;
+    color: vars.$color-text-primary;
+    line-height: vars.$line-height-snug;
+  }
+
+  .product-capacity {
+    font-size: vars.$font-size-xs;
+    color: vars.$color-text-muted;
+  }
+
+  .product-price {
+    font-size: vars.$font-size-base;
+    font-weight: vars.$font-weight-bold;
+    color: vars.$color-primary;
+    margin-top: 0.125rem;
+  }
+}
+
+.product-footer {
+  padding: vars.$spacer-xs vars.$spacer-md vars.$spacer-sm;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: vars.$spacer-xs;
+  border-top: 1px solid vars.$color-border-light;
+
+  .stock-badge {
+    font-size: vars.$font-size-xs;
+    font-weight: vars.$font-weight-medium;
+    padding: 2px 8px;
+    border-radius: vars.$border-radius-full;
+
+    &.in-stock {
+      background: rgba(vars.$color-success, 0.1);
+      color: vars.$color-success;
+    }
+
+    &.low-stock {
+      background: rgba(vars.$color-warning, 0.15);
+      color: vars.$color-warning-dark;
+    }
+
+    &.no-stock {
+      background: rgba(vars.$color-danger, 0.1);
+      color: vars.$color-danger;
+    }
+  }
+
+  .add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: vars.$color-primary;
+    color: #fff;
+    border: none;
+    border-radius: vars.$border-radius-sm;
+    padding: 4px 10px;
+    font-size: vars.$font-size-xs;
+    font-weight: vars.$font-weight-medium;
+    cursor: pointer;
+    transition: vars.$transition-fast;
+
+    &:hover:not(:disabled) {
+      background: vars.$color-primary-dark;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ── Estado vacío ──────────────────────────────
+
+.no-products {
+  text-align: center;
+  padding: vars.$spacer-4xl vars.$spacer-xl;
+  color: vars.$color-text-muted;
+
+  p {
+    margin: vars.$spacer-sm 0 0;
+    font-size: vars.$font-size-base;
+  }
+
+  span {
+    font-size: 3rem;
+  }
+}

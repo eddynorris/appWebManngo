@@ -21,7 +21,7 @@
 }
 
 .cta-subtitle {
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.2rem, 3vw, 2rem);
   font-weight: 700;
   color: #fff;
   margin-bottom: 0.5rem;
@@ -41,6 +41,7 @@
 
 .email-input {
   flex: 1;
+  min-width: 0; // Evita desbordamiento en flex
   padding: 1rem;
   border: 2px solid #333;
   border-radius: 6px;
@@ -48,19 +49,19 @@
   color: #fff;
   font-size: 1rem;
   transition: border-color 0.3s ease;
-}
 
-.email-input:focus {
-  outline: none;
-  border-color: #ff4444;
-}
+  &:focus {
+    outline: none;
+    border-color: #ff4444;
+  }
 
-.email-input.error {
-  border-color: #ff6666;
-}
+  &.error {
+    border-color: #ff6666;
+  }
 
-.email-input::placeholder {
-  color: #999;
+  &::placeholder {
+    color: #999;
+  }
 }
 
 .submit-btn {
@@ -75,17 +76,18 @@
   cursor: pointer;
   transition: all 0.3s ease;
   letter-spacing: 1px;
-}
+  white-space: nowrap;
 
-.submit-btn:hover:not(:disabled) {
-  background: #ff6666;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
-}
+  &:hover:not(:disabled) {
+    background: #ff6666;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
+  }
 
-.submit-btn:disabled {
-  background: #666;
-  cursor: not-allowed;
+  &:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
 }
 
 .error-message {
@@ -108,7 +110,7 @@
 }
 
 .merch-title {
-  font-size: 2.5rem;
+  font-size: clamp(1.5rem, 4vw, 2.5rem); // Añadido clamp() en lugar del valor fijo
   font-weight: 900;
   color: #ff4444;
   margin-bottom: 1rem;
@@ -116,7 +118,7 @@
 }
 
 .merch-description {
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
   color: #ccc;
   margin-bottom: 2rem;
   line-height: 1.6;
@@ -134,21 +136,36 @@
   border-radius: 6px;
   transition: all 0.3s ease;
   letter-spacing: 1px;
-}
 
-.merch-btn:hover {
-  background: #ff4444;
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
+  &:hover {
+    background: #ff4444;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
+  }
 }
 
 @media (max-width: 768px) {
-  .form-group {
-    flex-direction: column;
+  .cta-section {
+    padding: 4rem 0;
   }
 
-  .merch-title {
-    font-size: 2rem;
+  .form-group {
+    flex-direction: column;
+    padding: 0 1rem;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+
+  .newsletter-form {
+    margin: 2rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
   }
 }

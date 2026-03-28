@@ -4,44 +4,44 @@
 
 // Estilos para contenedores de filtros
 .filters-container {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background: var(--bg-secondary);
+  border: 1px solid var(--bg-tertiary);
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   
   h3 {
     margin: 0 0 1rem 0;
-    color: #495057;
+    color: var(--text-secondary);
     font-size: 1.1rem;
     font-weight: 600;
   }
   
   &.table-filters {
-    background: #e3f2fd;
-    border-color: #bbdefb;
+    background: var(--bg-secondary);
+    border-color: var(--border-light);
     
     h3 {
-      color: #1976d2;
+      color: var(--color-primary);
     }
   }
   
   &.export-filters {
-    background: #f3e5f5;
-    border-color: #e1bee7;
+    background: var(--bg-secondary);
+    border-color: var(--border-light);
     
     h3 {
-      color: #7b1fa2;
+      color: var(--color-primary);
     }
   }
   
   &.unified-filters {
-    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
-    border: 1px solid #28a745;
-    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.1);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border: 1px solid var(--color-success);
+    box-shadow: 0 2px 4px rgba(var(--color-primary-rgb), 0.1);
     
     h3 {
-      color: #28a745;
+      color: var(--color-success);
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -92,26 +92,26 @@
   
   label {
     font-weight: 500;
-    color: #495057;
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
   }
   
   .form-control {
     padding: 0.5rem 0.75rem;
-    border: 1px solid #ced4da;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 0.875rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     
     &:focus {
-      border-color: #80bdff;
+      border-color: var(--color-primary);
       outline: 0;
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25);
     }
     
     &:hover {
-      border-color: #adb5bd;
+      border-color: var(--text-muted);
     }
   }
   
@@ -134,8 +134,8 @@
     top: 100%;
     left: 0;
     right: 0;
-    background: white;
-    border: 1px solid #ddd;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     border-top: none;
     border-radius: 0 0 4px 4px;
     max-height: 200px;
@@ -146,16 +146,16 @@
     .cliente-option {
       padding: 0.75rem;
       cursor: pointer;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid var(--border-light);
       font-size: 0.875rem;
       transition: background-color 0.15s ease-in-out;
       
       &:hover {
-        background-color: #f8f9fa;
+        background-color: var(--bg-secondary);
       }
       
       &.selected {
-        background-color: #007bff;
+        background-color: var(--color-primary);
         color: white;
       }
       

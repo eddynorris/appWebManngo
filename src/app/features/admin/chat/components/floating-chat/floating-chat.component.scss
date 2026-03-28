@@ -4,7 +4,7 @@
   position: fixed;
   z-index: vars.$z-index-fixed;
   transition: vars.$transition-slow;
-  background: linear-gradient(135deg, vars.$color-primary, vars.$color-secondary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   bottom: vars.$spacer-lg;
   right: vars.$spacer-lg;
   width: 60px;
@@ -14,11 +14,11 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: vars.$box-shadow-lg;
+  box-shadow: var(--shadow-lg);
 
   &:hover {
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 8px 30px rgba(vars.$color-primary, 0.5);
+    box-shadow: 0 8px 30px rgba(var(--color-primary-rgb), 0.5);
   }
 
   &:active {
@@ -26,7 +26,7 @@
   }
 
   .chat-button-icon {
-    color: vars.$color-text-white;
+    color: white;
     font-size: vars.$font-size-xl;
     transition: vars.$transition-slow;
   }
@@ -37,23 +37,23 @@
     right: vars.$spacer-xs;
     width: 12px;
     height: 12px;
-    background: vars.$color-danger;
+    background: var(--color-error);
     border-radius: vars.$border-radius-pill;
-    border: 2px solid vars.$color-text-white;
+    border: 2px solid white;
     animation: pulse 2s infinite;
   }
 }
 
 .floating-chat-modal {
   position: fixed;
-  background: vars.$color-bg-primary;
+  background: var(--bg-primary);
   border-radius: vars.$border-radius-lg;
-  box-shadow: vars.$box-shadow-lg;
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   z-index: vars.$z-index-modal;
-  border: vars.$border-width solid vars.$color-border;
+  border: 1px solid var(--border-color);
   contain: layout style paint;
   bottom: 100px;
   right: vars.$spacer-lg;
@@ -68,8 +68,8 @@
 }
 
 .floating-chat-modal .chat-header {
-  background: linear-gradient(135deg, vars.$color-primary, vars.$color-secondary);
-  color: vars.$color-text-white;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
   padding: vars.$spacer-md;
   display: flex;
   justify-content: space-between;
@@ -117,7 +117,7 @@
       height: 32px;
       border: none;
       background: rgba(255, 255, 255, 0.2);
-      color: vars.$color-text-white;
+      color: white;
       border-radius: vars.$border-radius-pill;
       display: flex;
       align-items: center;
@@ -130,7 +130,7 @@
       }
 
       &.close-btn:hover {
-        background: rgba(vars.$color-danger-light, 0.8);
+        background: rgba(220, 53, 69, 0.8);
       }
     }
   }
@@ -151,7 +151,7 @@
   .minimized-unread-indicator {
     width: 8px;
     height: 8px;
-    background: vars.$color-danger;
+    background: var(--color-error);
     border-radius: vars.$border-radius-pill;
     animation: pulse 2s infinite;
   }
@@ -163,7 +163,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: vars.$color-bg-secondary;
+  background: var(--bg-secondary);
 }
 
 .messages-container {
@@ -184,11 +184,11 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: vars.$color-border-dark;
+    background: var(--border-color);
     border-radius: vars.$border-radius-sm;
 
     &:hover {
-      background: vars.$color-text-muted;
+      background: var(--text-muted);
     }
   }
 }
@@ -208,26 +208,26 @@
     }
 
     .message-bubble {
-      background: vars.$color-primary;
-      color: vars.$color-text-white;
+      background: var(--color-primary);
+      color: white;
       border-bottom-right-radius: vars.$spacer-xs;
     }
 
     .message-avatar {
-      background: vars.$color-primary;
+      background: var(--color-primary);
     }
   }
 
   &.bot-message {
     .message-bubble {
-      background: vars.$color-bg-primary;
-      color: vars.$color-text-primary;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       border-bottom-left-radius: vars.$spacer-xs;
-      border: vars.$border-width solid vars.$color-border;
+      border: 1px solid var(--border-color);
     }
 
     .message-avatar {
-      background: vars.$color-secondary;
+      background: var(--color-secondary);
     }
   }
 }
@@ -239,10 +239,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: vars.$color-text-white;
+  color: white;
   font-size: vars.$font-size-sm;
   flex-shrink: 0;
-  box-shadow: vars.$box-shadow-sm;
+  box-shadow: var(--shadow-sm);
 }
 
 .message-content {
@@ -256,12 +256,12 @@
   padding: vars.$spacer-sm;
   border-radius: calc(#{vars.$border-radius-lg} - 2px);
   word-wrap: break-word;
-  box-shadow: vars.$box-shadow-sm;
+  box-shadow: var(--shadow-sm);
   position: relative;
 
   &.typing {
-    background: vars.$color-bg-primary;
-    border: vars.$border-width solid vars.$color-border;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     padding: vars.$spacer-sm;
   }
 
@@ -288,7 +288,7 @@
     width: 6px;
     height: 6px;
     border-radius: vars.$border-radius-pill;
-    background: vars.$color-text-muted;
+    background: var(--text-muted);
     animation: typing 1.4s infinite ease-in-out;
 
     &:nth-child(1) {
@@ -308,8 +308,8 @@
 // Chat Footer
 .chat-footer {
   padding: vars.$spacer-md;
-  background: vars.$color-bg-primary;
-  border-top: vars.$border-width solid vars.$color-border;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
@@ -326,30 +326,31 @@
 .chat-input {
   flex: 1;
   padding: vars.$spacer-sm;
-  border: vars.$border-width solid vars.$color-border;
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   font-size: vars.$font-size-sm;
-  background: vars.$color-bg-secondary;
+  background: var(--bg-secondary);
   transition: vars.$transition-base;
   resize: none;
   min-height: 40px;
   max-height: 80px;
   font-family: inherit;
+  color: var(--text-primary);
 
   &:focus {
     outline: none;
-    border-color: vars.$color-primary;
-    background: vars.$color-bg-primary;
-    box-shadow: 0 0 0 2px rgba(vars.$color-primary, 0.1);
+    border-color: var(--color-primary);
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
   }
 
   &:disabled {
-    background: vars.$color-bg-secondary;
+    background: var(--bg-secondary);
     cursor: not-allowed;
   }
 
   &::placeholder {
-    color: vars.$color-text-secondary;
+    color: var(--text-muted);
   }
 }
 
@@ -358,21 +359,21 @@
   height: 40px;
   border: none;
   border-radius: vars.$border-radius-pill;
-  background: vars.$color-primary;
-  color: vars.$color-text-white;
+  background: var(--color-primary);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: vars.$transition-base;
   flex-shrink: 0;
-  box-shadow: vars.$box-shadow-sm;
+  box-shadow: var(--shadow-sm);
   position: relative;
 
   &:hover:not(:disabled) {
-    background: vars.$color-primary-dark;
+    background: var(--color-primary-hover);
     transform: translateY(-1px);
-    box-shadow: vars.$box-shadow;
+    box-shadow: var(--shadow);
   }
 
   &:active:not(:disabled) {
@@ -380,7 +381,8 @@
   }
 
   &:disabled {
-    background: vars.$color-border-dark;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
     cursor: not-allowed;
     box-shadow: none;
     transform: none;
@@ -398,7 +400,7 @@
       width: 16px;
       height: 16px;
       border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top: 2px solid vars.$color-text-white;
+      border-top: 2px solid white;
       border-radius: vars.$border-radius-pill;
       animation: spin 1s linear infinite;
     }

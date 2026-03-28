@@ -1,12 +1,15 @@
 <div class="admin-layout" [class.sidebar-collapsed]="!isSidebarOpen()">
 
+  <!-- Sidebar Backdrop (Mobile Only) -->
+  <div class="sidebar-backdrop" *ngIf="isSidebarOpen() && isMobile()" (click)="toggleSidebar()"></div>
+
   <!-- Sidebar Navigation -->
   <aside class="sidebar" [class.collapsed]="!isSidebarOpen()" role="navigation" aria-label="Main Navigation">
     <!-- Logo Area -->
     <div class="sidebar-header">
       <div class="logo-container">
-        <div class="logo-icon">
-          <fa-icon [icon]="icons.box"></fa-icon>
+        <div class="logo-icon-box">
+          <span class="logo-letter">M</span>
         </div>
         <span class="logo-text" *ngIf="isSidebarOpen()">Manngo</span>
       </div>
@@ -19,10 +22,12 @@
     <!-- Navigation Menu -->
     <div class="sidebar-content custom-scrollbar">
       <nav class="nav-menu">
+        <div class="menu-label" *ngIf="isSidebarOpen()">MAIN MENU</div>
+        
         @for (item of filteredNavigationItems(); track item.label) {
-        <div class="nav-item-group">
+        <div class="nav-item-group" [class.item-active]="isMenuExpanded(item.label) || isRouteActive(item.route)">
           <!-- Parent Menu Item -->
-          <div class="nav-item" [class.active]="isMenuExpanded(item.label)" [class.has-submenu]="item.hasSubmenu"
+          <div class="nav-item" [class.has-submenu]="item.hasSubmenu"
             (click)="item.hasSubmenu ? toggleSubmenu(item.label) : null">
 
             <a [routerLink]="item.route" [routerLinkActive]="'active'" class="nav-link" *ngIf="!item.hasSubmenu">
@@ -46,7 +51,6 @@
             @for (subItem of item.submenu; track subItem.label) {
             <a [routerLink]="subItem.route" routerLinkActive="active"
               [routerLinkActiveOptions]="{exact: subItem.exactMatch || false}" class="submenu-link">
-              <fa-icon [icon]="subItem.icon" class="submenu-icon"></fa-icon>
               <span>{{ subItem.label }}</span>
             </a>
             }
@@ -59,18 +63,20 @@
 
     <!-- Sidebar Footer -->
     <div class="sidebar-footer">
-      <div class="user-profile" If="isSidebarOpen()">
-        <div class="avatar">
-          <fa-icon [icon]="icons.user"></fa-icon>
+      <div class="user-card" *ngIf="isSidebarOpen()">
+        <div class="user-avatar-box">
+          <img src="assets/images/logo.jpg" alt="Avatar" class="avatar-img" *ngIf="false"> <!-- Placeholder for actual avatar -->
+          <div class="avatar-placeholder"></div>
+          <div class="status-indicator"></div>
         </div>
-        <div class="user-info">
-          <span class="user-name">{{ currentUser()?.username }}</span>
+        <div class="user-details">
+          <span class="user-name">{{ currentUser()?.username || 'Eddy' }}</span>
           <span class="user-role">{{ currentUser()?.rol || 'Administrator' }}</span>
         </div>
+        <button class="logout-icon-btn" (click)="logout()" title="Sign Out">
+          <fa-icon [icon]="icons.signOut"></fa-icon>
+        </button>
       </div>
-      <button class="logout-btn" (click)="logout()" title="Sign Out">
-        <fa-icon [icon]="icons.signOut"></fa-icon>
-      </button>
     </div>
   </aside>
 
@@ -83,7 +89,6 @@
           <fa-icon [icon]="icons.bars"></fa-icon>
         </button>
 
-        <!-- Breadcrumbs Placeholder -->
         <nav class="breadcrumbs" aria-label="Breadcrumb">
           <span class="breadcrumb-item">Admin</span>
           <span class="separator">/</span>
@@ -92,13 +97,11 @@
       </div>
 
       <div class="header-right">
-        <!-- Notifications -->
         <button class="icon-btn" aria-label="Notifications">
           <fa-icon [icon]="icons.bell"></fa-icon>
           <span class="badge">3</span>
         </button>
 
-        <!-- User Menu -->
         <div class="user-menu-trigger">
           <div class="avatar-sm">
             <span>{{ (currentUser()?.username | slice:0:1) || 'A' }}</span>
@@ -113,7 +116,6 @@
         <router-outlet></router-outlet>
       </div>
 
-      <!-- Footer -->
       <footer class="main-footer">
         <p>&copy; {{ currentYear }} Manngo J&K. All rights reserved.</p>
       </footer>

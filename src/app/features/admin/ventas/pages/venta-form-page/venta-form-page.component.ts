@@ -4,24 +4,40 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faTrash, faTimesCircle, faMicrophone, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faTimesCircle, faMicrophone, faPaperPlane, faBoxOpen } from '@fortawesome/free-solid-svg-icons';
 
 import { VentaService } from '../../services/venta.service';
-import { GastoService } from '../../../gastos/services/gasto.service';
-import { Venta, Cliente, Almacen, PresentacionConStockLocal, PresentacionConStockGlobal, PresentacionDisponible } from '../../../../../types/contract.types';
+import { Venta, Cliente, Almacen, PresentacionDisponible } from '../../../../../types/contract.types';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { ClientSelectComponent } from '../../../../../shared/components/client-select/client-select.component';
 import { VoiceCommandService, VoiceCommandResponse } from '../../../../../core/services/voice-command.service';
 import { VoiceResultModalComponent } from '../../components/voice-result-modal/voice-result-modal.component';
+import { ProductSelectionModalComponent } from '../../components/product-selection-modal/product-selection-modal.component';
+import { FormFieldErrorComponent } from '../../../../../shared/components/form-field-error/form-field-error.component';
 
-// Tipo unificado para las presentaciones en el formulario
-type PresentacionParaVenta = PresentacionDisponible | (PresentacionConStockLocal & { stock_por_almacen?: never }) | (PresentacionConStockGlobal & { stock_disponible?: never });
+// Métodos de pago disponibles
+const METODOS_PAGO = [
+  { value: 'efectivo', label: 'Efectivo' },
+  { value: 'deposito', label: 'Depósito' },
+  { value: 'transferencia', label: 'Transferencia' },
+  { value: 'tarjeta', label: 'Tarjeta' },
+  { value: 'yape_plin', label: 'Yape / Plin' },
+  { value: 'otro', label: 'Otro' },
+] as const;
 
 @Component({
   selector: 'app-venta-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, ClientSelectComponent, VoiceResultModalComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FontAwesomeModule,
+    ClientSelectComponent,
+    VoiceResultModalComponent,
+    ProductSelectionModalComponent,
+    FormFieldErrorComponent,
+  ],
   templateUrl: './venta-form-page.component.html',
   styleUrl: './venta-form-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,7 +47,6 @@ export default class VentaFormPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly ventaService = inject(VentaService);
-  private readonly gastoService = inject(GastoService);
   private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
   readonly voiceCommandService = inject(VoiceCommandService);
@@ -41,7 +56,12 @@ export default class VentaFormPageComponent implements OnInit {
   faTimesCircle = faTimesCircle;
   faMicrophone = faMicrophone;
   faPaperPlane = faPaperPlane;
+  faBoxOpen = faBoxOpen;
 
+  // Opciones de método de pago
+  readonly metodosPago = METODOS_PAGO;
+
+  // Voice command input
   commandInput = new FormControl('');
 
   ventaForm: FormGroup;
@@ -49,9 +69,13 @@ export default class VentaFormPageComponent implements OnInit {
   isEditMode = signal(false);
   ventaId = signal<number | null>(null);
 
+  // Data signals
   clientes = signal<Cliente[]>([]);
   almacenes = signal<Almacen[]>([]);
-  presentaciones = signal<PresentacionParaVenta[]>([]);
+  presentaciones = signal<PresentacionDisponible[]>([]);
+
+  // Product modal state
+  isProductModalOpen = signal(false);
 
   // Voice modal state
   showVoiceModal = signal(false);
@@ -65,9 +89,7 @@ export default class VentaFormPageComponent implements OnInit {
 
   // Computed para calcular el total de la venta
   ventaTotal = computed(() => {
-    // Incluir el trigger para forzar recálculo
     this.totalUpdateTrigger();
-
     return this.detalles.controls.reduce((total, control) => {
       const cantidad = Number(control.get('cantidad')?.value) || 0;
       const precioUnitario = Number(control.get('precio_unitario')?.value) || 0;
@@ -80,10 +102,9 @@ export default class VentaFormPageComponent implements OnInit {
       cliente_id: ['', Validators.required],
       almacen_id: [{ value: '', disabled: !this.authService.isAdmin() }, Validators.required],
       fecha: [new Date().toISOString().slice(0, 16), Validators.required],
-      tipo_pago: ['contado', Validators.required],
-      estado_pago: ['pendiente', Validators.required],
-      consumo_diario_kg: ['0.00', Validators.required],
-      gasto_monto: [null as number | null, [Validators.min(0.01)]],
+      monto_pago: [null as number | null, [Validators.min(0)]],
+      metodo_pago: ['efectivo', Validators.required],
+      monto_gasto: [0, [Validators.min(0)]],
       detalles: this.fb.array([], [Validators.required, Validators.minLength(1)]),
     });
   }
@@ -98,7 +119,6 @@ export default class VentaFormPageComponent implements OnInit {
       this.loadVentaData(+id);
     } else {
       this.loadFormData();
-      this.addDetalle();
     }
   }
 
@@ -112,7 +132,6 @@ export default class VentaFormPageComponent implements OnInit {
 
   loadFormData(almacenId?: number): void {
     this.isLoading.set(true);
-    // Para usuarios no-admin, siempre pasamos su ID de almacén
     const effectiveAlmacenId = this.authService.isAdmin() ? almacenId : this.authService.currentUser()?.almacen_id;
 
     this.ventaService.getVentaFormData(effectiveAlmacenId)
@@ -129,28 +148,25 @@ export default class VentaFormPageComponent implements OnInit {
           this.ventaForm.get('almacen_id')?.setValue(userAlmacenId);
         }
 
-        const presentacionesData = response.presentaciones_disponibles || response.presentaciones_con_stock_global || response.presentaciones_con_stock_local || [];
+        const presentacionesData = response.presentaciones_disponibles ?? [];
         this.presentaciones.set(presentacionesData);
       });
   }
 
   loadVentaData(id: number): void {
     this.isLoading.set(true);
-    // En modo edición, cargamos primero los datos del formulario (clientes, etc.)
-    // y luego los datos de la venta específica.
     this.ventaService.getVentaFormData()
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe(formData => {
         this.clientes.set(formData.clientes);
         if (formData.almacenes) this.almacenes.set(formData.almacenes);
-        const presentacionesData = formData.presentaciones_disponibles || formData.presentaciones_con_stock_global || formData.presentaciones_con_stock_local || [];
+        const presentacionesData = formData.presentaciones_disponibles ?? [];
         this.presentaciones.set(presentacionesData);
 
-        // Ahora cargamos la venta y parchamos el formulario
         this.ventaService.getVentaById(id).subscribe(venta => {
           this.ventaForm.patchValue({
             ...venta,
-            fecha: new Date(venta.fecha!).toISOString().slice(0, 16)
+            fecha: new Date(venta.fecha!).toISOString().slice(0, 16),
           });
 
           const detallesFormGroups = venta.detalles?.map(detalle => this.createDetalleGroup(detalle)) || [];
@@ -166,22 +182,11 @@ export default class VentaFormPageComponent implements OnInit {
   createDetalleGroup(detalle?: any): FormGroup {
     const group = this.fb.group({
       presentacion_id: [detalle?.presentacion_id || '', Validators.required],
+      nombre_presentacion: [detalle?.presentacion?.nombre || ''],
       cantidad: [detalle?.cantidad || 1, [Validators.required, Validators.min(1)]],
       precio_unitario: [detalle?.precio_unitario || 0, [Validators.required, Validators.min(0.01)]],
     });
 
-    // Listen to presentacion_id changes to auto-populate precio_unitario
-    group.get('presentacion_id')?.valueChanges.subscribe(presentacionId => {
-      if (presentacionId) {
-        const presentacion = this.presentaciones().find(p => p.id === Number(presentacionId));
-        if (presentacion && presentacion.precio_venta) {
-          group.get('precio_unitario')?.setValue(Number(presentacion.precio_venta));
-        }
-      }
-      this.triggerTotalUpdate();
-    });
-
-    // Listen to cantidad and precio_unitario changes to update total
     group.get('cantidad')?.valueChanges.subscribe(() => this.triggerTotalUpdate());
     group.get('precio_unitario')?.valueChanges.subscribe(() => this.triggerTotalUpdate());
 
@@ -192,8 +197,26 @@ export default class VentaFormPageComponent implements OnInit {
     this.totalUpdateTrigger.update(val => val + 1);
   }
 
-  addDetalle(): void {
-    this.detalles.push(this.createDetalleGroup());
+  // ── Product Modal ────────────────────────────────────────────────────────────
+
+  openProductModal(): void {
+    this.isProductModalOpen.set(true);
+  }
+
+  closeProductModal(): void {
+    this.isProductModalOpen.set(false);
+  }
+
+  onProductSelected(presentacion: PresentacionDisponible): void {
+    const group = this.createDetalleGroup({
+      presentacion_id: presentacion.id,
+      presentacion: { nombre: presentacion.nombre },
+      cantidad: 1,
+      precio_unitario: Number(presentacion.precio_venta),
+    });
+    this.detalles.push(group);
+    this.triggerTotalUpdate();
+    this.isProductModalOpen.set(false);
   }
 
   removeDetalle(index: number): void {
@@ -201,20 +224,21 @@ export default class VentaFormPageComponent implements OnInit {
     this.triggerTotalUpdate();
   }
 
-  // ========== VOICE COMMAND METHODS ==========
+  getPresentacionNombre(presentacionId: number): string {
+    const p = this.presentaciones().find(p => p.id === presentacionId);
+    return p?.nombre ?? `Producto #${presentacionId}`;
+  }
+
+  // ── Voice Commands ──────────────────────────────────────────────────────────
 
   startVoiceDictation(): void {
     this.notificationService.showInfo('Escuchando... Habla ahora.');
 
     this.voiceCommandService.startListening().subscribe({
       next: (transcript) => {
-        console.log('Transcript received:', transcript);
         this.notificationService.showInfo('Procesando comando de voz...');
-
-        // Send transcript to backend
         this.voiceCommandService.sendCommand(transcript).subscribe({
           next: (response) => {
-            console.log('Voice command response:', response);
             if (response.status === 'success' && response.data) {
               this.voiceData.set(response.data);
               this.showVoiceModal.set(true);
@@ -223,16 +247,10 @@ export default class VentaFormPageComponent implements OnInit {
               this.notificationService.showError('No se pudo interpretar el comando.');
             }
           },
-          error: (err) => {
-            console.error('Error sending voice command:', err);
-            this.notificationService.showError('Error al procesar el comando de voz.');
-          }
+          error: () => this.notificationService.showError('Error al procesar el comando de voz.'),
         });
       },
-      error: (err) => {
-        console.error('Voice recognition error:', err);
-        this.notificationService.showError('Error en el reconocimiento de voz.');
-      }
+      error: () => this.notificationService.showError('Error en el reconocimiento de voz.'),
     });
   }
 
@@ -241,78 +259,61 @@ export default class VentaFormPageComponent implements OnInit {
     if (!text?.trim()) return;
 
     this.notificationService.showInfo('Procesando comando de texto...');
-
     this.voiceCommandService.sendCommand(text).subscribe({
       next: (response) => {
-        console.log('Text command response:', response);
         if (response.status === 'success' && response.data) {
           this.voiceData.set(response.data);
           this.showVoiceModal.set(true);
-          this.commandInput.setValue(''); // Clear input
+          this.commandInput.setValue('');
           this.notificationService.showSuccess('Comando procesado. Verifica los datos.');
         } else {
           this.notificationService.showError('No se pudo interpretar el comando.');
         }
       },
-      error: (err) => {
-        console.error('Error sending text command:', err);
-        this.notificationService.showError('Error al procesar el comando de texto.');
-      }
+      error: () => this.notificationService.showError('Error al procesar el comando de texto.'),
     });
   }
 
   onVoiceConfirm(data: VoiceCommandResponse['data']): void {
-    console.log('Voice data confirmed, submitting directly:', data);
-
-    // 1. Validate Client
     if (!data.cliente || !data.cliente.id) {
-      this.notificationService.showWarning("Por favor selecciona un cliente válido en el modal.");
+      this.notificationService.showWarning('Por favor selecciona un cliente válido en el modal.');
       return;
     }
 
-    // 2. Validate Items (Check for lote_id)
     const invalidItems = data.items?.filter(item => !item.lote_id);
     if (invalidItems && invalidItems.length > 0) {
-      this.notificationService.showError("Algunos productos no tienen lote asignado (stock insuficiente). Verifica los items marcados.");
+      this.notificationService.showError('Algunos productos no tienen lote asignado. Verifica los items marcados.');
       return;
     }
 
-    // 3. Prepare Payload
-    // 3. Prepare Payload
     const payload = {
       fecha: data.fecha,
-      cliente: {
-        id: data.cliente.id
-      },
+      cliente: { id: data.cliente.id },
       items: data.items?.map(item => ({
         producto_id: item.producto_id,
         cantidad: item.cantidad,
         precio_unitario: item.precio_unitario,
-        lote_id: item.lote_id
+        lote_id: item.lote_id,
       })) || [],
       pagos: data.pagos?.map(pago => ({
         monto: pago.monto,
         metodo_pago: pago.metodo_pago,
-        es_deposito: pago.es_deposito || false
+        es_deposito: pago.es_deposito || false,
       })) || [],
-      gasto_asociado: data.gasto_asociado // Optional
+      gasto_asociado: data.gasto_asociado,
     };
 
-    // 4. Send Request
     this.isLoading.set(true);
     this.ventaService.createVentaCompleta(payload)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.showVoiceModal.set(false);
           this.voiceData.set(null);
           this.notificationService.showSuccess('Venta registrada correctamente con comando de voz.');
           this.router.navigate(['/admin/ventas']);
         },
-        error: (err) => {
-          console.error('Error creating transaction:', err);
-          this.notificationService.showError('Error al registrar la venta. Verifica los datos.');
-        }
+        error: () => this.notificationService.showError('Error al registrar la venta. Verifica los datos.'),
       });
   }
 
@@ -321,7 +322,7 @@ export default class VentaFormPageComponent implements OnInit {
     this.voiceData.set(null);
   }
 
-  // ========== END VOICE COMMAND METHODS ==========
+  // ── Submit ──────────────────────────────────────────────────────────────────
 
   onSubmit(): void {
     if (this.ventaForm.invalid) {
@@ -334,18 +335,18 @@ export default class VentaFormPageComponent implements OnInit {
     const formValue = this.ventaForm.getRawValue();
     const id = this.ventaId();
 
-    const payload: Partial<Venta> = {
-      ...formValue,
+    const payload: Partial<Venta> & { monto_pago?: number; metodo_pago?: string } = {
       cliente_id: Number(formValue.cliente_id),
       almacen_id: Number(formValue.almacen_id),
       fecha: new Date(formValue.fecha).toISOString(),
-      consumo_diario_kg: String(formValue.consumo_diario_kg || '0.00'),
+      monto_pago: formValue.monto_pago ? Number(formValue.monto_pago) : undefined,
+      metodo_pago: formValue.metodo_pago,
+      monto_gasto: formValue.monto_gasto > 0 ? Number(formValue.monto_gasto) : undefined,
       detalles: formValue.detalles.map((d: any) => ({
-        ...d,
         presentacion_id: Number(d.presentacion_id),
         cantidad: Number(d.cantidad),
-        precio_unitario: String(d.precio_unitario)
-      }))
+        precio_unitario: Number(d.precio_unitario),
+      })),
     };
 
     const operation$ = id
@@ -357,36 +358,11 @@ export default class VentaFormPageComponent implements OnInit {
       .subscribe({
         next: () => {
           this.notificationService.showSuccess(`Venta ${id ? 'actualizada' : 'creada'} correctamente.`);
-          const gastoMonto = formValue.gasto_monto;
-          const agregarGasto = gastoMonto !== null && gastoMonto !== '' && Number(gastoMonto) > 0;
-          if (agregarGasto) {
-            const cliente = this.clientes().find(c => c.id === Number(formValue.cliente_id));
-            const descripcion = `Transporte por envio al cliente ${cliente?.nombre ?? ''}`;
-            const gastoPayload = {
-              descripcion,
-              monto: String(gastoMonto),
-              fecha: new Date(formValue.fecha).toISOString().substring(0, 10),
-              categoria: 'logistica',
-              almacen_id: Number(formValue.almacen_id),
-              lote_id: null,
-            };
-            this.gastoService.createGasto(gastoPayload).subscribe({
-              next: () => {
-                this.notificationService.showSuccess('Gasto registrado correctamente.');
-                this.router.navigate(['/admin/ventas']);
-              },
-              error: () => {
-                this.notificationService.showError('Error al registrar el gasto.');
-                this.router.navigate(['/admin/ventas']);
-              }
-            });
-          } else {
-            this.router.navigate(['/admin/ventas']);
-          }
+          this.router.navigate(['/admin/ventas']);
         },
-        error: (err) => {
+        error: () => {
           this.notificationService.showError(`Error al ${id ? 'actualizar' : 'crear'} la venta.`);
-        }
+        },
       });
   }
 
@@ -395,10 +371,6 @@ export default class VentaFormPageComponent implements OnInit {
   }
 
   onClientSelected(client: Cliente | null): void {
-    if (client) {
-      this.ventaForm.get('cliente_id')?.setValue(client.id);
-    } else {
-      this.ventaForm.get('cliente_id')?.setValue('');
-    }
+    this.ventaForm.get('cliente_id')?.setValue(client ? client.id : '');
   }
 }

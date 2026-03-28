@@ -15,15 +15,17 @@
     input {
       width: 100%;
       padding: 0.875rem 1rem 0.875rem 3rem;
-      border: 1px solid #ced4da;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       font-size: 1rem;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
       transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
       &:focus {
         outline: none;
-        border-color: #ff4444;
-        box-shadow: 0 0 0 0.2rem rgba(255, 68, 68, 0.25);
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25);
       }
     }
 
@@ -32,12 +34,12 @@
       left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      color: #6c757d;
+      color: var(--text-secondary);
     }
   }
 
   .results-info {
-    color: #6c757d;
+    color: var(--text-secondary);
     font-size: 0.9rem;
   }
 }
@@ -59,7 +61,7 @@
     .product-placeholder {
       width: 48px;
       height: 48px;
-      background: #f8f9fa;
+      background: var(--bg-secondary);
       border-radius: 6px;
       display: flex;
       align-items: center;
@@ -70,13 +72,13 @@
     .product-details {
       .product-name {
         font-weight: 600;
-        color: #2c3e50;
+        color: var(--text-primary);
         margin-bottom: 0.25rem;
       }
 
       .product-description {
         font-size: 0.875rem;
-        color: #6c757d;
+        color: var(--text-secondary);
         max-width: 200px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -86,8 +88,8 @@
   }
 
   .category-badge {
-    background: #e9ecef;
-    color: #495057;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
     font-size: 0.8rem;
@@ -96,12 +98,12 @@
 
   .price {
     font-weight: 600;
-    color: #28a745;
+    color: var(--color-success);
   }
 
   .stock {
     &.low-stock {
-      color: #dc3545;
+      color: var(--color-error);
       font-weight: 600;
     }
   }
@@ -113,13 +115,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: white;
+  background: var(--bg-primary);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   margin-top: 1.5rem;
 
   .pagination-btn {
-    background: #ff4444;
+    background: var(--color-primary);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -129,17 +131,18 @@
     transition: background-color 0.2s;
 
     &:hover:not(:disabled) {
-      background: #e03434;
+      background: var(--color-primary-hover);
     }
 
     &:disabled {
-      background: #ccc;
+      background: var(--text-muted);
       cursor: not-allowed;
+      opacity: 0.5;
     }
   }
 
   .pagination-info {
-    color: #6c757d;
+    color: var(--text-secondary);
     font-weight: 500;
   }
 }

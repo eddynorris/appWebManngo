@@ -25,13 +25,18 @@
     </button>
     <ul class="pagination-list">
       <li *ngFor="let pageNum of pages()">
-        <button
-          (click)="goToPage(pageNum)"
-          [class.active]="pageNum === p.page"
-          class="pagination-button page"
-        >
-          {{ pageNum }}
-        </button>
+        <ng-container *ngIf="isNumber(pageNum); else dots">
+          <button
+            (click)="goToPage(asNumber(pageNum))"
+            [class.active]="pageNum === p.page"
+            class="pagination-button page"
+          >
+            {{ pageNum }}
+          </button>
+        </ng-container>
+        <ng-template #dots>
+          <span class="pagination-dots">...</span>
+        </ng-template>
       </li>
     </ul>
     <button (click)="onNext()" [disabled]="p.page === p.pages" class="pagination-button">

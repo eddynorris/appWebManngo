@@ -1,74 +1,77 @@
+@use 'src/styles/variables' as vars;
+
 .form-page-container {
   max-width: 800px;
   margin: 0 auto;
 }
 
 .page-header {
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e9ecef;
+  margin-bottom: vars.$spacer-xl;
+  padding-bottom: vars.$spacer-md;
+  border-bottom: 2px solid var(--border-color);
 
   h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin: 0 0 0.5rem 0;
+    font-size: vars.$font-size-3xl;
+    font-weight: vars.$font-weight-bold;
+    color: var(--text-primary);
+    margin: 0 0 vars.$spacer-xs 0;
   }
 
   p {
-    color: #6c757d;
+    color: var(--text-secondary);
     margin: 0;
   }
 }
 
 .loading-state {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: vars.$spacer-3xl vars.$spacer-xl;
 }
 
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(255, 68, 68, 0.3);
-  border-top-color: #ff4444;
+  border: 3px solid rgba(var(--color-primary-rgb), 0.3);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 0 auto 1rem auto;
+  margin: 0 auto vars.$spacer-md auto;
 }
 
 .data-form {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--bg-primary);
+  padding: vars.$spacer-xl;
+  border-radius: vars.$border-radius-lg;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
 }
 
 .form-section {
-  margin-bottom: 2rem;
+  margin-bottom: vars.$spacer-xl;
 }
 
 .section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e9ecef;
+  font-size: vars.$font-size-xl;
+  font-weight: vars.$font-weight-semibold;
+  color: var(--text-primary);
+  margin-bottom: vars.$spacer-lg;
+  padding-bottom: vars.$spacer-xs;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: vars.$spacer-lg;
+  margin-bottom: vars.$spacer-lg;
 }
 
 .input-group {
   label {
     display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #495057;
+    margin-bottom: vars.$spacer-xs;
+    font-weight: vars.$font-weight-medium;
+    color: var(--text-secondary);
   }
 
   input[type="text"],
@@ -76,16 +79,18 @@
   input[type="tel"],
   textarea {
     width: 100%;
-    padding: 0.875rem 1rem;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    padding: vars.$spacer-sm vars.$spacer-md;
+    border: 1px solid var(--border-color);
+    border-radius: vars.$border-radius;
+    font-size: vars.$font-size-base;
+    transition: vars.$transition-base;
+    background: var(--bg-primary);
+    color: var(--text-primary);
 
     &:focus {
       outline: none;
-      border-color: #ff4444;
-      box-shadow: 0 0 0 0.2rem rgba(255, 68, 68, 0.25);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
     }
   }
 }
@@ -93,10 +98,10 @@
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e9ecef;
+  gap: vars.$spacer-md;
+  margin-top: vars.$spacer-lg;
+  padding-top: vars.$spacer-lg;
+  border-top: 1px solid var(--border-color);
 }
 
 @keyframes spin {

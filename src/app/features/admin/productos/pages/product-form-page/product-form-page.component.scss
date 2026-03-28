@@ -7,17 +7,17 @@
 .page-header {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid var(--bg-tertiary);
 
   h1 {
     font-size: 2rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin: 0 0 0.5rem 0;
   }
 
   p {
-    color: #6c757d;
+    color: var(--text-secondary);
     margin: 0;
   }
 }
@@ -30,18 +30,18 @@
 }
 
 .form-section {
-  background: white;
+  background: var(--bg-primary);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
 
   .section-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin: 0 0 1.5rem 0;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid var(--bg-tertiary);
   }
 }
 
@@ -60,7 +60,7 @@
     margin-bottom: 0.5rem;
     font-weight: 500;
     font-size: 0.9rem;
-    color: #495057;
+    color: var(--text-secondary);
   }
 
   input[type="text"],
@@ -68,15 +68,17 @@
   textarea {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #ced4da;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 1rem;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     transition: all 0.15s ease-in-out;
 
     &:focus {
       outline: none;
-      border-color: #ff4444;
-      box-shadow: 0 0 0 0.2rem rgba(255, 68, 68, 0.25);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25);
     }
   }
 
@@ -110,24 +112,24 @@
 }
 
 .presentacion-group {
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--bg-tertiary);
   border-radius: 8px;
   padding: 1.5rem;
   margin-top: 1.5rem;
-  background: #fdfdfd;
+  background: var(--bg-secondary);
 
   .presentacion-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid var(--bg-tertiary);
     padding-bottom: 1rem;
     margin-bottom: 1.5rem;
 
     h3 {
       margin: 0;
       font-size: 1.1rem;
-      color: #34495e;
+      color: var(--text-primary);
     }
   }
 }
@@ -135,9 +137,9 @@
 .empty-state-presentations {
   text-align: center;
   padding: 2rem;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  color: #6c757d;
+  color: var(--text-secondary);
 }
 
 // Estilos para los botones de acción
@@ -147,7 +149,7 @@
   gap: 1rem;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--bg-tertiary);
 }
 
 .btn-primary, .btn-secondary, .btn-danger, .btn-danger-small {
@@ -163,40 +165,41 @@
 }
 
 .btn-primary {
-  background: #ff4444;
+  background: var(--color-primary);
   color: white;
 
   &:hover:not(:disabled) {
-    background: #e03434;
+    background: var(--color-primary-hover);
     transform: translateY(-2px);
   }
 
   &:disabled {
-    background: #ccc;
+    background: var(--text-muted);
     cursor: not-allowed;
+    opacity: 0.6;
   }
 }
 
 .btn-secondary {
-  background: #6c757d;
+  background: var(--text-secondary);
   color: white;
-  border: 1px solid #6c757d;
+  border: 1px solid var(--text-secondary);
 
   &:hover {
-    background: #5a6268;
+    background: var(--text-primary);
   }
 }
 
 .btn-danger-small {
   background: transparent;
-  color: #dc3545;
-  border: 1px solid #dc3545;
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
   padding: 0.25rem 0.5rem;
   font-size: 0.8rem;
   border-radius: 6px;
 
   &:hover {
-    background: #dc3545;
+    background: var(--color-error);
     color: white;
   }
 }
@@ -210,8 +213,8 @@
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(255, 68, 68, 0.3);
-  border-top-color: #ff4444;
+  border: 3px solid rgba(var(--color-primary-rgb), 0.3);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem auto;

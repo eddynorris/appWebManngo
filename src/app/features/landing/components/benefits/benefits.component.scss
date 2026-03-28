@@ -110,4 +110,18 @@
     height: 100px;
     font-size: 3rem;
   }
+
+  .benefits-section {
+    padding: 4rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .section-header {
+    margin-bottom: 2.5rem;
+  }
 }

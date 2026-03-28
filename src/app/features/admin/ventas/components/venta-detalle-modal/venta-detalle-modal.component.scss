@@ -5,19 +5,19 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #f1f3f4;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .summary-item {
   font-size: 0.95rem;
-  strong { color: #6c757d; }
+  strong { color: var(--text-secondary); }
 }
 
 .section-title {
   font-size: 1.1rem;
   margin: 1.5rem 0 1rem 0;
-  color: #ff4444;
-  border-bottom: 2px solid #ff6666;
+  color: var(--color-primary);
+  border-bottom: 2px solid var(--color-primary-hover);
   padding-bottom: 0.5rem;
 }
 

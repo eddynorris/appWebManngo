@@ -1,3 +1,4 @@
+@use 'src/styles/variables' as vars;
 
 :host {
   display: block;
@@ -11,13 +12,13 @@
 .field-help {
   display: block;
   margin-top: 0.25rem;
-  font-size: 0.875rem;
-  color: #6b7280;
+  font-size: vars.$font-size-xs;
+  color: var(--text-muted);
   line-height: 1.4;
 }
 
 // Ensure proper responsive behavior for three-column grid
-@media (max-width: 768px) {
+@media (max-width: vars.$breakpoint-md) {
   .form-grid.three-cols {
     grid-template-columns: 1fr !important;
   }
