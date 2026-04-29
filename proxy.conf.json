@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://api.manngojk.lat",
+    "target": "https://api.manngojk.com",
     "secure": false,
     "changeOrigin": true
   }

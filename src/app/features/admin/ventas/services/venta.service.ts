@@ -47,7 +47,7 @@ export class VentaService {
   }
 
   // Crear una nueva venta
-  createVenta(venta: Omit<Venta, 'id'>): Observable<Venta> {
+  createVenta(venta: Omit<Venta, 'id'> | FormData): Observable<Venta> {
     return this.http.post<Venta>(this.apiUrl, venta);
   }
 
@@ -57,7 +57,7 @@ export class VentaService {
   }
 
   // Actualizar una venta existente
-  updateVenta(id: number, venta: Partial<Venta>): Observable<Venta> {
+  updateVenta(id: number, venta: Partial<Venta> | FormData): Observable<Venta> {
     return this.http.put<Venta>(`${this.apiUrl}/${id}`, venta);
   }
 

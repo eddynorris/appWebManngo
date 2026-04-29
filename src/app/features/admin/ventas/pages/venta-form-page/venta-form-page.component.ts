@@ -81,6 +81,9 @@ export default class VentaFormPageComponent implements OnInit {
   showVoiceModal = signal(false);
   voiceData = signal<VoiceCommandResponse['data'] | null>(null);
 
+  // File para comprobante
+  comprobanteFile = signal<File | null>(null);
+
   // Para saber si el admin puede elegir almacén
   canSelectAlmacen = computed(() => this.authService.isAdmin() && this.almacenes().length > 0);
 
@@ -322,6 +325,15 @@ export default class VentaFormPageComponent implements OnInit {
     this.voiceData.set(null);
   }
 
+  onFileSelected(event: Event): void {
+    const element = event.target as HTMLInputElement;
+    if (element.files && element.files.length > 0) {
+      this.comprobanteFile.set(element.files[0]);
+    } else {
+      this.comprobanteFile.set(null);
+    }
+  }
+
   // ── Submit ──────────────────────────────────────────────────────────────────
 
   onSubmit(): void {
@@ -335,23 +347,45 @@ export default class VentaFormPageComponent implements OnInit {
     const formValue = this.ventaForm.getRawValue();
     const id = this.ventaId();
 
-    const payload: Partial<Venta> & { monto_pago?: number; metodo_pago?: string } = {
-      cliente_id: Number(formValue.cliente_id),
-      almacen_id: Number(formValue.almacen_id),
-      fecha: new Date(formValue.fecha).toISOString(),
-      monto_pago: formValue.monto_pago ? Number(formValue.monto_pago) : undefined,
-      metodo_pago: formValue.metodo_pago,
-      monto_gasto: formValue.monto_gasto > 0 ? Number(formValue.monto_gasto) : undefined,
-      detalles: formValue.detalles.map((d: any) => ({
-        presentacion_id: Number(d.presentacion_id),
-        cantidad: Number(d.cantidad),
-        precio_unitario: Number(d.precio_unitario),
-      })),
-    };
+    const detallesProcesados = formValue.detalles.map((d: any) => ({
+      presentacion_id: Number(d.presentacion_id),
+      cantidad: Number(d.cantidad),
+      precio_unitario: Number(d.precio_unitario),
+    }));
+
+    let submitData: any;
+
+    if (formValue.metodo_pago === 'deposito') {
+      const formData = new FormData();
+      formData.append('cliente_id', String(formValue.cliente_id));
+      formData.append('almacen_id', String(formValue.almacen_id));
+      formData.append('fecha', new Date(formValue.fecha).toISOString());
+      if (formValue.monto_pago) formData.append('monto_pago', String(formValue.monto_pago));
+      formData.append('metodo_pago', formValue.metodo_pago);
+      if (formValue.monto_gasto > 0) formData.append('monto_gasto', String(formValue.monto_gasto));
+      formData.append('detalles', JSON.stringify(detallesProcesados));
+
+      const file = this.comprobanteFile();
+      if (file) {
+        formData.append('comprobante', file);
+      }
+
+      submitData = formData;
+    } else {
+      submitData = {
+        cliente_id: Number(formValue.cliente_id),
+        almacen_id: Number(formValue.almacen_id),
+        fecha: new Date(formValue.fecha).toISOString(),
+        monto_pago: formValue.monto_pago ? Number(formValue.monto_pago) : undefined,
+        metodo_pago: formValue.metodo_pago,
+        monto_gasto: formValue.monto_gasto > 0 ? Number(formValue.monto_gasto) : undefined,
+        detalles: detallesProcesados,
+      };
+    }
 
     const operation$ = id
-      ? this.ventaService.updateVenta(id, payload)
-      : this.ventaService.createVenta(payload as Venta);
+      ? this.ventaService.updateVenta(id, submitData)
+      : this.ventaService.createVenta(submitData);
 
     operation$
       .pipe(finalize(() => this.isLoading.set(false)))

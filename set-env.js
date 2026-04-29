@@ -15,7 +15,7 @@ const targetPath = './src/environments/environment.prod.ts';
 const envConfigFile = `
 export const environment = {
   production: true,
-  apiUrl: 'https://api.manngojk.lat',
+  apiUrl: 'https://api.manngojk.com',
 };
 `;
 

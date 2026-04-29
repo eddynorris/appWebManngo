@@ -158,6 +158,14 @@
           <app-form-field-error [control]="ventaForm.get('monto_gasto')"></app-form-field-error>
         </div>
 
+        <!-- Comprobante (solo para depósito) -->
+        @if (ventaForm.get('metodo_pago')?.value === 'deposito') {
+          <div class="input-group payment-field">
+            <label for="comprobante">Comprobante</label>
+            <input id="comprobante" type="file" (change)="onFileSelected($event)" accept="image/jpeg,image/png,image/webp,.pdf">
+          </div>
+        }
+
         <!-- Botón Añadir Producto -->
         <button type="button" class="btn-secondary add-detail-btn" (click)="openProductModal()">
           <fa-icon [icon]="faBoxOpen"></fa-icon>
