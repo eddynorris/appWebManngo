@@ -6,6 +6,15 @@
       <p>Busca, crea y gestiona todas las ventas</p>
     </div>
     <div class="header-actions">
+      <button 
+        [disabled]="selectedVentas().length === 0" 
+        (click)="isBulkDeleteModalVisible.set(true)" 
+        class="btn-danger"
+        [style.opacity]="selectedVentas().length === 0 ? 0.5 : 1"
+        [style.cursor]="selectedVentas().length === 0 ? 'not-allowed' : 'pointer'">
+        <fa-icon [icon]="faTrash"></fa-icon>
+        Eliminar Selección ({{ selectedVentas().length }})
+      </button>
       <a routerLink="/admin/ventas/new" class="btn-primary">
         <fa-icon [icon]="faPlus"></fa-icon>
         Nueva Venta
