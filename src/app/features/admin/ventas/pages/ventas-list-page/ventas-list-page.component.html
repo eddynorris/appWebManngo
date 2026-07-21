@@ -13,6 +13,22 @@
     </div>
   </div>
 
+  <!-- Barra de acciones en lote -->
+  @if (selectedVentas().length > 0) {
+    <div class="batch-actions-bar animate-fade-in">
+      <div class="batch-info">
+        <span class="batch-count">{{ selectedVentas().length }}</span>
+        <span class="batch-text">ventas seleccionadas</span>
+      </div>
+      <div class="batch-buttons">
+        <button (click)="isBulkDeleteModalVisible.set(true)" class="btn-batch-delete">
+          <fa-icon [icon]="faTrash"></fa-icon>
+          Eliminar Seleccionadas
+        </button>
+      </div>
+    </div>
+  }
+
   <!-- Filtros Compartidos -->
   <app-table-filters
     [filters]="filterConfigs()"
@@ -29,6 +45,8 @@
     [data]="ventas()"
     [columns]="columns"
     [actions]="actions"
+    [selectable]="true"
+    (selectionChange)="handleSelectionChange($event)"
     (onAction)="handleTableAction($event)"
   ></app-data-table>
 
@@ -58,5 +76,16 @@
     [cancelText]="'Cancelar'"
     (confirm)="handleDeleteConfirmation()"
     (cancel)="closeDeleteModal()"
+  ></app-confirmation-modal>
+}
+
+@if (isBulkDeleteModalVisible()) {
+  <app-confirmation-modal
+    [title]="'Confirmar Eliminación en Lote'"
+    [message]="'¿Está seguro que desea eliminar las ' + selectedVentas().length + ' ventas seleccionadas? Esta acción revertirá el stock de los productos e inventarios asociados y no se puede deshacer.'"
+    [confirmText]="'Eliminar Ventas'"
+    [cancelText]="'Cancelar'"
+    (confirm)="handleBulkDeleteConfirmation()"
+    (cancel)="closeBulkDeleteModal()"
   ></app-confirmation-modal>
 }

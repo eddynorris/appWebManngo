@@ -2,6 +2,11 @@
   <table class="data-table">
     <thead>
       <tr>
+        @if (selectable()) {
+        <th class="col-select">
+          <input type="checkbox" [checked]="isAllSelected()" (change)="toggleAll()" class="checkbox-input" />
+        </th>
+        }
         @for (column of columns(); track column.key) {
         <th>{{ column.label }}</th>
         }
@@ -10,16 +15,16 @@
     <tbody>
       @if (isLoading()) {
       <tr>
-        <td [attr.colspan]="columns().length || 0">
+        <td [attr.colspan]="(columns().length + (selectable() ? 1 : 0)) || 0">
           <div class="loading-state">
-            <div class="spinner"></div>
-            <p>Cargando datos...</p>
+             <div class="spinner"></div>
+             <p>Cargando datos...</p>
           </div>
         </td>
       </tr>
       } @else if (data().length === 0) {
       <tr>
-        <td [attr.colspan]="columns().length || 0">
+        <td [attr.colspan]="(columns().length + (selectable() ? 1 : 0)) || 0">
           <div class="empty-state">
             <p>No se encontraron registros</p>
           </div>
@@ -27,7 +32,12 @@
       </tr>
       } @else {
       @for (item of data(); track trackByFn($index, item)) {
-      <tr [class.inactive]="isItemInactive(item)">
+      <tr [class.inactive]="isItemInactive(item)" [class.selected]="isSelected(item)">
+        @if (selectable()) {
+        <td class="col-select">
+          <input type="checkbox" [checked]="isSelected(item)" (change)="toggleItem(item)" class="checkbox-input" />
+        </td>
+        }
         @for (column of columns(); track column.key) {
         <td>
           @switch (column.type) {

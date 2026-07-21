@@ -71,6 +71,11 @@ export class VentaService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
+  // Eliminar varias ventas en lote (batch delete)
+  deleteVentasLote(ids: number[]): Observable<any> {
+    return this.http.delete(this.apiUrl, { body: { ids } });
+  }
+
   // Actualizar el estado de pago de una venta
   updateEstadoPago(id: number, estado: string): Observable<Venta> {
     return this.http.patch<Venta>(`${this.apiUrl}/${id}/estado-pago`, { estado_pago: estado });

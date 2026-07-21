@@ -1,4 +1,4 @@
-import { Component, input, output, ContentChild, TemplateRef } from '@angular/core';
+import { Component, input, output, ContentChild, TemplateRef, signal, effect } from '@angular/core';
 import { CurrencyPipe, DatePipe, NgTemplateOutlet } from '@angular/common';
 import { ColumnConfig, ActionConfig } from './data-table.types';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -17,9 +17,62 @@ export class DataTableComponent<T extends { id?: number; codigo?: string } | Rec
   columns = input.required<ColumnConfig<T>[]>();
   actions = input<ActionConfig[]>([]);
   isLoading = input(false);
+  selectable = input<boolean>(false);
 
   // --- Outputs ---
   onAction = output<{ action: string; item: T }>();
+  selectionChange = output<T[]>();
+
+  selectedItems = signal<T[]>([]);
+
+  constructor() {
+    effect(() => {
+      // Trigger effect on data changes to reset selection
+      this.data();
+      this.clearSelection();
+    });
+  }
+
+  clearSelection(): void {
+    if (this.selectedItems().length > 0) {
+      this.selectedItems.set([]);
+      this.selectionChange.emit([]);
+    }
+  }
+
+  toggleItem(item: T): void {
+    const current = this.selectedItems();
+    const index = current.findIndex(i => this.trackByFn(0, i) === this.trackByFn(0, item));
+    let next: T[];
+    if (index > -1) {
+      next = current.filter((_, idx) => idx !== index);
+    } else {
+      next = [...current, item];
+    }
+    this.selectedItems.set(next);
+    this.selectionChange.emit(next);
+  }
+
+  isSelected(item: T): boolean {
+    return this.selectedItems().some(i => this.trackByFn(0, i) === this.trackByFn(0, item));
+  }
+
+  toggleAll(): void {
+    if (this.isAllSelected()) {
+      this.selectedItems.set([]);
+      this.selectionChange.emit([]);
+    } else {
+      const visibleData = this.data();
+      this.selectedItems.set([...visibleData]);
+      this.selectionChange.emit([...visibleData]);
+    }
+  }
+
+  isAllSelected(): boolean {
+    const visibleData = this.data();
+    if (visibleData.length === 0) return false;
+    return visibleData.every(item => this.isSelected(item));
+  }
 
   @ContentChild('customCell') customCellTemplate?: TemplateRef<any>;
 

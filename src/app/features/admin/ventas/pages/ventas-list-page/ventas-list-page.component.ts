@@ -91,6 +91,7 @@ export default class VentasListPageComponent implements OnInit {
 
   // FontAwesome icons
   faPlus = faPlus;
+  faTrash = faTrash;
 
   ventas = signal<Venta[]>([]);
   pagination = signal<Pagination | null>(null);
@@ -101,6 +102,10 @@ export default class VentasListPageComponent implements OnInit {
   // Signals para modal de eliminación
   isDeleteModalVisible = signal(false);
   ventaToDelete = signal<Venta | null>(null);
+
+  // Selección en lote
+  selectedVentas = signal<Venta[]>([]);
+  isBulkDeleteModalVisible = signal(false);
 
   // Signals para datos de filtros
   clientes = signal<{ id: number; nombre: string }[]>([]);
@@ -249,6 +254,36 @@ export default class VentasListPageComponent implements OnInit {
   closeDeleteModal(): void {
     this.isDeleteModalVisible.set(false);
     this.ventaToDelete.set(null);
+  }
+
+  handleSelectionChange(selected: Venta[]): void {
+    this.selectedVentas.set(selected);
+  }
+
+  handleBulkDeleteConfirmation(): void {
+    const selected = this.selectedVentas();
+    if (selected.length === 0) return;
+
+    const ids = selected.map(v => v.id).filter((id): id is number => id !== undefined);
+    
+    this.ventaService.deleteVentasLote(ids).subscribe({
+      next: (response) => {
+        const msg = response?.message || 'Ventas eliminadas correctamente.';
+        this.notificationService.showSuccess(msg);
+        this.selectedVentas.set([]);
+        const currentPage = this.pagination()?.page || 1;
+        this.loadVentas(currentPage);
+      },
+      error: (err) => {
+        const errorMsg = err?.error?.error || 'Error al eliminar las ventas.';
+        this.notificationService.showError(errorMsg);
+      }
+    });
+    this.closeBulkDeleteModal();
+  }
+
+  closeBulkDeleteModal(): void {
+    this.isBulkDeleteModalVisible.set(false);
   }
 
 

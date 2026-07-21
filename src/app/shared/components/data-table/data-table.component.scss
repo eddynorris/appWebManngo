@@ -142,3 +142,32 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+.col-select {
+  width: 48px;
+  text-align: center;
+  vertical-align: middle;
+  padding-right: 0;
+}
+
+.checkbox-input {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid vars.$color-border;
+  cursor: pointer;
+  accent-color: vars.$color-primary;
+  transition: vars.$transition-base;
+  
+  &:hover {
+    border-color: vars.$color-primary;
+  }
+}
+
+tbody tr.selected {
+  background-color: rgba(vars.$color-primary-500, 0.05) !important;
+  
+  &:hover {
+    background-color: rgba(vars.$color-primary-500, 0.08) !important;
+  }
+}
