@@ -6,6 +6,8 @@
 @use './styles/theme-tokens';
 @use './styles/components';
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+
 // =============================================================================
 // RESET & BASE STYLES
 // =============================================================================
@@ -209,4 +211,24 @@ img {
 
 .text-left {
   text-align: left;
+}
+
+// Global Keyframes
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

@@ -1,4 +1,5 @@
+
 export const environment = {
   production: true,
-  apiUrl: 'https://api.manngojk.com'
+  apiUrl: 'https://api.manngojk.com',
 };
