@@ -63,6 +63,11 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
                 label: 'Reporte',
                 route: '/admin/reporte-unificado',
                 icon: faChartBar
+            },
+            {
+                label: 'Reporte de Producción',
+                route: '/admin/reporte-produccion',
+                icon: faBoxes
             }
         ]
     },

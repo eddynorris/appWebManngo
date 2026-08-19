@@ -46,6 +46,11 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => import('./dashboard/pages/reporte-unificado/reporte-unificado-page.component'),
         data: { title: 'Reporte Unificado' }
       },
+      {
+        path: 'reporte-produccion',
+        loadComponent: () => import('./dashboard/pages/reporte-produccion/reporte-produccion-page.component'),
+        data: { title: 'Reporte de Producción y Entradas' }
+      },
 
       // ---------------------------------------------------------------------------
       // OPERATIONAL MODULES

@@ -1,0 +1,696 @@
+<div class="produccion-page">
+  <!-- 1. Header & Actions -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="title-with-icon">
+        <div class="header-icon-box">
+          <fa-icon [icon]="icons.industry"></fa-icon>
+        </div>
+        <div>
+          <h1 class="page-title">Reporte de Producción y Entradas</h1>
+          <p class="page-subtitle">
+            Análisis consolidado de fabricación por lotes, presentaciones y traslados entre almacenes
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="limpiarFiltros()"
+        [disabled]="cargando()"
+        title="Restablecer filtros"
+      >
+        <fa-icon [icon]="icons.sync"></fa-icon>
+        <span>Limpiar</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-success"
+        (click)="exportarExcel()"
+        [disabled]="cargando() || !data()"
+        title="Exportar a Excel"
+      >
+        <fa-icon [icon]="icons.download"></fa-icon>
+        <span>Exportar Excel</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="generarReporte()"
+        [disabled]="cargando()"
+      >
+        <fa-icon [icon]="icons.filter"></fa-icon>
+        <span>{{ cargando() ? 'Consultando...' : 'Aplicar Filtros' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. Filtros de Búsqueda -->
+  <div class="filters-card">
+    <div class="filters-header">
+      <div class="filter-title">
+        <fa-icon [icon]="icons.filter" class="filter-icon"></fa-icon>
+        <span>Filtros de Búsqueda</span>
+      </div>
+      @if (periodo(); as p) {
+        <div class="period-badge">
+          <fa-icon [icon]="icons.calendar"></fa-icon>
+          <span>Periodo: <b>{{ p.fecha_inicio }}</b> al <b>{{ p.fecha_fin }}</b></span>
+        </div>
+      }
+    </div>
+
+    <form [formGroup]="filterForm" class="filters-grid">
+      <!-- Fecha Inicio -->
+      <div class="form-group">
+        <label class="form-label" for="fecha_inicio">Fecha Desde</label>
+        <div class="input-with-icon">
+          <fa-icon [icon]="icons.calendar" class="input-icon"></fa-icon>
+          <input
+            id="fecha_inicio"
+            type="date"
+            class="form-control"
+            formControlName="fecha_inicio"
+          />
+        </div>
+      </div>
+
+      <!-- Fecha Fin -->
+      <div class="form-group">
+        <label class="form-label" for="fecha_fin">Fecha Hasta</label>
+        <div class="input-with-icon">
+          <fa-icon [icon]="icons.calendar" class="input-icon"></fa-icon>
+          <input
+            id="fecha_fin"
+            type="date"
+            class="form-control"
+            formControlName="fecha_fin"
+          />
+        </div>
+      </div>
+
+      <!-- Tipo de Operación -->
+      <div class="form-group">
+        <label class="form-label" for="tipo_operacion">Tipo de Operación</label>
+        <select
+          id="tipo_operacion"
+          class="form-select"
+          formControlName="tipo_operacion"
+        >
+          <option value="todos">Todos los Movimientos</option>
+          <option value="produccion">Solo Producción (Ensamble)</option>
+          <option value="transferencia">Solo Traslados entre Almacenes</option>
+        </select>
+      </div>
+
+      <!-- Almacén -->
+      <div class="form-group">
+        <label class="form-label" for="almacen_id">Almacén / Planta</label>
+        <select
+          id="almacen_id"
+          class="form-select"
+          formControlName="almacen_id"
+        >
+          <option [ngValue]="null">Todos los Almacenes</option>
+          @for (alm of almacenes(); track alm.id) {
+            <option [ngValue]="alm.id">{{ alm.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Lote -->
+      <div class="form-group">
+        <label class="form-label" for="lote_id">Lote de Origen</label>
+        <select
+          id="lote_id"
+          class="form-select"
+          formControlName="lote_id"
+        >
+          <option [ngValue]="null">Todos los Lotes</option>
+          @for (lote of lotes(); track lote.id) {
+            <option [ngValue]="lote.id">Lote #{{ lote.id }} - {{ lote.descripcion || 'Sin descripción' }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Producto Base -->
+      <div class="form-group">
+        <label class="form-label" for="producto_id">Producto Base</label>
+        <select
+          id="producto_id"
+          class="form-select"
+          formControlName="producto_id"
+        >
+          <option [ngValue]="null">Todos los Productos</option>
+          @for (prod of productos(); track prod.id) {
+            <option [ngValue]="prod.id">{{ prod.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Presentación Comercial -->
+      <div class="form-group">
+        <label class="form-label" for="presentacion_id">Presentación Comercial</label>
+        <select
+          id="presentacion_id"
+          class="form-select"
+          formControlName="presentacion_id"
+        >
+          <option [ngValue]="null">Todas las Presentaciones</option>
+          @for (pres of presentaciones(); track pres.id) {
+            <option [ngValue]="pres.id">{{ pres.nombre }}</option>
+          }
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading State -->
+  @if (cargando()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p class="loading-text">Cargando reporte de producción y movimientos...</p>
+    </div>
+  }
+
+  @if (!cargando() && data()) {
+    <!-- 3. KPI Cards Grid -->
+    @if (resumenGeneral(); as rg) {
+      <div class="kpis-grid">
+        <!-- KPI 1: Producción Total -->
+        <div class="kpi-card kpi-emerald">
+          <div class="kpi-icon-wrapper">
+            <fa-icon [icon]="icons.industry"></fa-icon>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-label">Total Producido (KG)</span>
+            <div class="kpi-value">{{ formatKg(rg.produccion.total_kg) }}</div>
+            <div class="kpi-subtext">
+              <fa-icon [icon]="icons.boxOpen"></fa-icon>
+              <span><b>{{ formatNumber(rg.produccion.total_unidades) }}</b> unidades fabricadas</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 2: Traslados -->
+        <div class="kpi-card kpi-blue">
+          <div class="kpi-icon-wrapper">
+            <fa-icon [icon]="icons.truckLoading"></fa-icon>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-label">Total Trasladado (KG)</span>
+            <div class="kpi-value">{{ formatKg(rg.traslados.total_kg) }}</div>
+            <div class="kpi-subtext">
+              <fa-icon [icon]="icons.exchange"></fa-icon>
+              <span><b>{{ formatNumber(rg.traslados.total_unidades) }}</b> unidades recibidas</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 3: Lotes & Órdenes -->
+        <div class="kpi-card kpi-amber">
+          <div class="kpi-icon-wrapper">
+            <fa-icon [icon]="icons.layerGroup"></fa-icon>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-label">Lotes Involucrados</span>
+            <div class="kpi-value">{{ formatNumber(rg.produccion.total_lotes_utilizados) }} Lotes</div>
+            <div class="kpi-subtext">
+              <fa-icon [icon]="icons.listAlt"></fa-icon>
+              <span><b>{{ formatNumber(rg.produccion.total_operaciones) }}</b> órdenes de ensamble</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 4: Total Entradas General -->
+        <div class="kpi-card kpi-purple">
+          <div class="kpi-icon-wrapper">
+            <fa-icon [icon]="icons.boxes"></fa-icon>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-label">Total Ingresos General</span>
+            <div class="kpi-value">{{ formatKg(rg.total_kg_ingresados) }}</div>
+            <div class="kpi-subtext">
+              <fa-icon [icon]="icons.weight"></fa-icon>
+              <span><b>{{ formatNumber(rg.total_unidades_ingresadas) }}</b> unidades totales</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- 4. Navigation Tabs -->
+    <div class="tabs-container">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'lotes'"
+        (click)="setActiveTab('lotes')"
+      >
+        <fa-icon [icon]="icons.layerGroup"></fa-icon>
+        <span>Producción por Lote</span>
+        <span class="tab-badge">{{ produccionPorLote().length }}</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'presentaciones'"
+        (click)="setActiveTab('presentaciones')"
+      >
+        <fa-icon [icon]="icons.tag"></fa-icon>
+        <span>Por Presentación</span>
+        <span class="tab-badge">{{ produccionPorPresentacion().length }}</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'traslados'"
+        (click)="setActiveTab('traslados')"
+      >
+        <fa-icon [icon]="icons.exchange"></fa-icon>
+        <span>Traslados entre Almacenes</span>
+        <span class="tab-badge">{{ trasladosEntreAlmacenes().length }}</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'movimientos'"
+        (click)="setActiveTab('movimientos')"
+      >
+        <fa-icon [icon]="icons.listAlt"></fa-icon>
+        <span>Detalle de Movimientos</span>
+        <span class="tab-badge">{{ movimientosDetalle().length }}</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'temporal'"
+        (click)="setActiveTab('temporal')"
+      >
+        <fa-icon [icon]="icons.history"></fa-icon>
+        <span>Evolución Diaria</span>
+        <span class="tab-badge">{{ resumenTemporal().length }}</span>
+      </button>
+    </div>
+
+    <!-- 5. Tab Content Sections -->
+    <div class="tab-content-wrapper">
+      <!-- TAB 1: PRODUCCIÓN POR LOTE -->
+      @if (activeTab() === 'lotes') {
+        <div class="card-section">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Producción Desglosada por Lote</h2>
+              <p class="section-subtitle">
+                Haz clic en cualquier lote para expandir y ver las presentaciones comerciales fabricadas.
+              </p>
+            </div>
+            <div class="header-actions-sm">
+              <button type="button" class="btn-sm btn-ghost" (click)="expandAllLotes()">Expandir todos</button>
+              <button type="button" class="btn-sm btn-ghost" (click)="collapseAllLotes()">Colapsar todos</button>
+            </div>
+          </div>
+
+          @if (produccionPorLote().length === 0) {
+            <div class="empty-state">
+              <fa-icon [icon]="icons.boxOpen" class="empty-icon"></fa-icon>
+              <h3>No hay registros de producción por lote</h3>
+              <p>No se encontraron movimientos de producción con los filtros seleccionados.</p>
+            </div>
+          } @else {
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;"></th>
+                    <th>Código de Lote</th>
+                    <th>Producto Base</th>
+                    <th class="text-right">Unidades Producidas</th>
+                    <th class="text-right">Total Producido (KG)</th>
+                    <th class="text-center">Órdenes</th>
+                    <th>Presentaciones Elaboradas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (lote of produccionPorLote(); track lote.codigo_lote || lote.lote_id) {
+                    <tr
+                      class="row-parent"
+                      [class.expanded]="isLoteExpanded(lote.codigo_lote)"
+                      (click)="toggleLote(lote.codigo_lote)"
+                    >
+                      <td class="text-center">
+                        <button type="button" class="btn-accordion-toggle">
+                          <fa-icon [icon]="isLoteExpanded(lote.codigo_lote) ? icons.chevronUp : icons.chevronDown"></fa-icon>
+                        </button>
+                      </td>
+                      <td>
+                        <div class="lote-code-box">
+                          <span class="lote-code">{{ lote.codigo_lote }}</span>
+                          @if (lote.descripcion_lote) {
+                            <span class="lote-desc">{{ lote.descripcion_lote }}</span>
+                          }
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge-product">{{ lote.producto_nombre }}</span>
+                      </td>
+                      <td class="text-right font-semibold">
+                        {{ formatNumber(lote.unidades_producidas) }} und
+                      </td>
+                      <td class="text-right font-bold text-emerald">
+                        {{ formatKg(lote.kg_producidos) }}
+                      </td>
+                      <td class="text-center">
+                        <span class="badge-count">{{ lote.operaciones_count }}</span>
+                      </td>
+                      <td>
+                        <div class="chips-list">
+                          @for (p of lote.presentaciones; track p.presentacion_id || p.presentacion_nombre) {
+                            <span class="chip-item">
+                              <b>{{ p.presentacion_nombre }}:</b> {{ formatNumber(p.unidades) }} und ({{ formatKg(p.kg) }})
+                            </span>
+                          }
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- Fila expandible con detalle del lote -->
+                    @if (isLoteExpanded(lote.codigo_lote)) {
+                      <tr class="row-detail">
+                        <td colspan="7">
+                          <div class="lote-detail-box">
+                            <div class="detail-header">
+                              <h4>
+                                <fa-icon [icon]="icons.tag"></fa-icon>
+                                Desglose de Presentaciones para Lote: <b>{{ lote.codigo_lote }}</b>
+                              </h4>
+                            </div>
+                            <div class="presentations-grid">
+                              @for (pres of lote.presentaciones; track pres.presentacion_id || pres.presentacion_nombre) {
+                                <div class="presentation-card">
+                                  <div class="pres-header">
+                                    <span class="pres-name">{{ pres.presentacion_nombre }}</span>
+                                    <span class="pres-cap">{{ pres.capacidad_kg ? pres.capacidad_kg + ' kg/und' : '-' }}</span>
+                                  </div>
+                                  <div class="pres-metrics">
+                                    <div class="pres-metric-item">
+                                      <span class="pres-metric-label">Unidades Fabricadas</span>
+                                      <span class="pres-metric-val">{{ formatNumber(pres.unidades) }} und</span>
+                                    </div>
+                                    <div class="pres-metric-item">
+                                      <span class="pres-metric-label">Peso Total</span>
+                                      <span class="pres-metric-val text-emerald">{{ formatKg(pres.kg) }}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- TAB 2: PRODUCCIÓN POR PRESENTACIÓN -->
+      @if (activeTab() === 'presentaciones') {
+        <div class="card-section">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Producción Agrupada por Presentación</h2>
+              <p class="section-subtitle">
+                Totales globales acumulados por tipo de producto y formato comercial.
+              </p>
+            </div>
+          </div>
+
+          @if (produccionPorPresentacion().length === 0) {
+            <div class="empty-state">
+              <fa-icon [icon]="icons.boxOpen" class="empty-icon"></fa-icon>
+              <h3>No hay presentaciones producidas</h3>
+              <p>No se encontraron datos de producción para el filtro actual.</p>
+            </div>
+          } @else {
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Presentación Comercial</th>
+                    <th>Producto Base</th>
+                    <th>Tipo</th>
+                    <th class="text-right">Capacidad</th>
+                    <th class="text-right">Unidades Producidas</th>
+                    <th class="text-right">Total Producido (KG)</th>
+                    <th>Lotes Involucrados</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (pres of produccionPorPresentacion(); track pres.presentacion_id || pres.presentacion_nombre) {
+                    <tr>
+                      <td class="font-semibold">{{ pres.presentacion_nombre }}</td>
+                      <td>
+                        <span class="badge-product">{{ pres.producto_nombre }}</span>
+                      </td>
+                      <td>
+                        <span class="badge-type">{{ pres.tipo_presentacion || 'Procesado' }}</span>
+                      </td>
+                      <td class="text-right">
+                        {{ pres.capacidad_kg ? pres.capacidad_kg + ' kg' : '-' }}
+                      </td>
+                      <td class="text-right font-bold">
+                        {{ formatNumber(pres.unidades_producidas) }} und
+                      </td>
+                      <td class="text-right font-bold text-emerald">
+                        {{ formatKg(pres.kg_producidos) }}
+                      </td>
+                      <td>
+                        <div class="chips-list">
+                          @for (loteCod of pres.lotes_involucrados; track loteCod) {
+                            <span class="chip-lote">{{ loteCod }}</span>
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- TAB 3: TRASLADOS ENTRE ALMACENES -->
+      @if (activeTab() === 'traslados') {
+        <div class="card-section">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Traslados Recibidos entre Almacenes</h2>
+              <p class="section-subtitle">
+                Historial de movimientos de stock transferidos entre sucursales y plantas.
+              </p>
+            </div>
+          </div>
+
+          @if (trasladosEntreAlmacenes().length === 0) {
+            <div class="empty-state">
+              <fa-icon [icon]="icons.exchange" class="empty-icon"></fa-icon>
+              <h3>No hay traslados registrados</h3>
+              <p>No se encontraron traslados de mercancía en el periodo seleccionado.</p>
+            </div>
+          } @else {
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Flujo de Traslado</th>
+                    <th>Presentación</th>
+                    <th>Lote</th>
+                    <th class="text-right">Cantidad</th>
+                    <th class="text-right">Total KG</th>
+                    <th>N° Operación</th>
+                    <th>Responsable</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (t of trasladosEntreAlmacenes(); track t.movimiento_id) {
+                    <tr>
+                      <td class="text-sm">
+                        {{ t.fecha ? (t.fecha | date:'dd/MM/yyyy HH:mm') : '-' }}
+                      </td>
+                      <td>
+                        <div class="route-box">
+                          <span class="origin">{{ t.almacen_origen }}</span>
+                          <fa-icon [icon]="icons.exchange" class="route-arrow"></fa-icon>
+                          <span class="destination">{{ t.almacen_destino }}</span>
+                        </div>
+                      </td>
+                      <td class="font-medium">{{ t.presentacion_nombre }}</td>
+                      <td>
+                        <span class="badge-lote-code">{{ t.codigo_lote }}</span>
+                      </td>
+                      <td class="text-right font-semibold">
+                        {{ formatNumber(t.cantidad_unidades) }} und
+                      </td>
+                      <td class="text-right font-bold text-blue">
+                        {{ formatKg(t.total_kg) }}
+                      </td>
+                      <td>
+                        <span class="op-code">{{ t.operacion_id || '-' }}</span>
+                      </td>
+                      <td class="text-sm text-muted">
+                        {{ t.usuario_nombre || '-' }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- TAB 4: DETALLE DE MOVIMIENTOS -->
+      @if (activeTab() === 'movimientos') {
+        <div class="card-section">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Bitácora Detallada de Movimientos</h2>
+              <p class="section-subtitle">
+                Registro pormenorizado de todas las entradas (ensamblajes y recepciones por traslado).
+              </p>
+            </div>
+          </div>
+
+          @if (movimientosDetalle().length === 0) {
+            <div class="empty-state">
+              <fa-icon [icon]="icons.listAlt" class="empty-icon"></fa-icon>
+              <h3>No hay movimientos para mostrar</h3>
+              <p>No se encontraron transacciones registradas con los filtros vigentes.</p>
+            </div>
+          } @else {
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Almacén</th>
+                    <th>Presentación / Producto</th>
+                    <th>Lote</th>
+                    <th class="text-right">Cantidad</th>
+                    <th class="text-right">Peso Total</th>
+                    <th>Usuario / Motivo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (m of movimientosDetalle(); track m.id) {
+                    <tr>
+                      <td class="font-mono text-sm">#{{ m.id }}</td>
+                      <td class="text-sm">{{ m.fecha ? (m.fecha | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
+                      <td>
+                        <span
+                          class="badge-op"
+                          [class.badge-ensamble]="m.tipo_operacion === 'ensamblaje' || m.tipo_operacion === 'produccion'"
+                          [class.badge-traslado]="m.tipo_operacion === 'transferencia' || m.tipo_operacion === 'traslado'"
+                        >
+                          {{ m.tipo_operacion }}
+                        </span>
+                      </td>
+                      <td>{{ m.almacen_nombre }}</td>
+                      <td>
+                        <div class="prod-item-box">
+                          <span class="font-medium">{{ m.presentacion_nombre }}</span>
+                          <span class="text-xs text-muted">{{ m.producto_nombre }}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge-lote-code">{{ m.codigo_lote }}</span>
+                      </td>
+                      <td class="text-right font-semibold">{{ formatNumber(m.cantidad_unidades) }} und</td>
+                      <td class="text-right font-bold text-purple">{{ formatKg(m.total_kg) }}</td>
+                      <td>
+                        <div class="user-reason-box">
+                          <span class="user-name">{{ m.usuario_nombre || 'Sistema' }}</span>
+                          @if (m.motivo) {
+                            <span class="reason-text" [title]="m.motivo">{{ m.motivo }}</span>
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- TAB 5: RESUMEN TEMPORAL -->
+      @if (activeTab() === 'temporal') {
+        <div class="card-section">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Evolución Diaria de Entradas</h2>
+              <p class="section-subtitle">
+                Distribución cronológica día por día de kilogramos y unidades ingresadas.
+              </p>
+            </div>
+          </div>
+
+          @if (resumenTemporal().length === 0) {
+            <div class="empty-state">
+              <fa-icon [icon]="icons.history" class="empty-icon"></fa-icon>
+              <h3>No hay datos cronológicos</h3>
+              <p>No se encontraron transacciones en la serie de tiempo.</p>
+            </div>
+          } @else {
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th class="text-right">Producción (KG)</th>
+                    <th class="text-right">Producción (Und)</th>
+                    <th class="text-right">Traslados (KG)</th>
+                    <th class="text-right">Traslados (Und)</th>
+                    <th class="text-right">Total Día (KG)</th>
+                    <th class="text-right">Total Día (Und)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (dia of resumenTemporal(); track dia.fecha) {
+                    <tr>
+                      <td class="font-bold font-mono">{{ dia.fecha }}</td>
+                      <td class="text-right text-emerald font-semibold">{{ formatKg(dia.kg_produccion) }}</td>
+                      <td class="text-right">{{ formatNumber(dia.unidades_produccion) }} und</td>
+                      <td class="text-right text-blue font-semibold">{{ formatKg(dia.kg_traslado) }}</td>
+                      <td class="text-right">{{ formatNumber(dia.unidades_traslado) }} und</td>
+                      <td class="text-right font-bold text-purple">{{ formatKg(dia.total_kg_dia) }}</td>
+                      <td class="text-right font-bold">{{ formatNumber(dia.total_unidades_dia) }} und</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
