@@ -1,59 +1,82 @@
-# Manngo J&K
+# Manngo J&K (App Manngo Web)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.0.
+Aplicación web de gestión comercial de Manngo J&K: panel administrativo para controlar ventas, pedidos, inventario, lotes, almacenes, producción (recetas), clientes, proveedores, pagos, gastos y reportes. Incluye una landing page pública con catálogo de productos y recetas.
 
-## Development server
+## Características principales
 
-To start a local development server, run:
+- Landing page pública con presentación, productos, recetas, beneficios y testimonios.
+- Login y panel de administración (admin) con layout propio.
+- Gestión de clientes, proveedores, productos y presentaciones.
+- Ventas con selección de productos y modal de detalle.
+- Pedidos, pagos (con cierre de caja y depósitos) y gastos.
+- Inventario, lotes, almacenes y transferencias entre almacenes.
+- Producción con recetas y registro de insumos.
+- Dashboard con proyecciones de clientes y reportes de producción.
+- Reportes financieros, de inventario (global y por lote) y unificados.
+- Módulo de chat flotante para soporte.
+- Persistencia de datos vía API (`api.manngojk.com`).
+
+## Tecnologías
+
+- Angular 20
+- RxJS
+- Font Awesome
+- Material Icons
+- jwt-decode (autenticación)
+- xlsx (exportación Excel)
+- TypeScript
+
+## Requisitos previos
+
+- Node.js 18 o superior
+- Angular CLI (`npm install -g @angular/cli`)
+
+## Cómo ejecutar
 
 ```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+El servidor de desarrollo estará disponible en `http://localhost:4200/`.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Compilar
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Pruebas
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+## Estructura del proyecto
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
 ```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+src/app/
+├── core/          # Guards, interceptores, servicios y utilidades
+├── features/
+│   ├── landing/       # Página pública de presentación
+│   └── admin/         # Panel administrativo
+│       ├── ventas/        # Ventas
+│       ├── pedidos/       # Pedidos
+│       ├── clientes/      # Clientes
+│       ├── proveedores/   # Proveedores
+│       ├── productos/     # Productos
+│       ├── presentaciones/ # Presentaciones
+│       ├── inventarios/   # Inventario
+│       ├── lotes/         # Lotes
+│       ├── almacenes/     # Almacenes
+│       ├── produccion/    # Producción y recetas
+│       ├── pagos/         # Pagos y cierre de caja
+│       ├── gastos/        # Gastos
+│       ├── dashboard/     # Dashboard y proyecciones
+│       ├── reportes/      # Reportes
+│       ├── users/         # Usuarios y login
+│       ├── config/        # Configuración
+│       └── chat/          # Chat de soporte
+├── shared/        # Componentes, directivas, pipes y servicios compartidos
+└── types/         # Tipos TypeScript
+```
